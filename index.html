@@ -91,7 +91,7 @@
           </div>
         </div>
 
-        <p id="login-error" class="text-red-600 text-xs font-medium hidden"></p>
+        <p id="login-error" class="text-red-600 text-xs font-medium hidden bg-red-50 p-2.5 rounded-lg border border-red-200"></p>
 
         <button type="submit"
           class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md">
@@ -837,7 +837,7 @@
   <script>
     // ==================== SUPABASE CONFIGURATION ====================
     const SUPABASE_URL = 'https://gejnydeorzgocxktcywx.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_Uw0JZiqMQRjtzZpE-Sj5rg_1J5diZch';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdlam55ZGVvcnpnb2N4a3RjeXd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU1MTU1NjEsImV4cCI6MjExMTA5MTU2MX0.diAMLtrhmAVM5o3u_8DeVISML35irPj5W6HCVQWbZmQ';
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let db = {
@@ -943,7 +943,13 @@
 
       setLoading(false);
 
-      if (error || !user) {
+      if (error) {
+        err.textContent = 'Supabase Error: ' + error.message;
+        err.classList.remove('hidden');
+        return;
+      }
+
+      if (!user) {
         err.textContent = 'Invalid User ID, Password, or inactive account.';
         err.classList.remove('hidden');
         return;
