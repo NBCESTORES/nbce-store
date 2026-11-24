@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NBCE STORE — Inventory & Study Centre Management</title>
+  <title>NBCE STORE — Cloud Inventory & Study Centre Management</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
 
-    /* Low Stock Pulse Animation */
     @keyframes lowStockPulse {
       0%, 100% {
         box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.55);
@@ -36,7 +36,6 @@
       animation: bellShake 1.4s infinite;
     }
 
-    /* Print Styles for Challan & Reports */
     @media print {
       body * { visibility: hidden; }
       #print-area, #print-area * { visibility: visible; }
@@ -54,6 +53,14 @@
 </head>
 <body class="text-slate-800 antialiased">
 
+  <!-- Global Loading Overlay -->
+  <div id="loading-overlay" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden items-center justify-center">
+    <div class="bg-white px-6 py-4 rounded-2xl shadow-xl flex items-center gap-3">
+      <i class="fa-solid fa-circle-notch fa-spin text-indigo-600 text-xl"></i>
+      <span class="text-sm font-semibold text-slate-700" id="loading-text">Syncing with Supabase Cloud...</span>
+    </div>
+  </div>
+
   <!-- ==================== LOGIN SCREEN ==================== -->
   <div id="login-screen" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-4">
     <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden">
@@ -62,7 +69,7 @@
           <i class="fa-solid fa-boxes-stacked"></i>
         </div>
         <h1 class="text-2xl font-extrabold tracking-wide">NBCE STORE</h1>
-        <p class="text-indigo-100 text-xs mt-1">Stock, Challan & Study Centre Portal</p>
+        <p class="text-indigo-100 text-xs mt-1">Cloud Stock, Challan & Study Centre Portal</p>
       </div>
 
       <form id="login-form" class="p-6 space-y-4">
@@ -119,7 +126,10 @@
         </button>
         <span class="font-extrabold tracking-wide text-lg">NBCE STORE</span>
       </div>
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2.5">
+        <button onclick="refreshAllData()" title="Sync Cloud Data" class="p-1.5 text-sky-400">
+          <i class="fa-solid fa-arrows-rotate"></i>
+        </button>
         <button onclick="navigate('low-stock')" class="relative p-1.5 text-amber-400">
           <i class="fa-solid fa-bell bell-shake text-lg"></i>
           <span id="mobile-low-badge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold px-1.5 rounded-full">0</span>
@@ -217,10 +227,13 @@
           <h1 id="page-title" class="text-xl font-bold text-slate-800">Home & Real-Time Stock Overview</h1>
           <p id="page-subtitle" class="text-xs text-slate-500">Live inventory monitoring across NBCE STORE</p>
         </div>
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
+          <button onclick="refreshAllData()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-arrows-rotate text-indigo-600"></i> Sync
+          </button>
           <div class="text-right">
             <p class="text-xs font-semibold text-slate-700" id="live-date-display"></p>
-            <p class="text-[11px] text-emerald-600 font-medium"><i class="fa-solid fa-circle text-[8px] mr-1"></i>System Online</p>
+            <p class="text-[11px] text-emerald-600 font-semibold"><i class="fa-solid fa-cloud-check mr-1"></i>Supabase Cloud Connected</p>
           </div>
           <button onclick="navigate('low-stock')" id="top-alert-btn" class="relative bg-red-50 hover:bg-red-100 text-red-600 px-3.5 py-2 rounded-xl border border-red-200 flex items-center gap-2 text-xs font-bold transition">
             <i class="fa-solid fa-bell bell-shake"></i>
@@ -232,12 +245,11 @@
       <!-- Toast Notification -->
       <div id="toast" class="fixed bottom-5 right-5 z-50 hidden bg-slate-900 text-white px-5 py-3 rounded-xl shadow-xl text-sm font-medium flex items-center gap-2.5">
         <i class="fa-solid fa-circle-check text-emerald-400"></i>
-        <span id="toast-msg">Saved successfully!</span>
+        <span id="toast-msg">Saved to Cloud!</span>
       </div>
 
       <!-- ==================== 01 & 09: HOME & REAL-TIME STOCK OVERVIEW ==================== -->
       <section id="view-home" class="view-section space-y-6">
-        <!-- Animated Low Stock Banner -->
         <div id="home-low-stock-banner" class="hidden bg-red-50 border-2 border-red-500 rounded-2xl p-4 low-stock-pulse flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div class="flex items-center gap-3">
             <div class="w-11 h-11 rounded-xl bg-red-600 text-white flex items-center justify-center text-xl shrink-0">
@@ -329,10 +341,8 @@
               <h2 class="font-bold text-slate-800 text-base">Real-Time Stock Overview</h2>
               <p class="text-xs text-slate-500">Live quantity, minimum stock level & status</p>
             </div>
-            <div class="flex items-center gap-2">
-              <input type="text" id="home-search" onkeyup="renderHome()" placeholder="Search product or SKU..."
-                class="text-xs border border-slate-300 rounded-xl px-3.5 py-2 outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-60" />
-            </div>
+            <input type="text" id="home-search" onkeyup="renderHome()" placeholder="Search product or SKU..."
+              class="text-xs border border-slate-300 rounded-xl px-3.5 py-2 outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-60" />
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-sm">
@@ -362,7 +372,6 @@
             <i class="fa-solid fa-plus"></i> Add New Product
           </button>
         </div>
-
         <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
       </section>
 
@@ -422,7 +431,6 @@
               </div>
             </div>
 
-            <!-- Picture Upload & Preview -->
             <div>
               <label class="block text-xs font-semibold text-slate-600 mb-1">Product Picture</label>
               <div class="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center hover:border-indigo-400 transition">
@@ -438,7 +446,7 @@
             </div>
 
             <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow transition">
-              <i class="fa-solid fa-check-circle mr-1"></i> Save Product to NBCE STORE
+              <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Save Product to Cloud
             </button>
           </form>
         </div>
@@ -505,10 +513,8 @@
               </div>
             </div>
 
-            <!-- Selected Centre Details Box -->
             <div id="sold-centre-info" class="hidden bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-xs text-slate-600 flex flex-wrap gap-4"></div>
 
-            <!-- Add Items to Challan Cart -->
             <div class="border border-slate-200 rounded-xl p-4 bg-slate-50/60 space-y-3">
               <p class="text-xs font-bold uppercase text-slate-500">Add Products to Dispatch</p>
               <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
@@ -527,7 +533,6 @@
                 </div>
               </div>
 
-              <!-- Cart Table -->
               <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs border-collapse mt-2">
                   <thead>
@@ -556,7 +561,7 @@
         </div>
       </section>
 
-      <!-- ==================== 08: CHALLANS LIST & PRINT MODAL ==================== -->
+      <!-- ==================== 08: CHALLANS LIST ==================== -->
       <section id="view-challans" class="view-section hidden space-y-5">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200/70 overflow-hidden">
           <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -588,7 +593,6 @@
       <!-- ==================== 12: STUDY CENTRE ADD & LIST ==================== -->
       <section id="view-study-centres" class="view-section hidden space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Add Study Centre Form -->
           <div class="bg-white rounded-2xl shadow-sm border border-slate-200/70 overflow-hidden h-fit">
             <div class="bg-purple-600 px-5 py-4 text-white">
               <h2 class="font-bold text-base">Add Study Centre</h2>
@@ -621,7 +625,6 @@
             </form>
           </div>
 
-          <!-- Study Centres Table -->
           <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200/70 overflow-hidden">
             <div class="p-5 border-b border-slate-100">
               <h2 class="font-bold text-slate-800">Registered Study Centres</h2>
@@ -734,7 +737,7 @@
           <div class="p-5 border-b border-slate-100 flex items-center justify-between">
             <div>
               <h2 class="font-bold text-slate-800">Staff Action Status & Activity Log</h2>
-              <p class="text-xs text-slate-500">Real-time audit trail of every staff and admin operation</p>
+              <p class="text-xs text-slate-500">Cloud audit trail of every staff and admin operation</p>
             </div>
           </div>
           <div class="overflow-x-auto">
@@ -832,66 +835,35 @@
   </div>
 
   <script>
-    // ==================== STATE & STORAGE INITIALIZATION ====================
-    const DB_KEY = 'NBCE_STORE_DB_V1';
+    // ==================== SUPABASE CONFIGURATION ====================
+    const SUPABASE_URL = 'https://gejnydeorzgocxktcywx.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_Uw0JZiqMQRjtzZpE-Sj5rg_1J5diZch';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const defaultData = {
-      users: [
-        { id: 'u1', userId: 'admin', password: 'admin123', name: 'NBCE Admin', role: 'admin', active: true },
-        { id: 'u2', userId: 'staff1', password: 'staff123', name: 'Store Staff 1', role: 'staff', active: true }
-      ],
-      studyCentres: [
-        { code: 'NBCE-SC-01', name: 'Kolkata Central Study Centre', mobile: '9876543210', address: '12 College Street, Kolkata - 700073' },
-        { code: 'NBCE-SC-02', name: 'Howrah Academic Hub', mobile: '9123456780', address: '45 GT Road, Howrah - 711101' }
-      ],
-      products: [
-        { id: 'p1', sku: 'NBCE-BK-01', name: 'Computer Application Handbook', category: 'Books', unit: 'Pcs', stock: 45, minStock: 15, addedDate: '2026-07-01', image: '' },
-        { id: 'p2', sku: 'NBCE-KIT-02', name: 'Student Admission Kit & ID Card', category: 'Kit', unit: 'Set', stock: 8, minStock: 12, addedDate: '2026-07-05', image: '' },
-        { id: 'p3', sku: 'NBCE-BAG-03', name: 'NBCE Official Student Bag', category: 'Accessories', unit: 'Pcs', stock: 22, minStock: 10, addedDate: '2026-07-10', image: '' }
-      ],
-      transactions: [
-        { id: 't1', date: new Date().toISOString().split('T')[0], type: 'IN', productId: 'p1', productName: 'Computer Application Handbook', qty: 50, centreCode: '-', note: 'Opening Batch', challanNo: '-', staff: 'NBCE Admin' },
-        { id: 't2', date: new Date().toISOString().split('T')[0], type: 'OUT', productId: 'p1', productName: 'Computer Application Handbook', qty: 5, centreCode: 'NBCE-SC-01', note: 'Regular Dispatch', challanNo: 'CH-1001', staff: 'Store Staff 1' }
-      ],
-      challans: [
-        {
-          challanNo: 'CH-1001',
-          date: new Date().toISOString().split('T')[0],
-          centreCode: 'NBCE-SC-01',
-          centreName: 'Kolkata Central Study Centre',
-          mobile: '9876543210',
-          address: '12 College Street, Kolkata - 700073',
-          items: [{ productId: 'p1', sku: 'NBCE-BK-01', name: 'Computer Application Handbook', qty: 5, unit: 'Pcs' }],
-          remarks: 'Regular Dispatch',
-          issuedBy: 'Store Staff 1'
-        }
-      ],
-      staffActions: [
-        { time: new Date().toLocaleString(), user: 'NBCE Admin', role: 'admin', action: 'SYSTEM_INIT', details: 'NBCE STORE initialized with default catalog' }
-      ],
+    let db = {
+      users: [],
+      studyCentres: [],
+      products: [],
+      transactions: [],
+      challans: [],
+      staffActions: [],
       whatsappNumber: '919876543210'
     };
 
-    let db = JSON.parse(localStorage.getItem(DB_KEY)) || defaultData;
-    let currentUser = JSON.parse(sessionStorage.getItem('NBCE_USER')) || null;
+    let currentUser = JSON.parse(sessionStorage.getItem('NBCE_CLOUD_USER')) || null;
     let uploadedProductImage = '';
     let challanCart = [];
 
-    function saveDB() {
-      localStorage.setItem(DB_KEY, JSON.stringify(db));
-      updateBadges();
-    }
-
-    function logAction(action, details) {
-      if (!currentUser) return;
-      db.staffActions.unshift({
-        time: new Date().toLocaleString(),
-        user: currentUser.name,
-        role: currentUser.role,
-        action,
-        details
-      });
-      saveDB();
+    function setLoading(show, text = 'Syncing with Supabase Cloud...') {
+      const el = document.getElementById('loading-overlay');
+      document.getElementById('loading-text').textContent = text;
+      if (show) {
+        el.classList.remove('hidden');
+        el.classList.add('flex');
+      } else {
+        el.classList.add('hidden');
+        el.classList.remove('flex');
+      }
     }
 
     function showToast(msg) {
@@ -901,6 +873,51 @@
       setTimeout(() => toast.classList.add('hidden'), 3000);
     }
 
+    async function refreshAllData() {
+      setLoading(true, 'Loading live data from Supabase...');
+      try {
+        const [usersRes, centresRes, prodsRes, logsRes, challansRes, actionsRes, settingsRes] = await Promise.all([
+          sb.from('app_users').select('*').order('created_at', { ascending: true }),
+          sb.from('study_centres').select('*').order('centre_code', { ascending: true }),
+          sb.from('products').select('*').order('name', { ascending: true }),
+          sb.from('stock_logs').select('*').order('created_at', { ascending: false }),
+          sb.from('challans').select('*').order('created_at', { ascending: false }),
+          sb.from('staff_actions').select('*').order('created_at', { ascending: false }).limit(150),
+          sb.from('app_settings').select('*').eq('key', 'whatsapp_number').maybeSingle()
+        ]);
+
+        db.users = usersRes.data || [];
+        db.studyCentres = centresRes.data || [];
+        db.products = prodsRes.data || [];
+        db.transactions = logsRes.data || [];
+        db.challans = challansRes.data || [];
+        db.staffActions = actionsRes.data || [];
+        if (settingsRes.data && settingsRes.data.value) {
+          db.whatsappNumber = settingsRes.data.value;
+        }
+
+        updateBadges();
+        const activeBtn = document.querySelector('.nav-btn.bg-indigo-600');
+        const currentView = activeBtn ? activeBtn.dataset.nav : 'home';
+        renderCurrentView(currentView);
+      } catch (err) {
+        console.error(err);
+        alert('Error connecting to Supabase: ' + err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    async function logAction(actionType, details) {
+      if (!currentUser) return;
+      await sb.from('staff_actions').insert([{
+        staff_name: currentUser.full_name,
+        role: currentUser.role,
+        action_type: actionType,
+        details
+      }]);
+    }
+
     // ==================== AUTHENTICATION ====================
     function quickLogin(uid, pass) {
       document.getElementById('login-userid').value = uid;
@@ -908,57 +925,67 @@
       document.getElementById('login-form').dispatchEvent(new Event('submit'));
     }
 
-    document.getElementById('login-form').addEventListener('submit', function(e) {
+    document.getElementById('login-form').addEventListener('submit', async function(e) {
       e.preventDefault();
       const uid = document.getElementById('login-userid').value.trim();
       const pass = document.getElementById('login-password').value.trim();
-      const user = db.users.find(u => u.userId === uid && u.password === pass && u.active);
+      const err = document.getElementById('login-error');
+      err.classList.add('hidden');
 
-      if (!user) {
-        const err = document.getElementById('login-error');
+      setLoading(true, 'Verifying credentials...');
+      const { data: user, error } = await sb
+        .from('app_users')
+        .select('*')
+        .eq('user_id', uid)
+        .eq('password', pass)
+        .eq('is_active', true)
+        .maybeSingle();
+
+      setLoading(false);
+
+      if (error || !user) {
         err.textContent = 'Invalid User ID, Password, or inactive account.';
         err.classList.remove('hidden');
         return;
       }
 
       currentUser = user;
-      sessionStorage.setItem('NBCE_USER', JSON.stringify(user));
-      logAction('LOGIN', `${user.name} logged into NBCE STORE`);
+      sessionStorage.setItem('NBCE_CLOUD_USER', JSON.stringify(user));
+      await logAction('LOGIN', `${user.full_name} logged into NBCE STORE`);
       initApp();
     });
 
-    function logout() {
-      logAction('LOGOUT', `${currentUser.name} logged out`);
-      sessionStorage.removeItem('NBCE_USER');
+    async function logout() {
+      await logAction('LOGOUT', `${currentUser.full_name} logged out`);
+      sessionStorage.removeItem('NBCE_CLOUD_USER');
       currentUser = null;
       document.getElementById('app-shell').classList.add('hidden');
       document.getElementById('login-screen').classList.remove('hidden');
     }
 
-    function initApp() {
+    async function initApp() {
       document.getElementById('login-screen').classList.add('hidden');
       document.getElementById('app-shell').classList.remove('hidden');
 
-      document.getElementById('user-display-name').textContent = currentUser.name;
-      document.getElementById('user-display-id').textContent = '@' + currentUser.userId;
-      document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
+      document.getElementById('user-display-name').textContent = currentUser.full_name;
+      document.getElementById('user-display-id').textContent = '@' + currentUser.user_id;
+      document.getElementById('user-avatar').textContent = currentUser.full_name.charAt(0).toUpperCase();
       document.getElementById('sidebar-role-badge').textContent = currentUser.role;
       document.getElementById('live-date-display').textContent = new Date().toDateString();
 
-      // Hide Admin-only menu for Staff
       if (currentUser.role !== 'admin') {
         document.getElementById('admin-nav-section').classList.add('hidden');
       } else {
         document.getElementById('admin-nav-section').classList.remove('hidden');
       }
 
-      updateBadges();
+      await refreshAllData();
       navigate('home');
     }
 
     // ==================== NAVIGATION ====================
     const pageMeta = {
-      'home': ['Home & Real-Time Stock Overview', 'Live inventory monitoring across NBCE STORE'],
+      'home': ['Home & Real-Time Stock Overview', 'Live cloud inventory monitoring across NBCE STORE'],
       'products': ['Product Catalog', 'All registered items with images & stock status'],
       'add-product': ['Add Product', 'Register new items with picture & automatic date'],
       'stock-in': ['Stock In', 'Record incoming stock arrivals'],
@@ -970,6 +997,20 @@
       'staff-actions': ['Staff Action Status', 'Complete audit log of staff & admin operations'],
       'users': ['ID & Password Creation', 'Create and manage Staff & Admin login IDs']
     };
+
+    function renderCurrentView(view) {
+      if (view === 'home') renderHome();
+      if (view === 'products') renderProducts();
+      if (view === 'add-product') prepAddProduct();
+      if (view === 'stock-in') prepStockIn();
+      if (view === 'stock-sold') prepStockSold();
+      if (view === 'challans') renderChallans();
+      if (view === 'study-centres') renderStudyCentres();
+      if (view === 'low-stock') renderLowStock();
+      if (view === 'reports') prepReports();
+      if (view === 'staff-actions') renderStaffActions();
+      if (view === 'users') renderUsers();
+    }
 
     function navigate(view) {
       document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
@@ -990,22 +1031,9 @@
         document.getElementById('page-subtitle').textContent = pageMeta[view][1];
       }
 
-      // Close mobile sidebar
       document.getElementById('sidebar').classList.add('-translate-x-full');
       document.getElementById('sidebar-backdrop').classList.add('hidden');
-
-      // Render specific view
-      if (view === 'home') renderHome();
-      if (view === 'products') renderProducts();
-      if (view === 'add-product') prepAddProduct();
-      if (view === 'stock-in') prepStockIn();
-      if (view === 'stock-sold') prepStockSold();
-      if (view === 'challans') renderChallans();
-      if (view === 'study-centres') renderStudyCentres();
-      if (view === 'low-stock') renderLowStock();
-      if (view === 'reports') prepReports();
-      if (view === 'staff-actions') renderStaffActions();
-      if (view === 'users') renderUsers();
+      renderCurrentView(view);
     }
 
     function toggleSidebar() {
@@ -1014,7 +1042,7 @@
     }
 
     function updateBadges() {
-      const lowItems = db.products.filter(p => p.stock <= p.minStock);
+      const lowItems = db.products.filter(p => Number(p.current_stock) <= Number(p.min_stock));
       document.getElementById('sidebar-low-badge').textContent = lowItems.length;
       document.getElementById('mobile-low-badge').textContent = lowItems.length;
       document.getElementById('top-low-count').textContent = lowItems.length;
@@ -1023,10 +1051,10 @@
     // ==================== 01 & 09: HOME & REAL-TIME STOCK ====================
     function renderHome() {
       const today = new Date().toISOString().split('T')[0];
-      const totalUnits = db.products.reduce((sum, p) => sum + Number(p.stock), 0);
-      const todayIn = db.transactions.filter(t => t.date === today && t.type === 'IN').reduce((s, t) => s + Number(t.qty), 0);
-      const todaySold = db.transactions.filter(t => t.date === today && t.type === 'OUT').reduce((s, t) => s + Number(t.qty), 0);
-      const lowItems = db.products.filter(p => p.stock <= p.minStock);
+      const totalUnits = db.products.reduce((sum, p) => sum + Number(p.current_stock), 0);
+      const todayIn = db.transactions.filter(t => t.tx_date === today && t.type === 'IN').reduce((s, t) => s + Number(t.quantity), 0);
+      const todaySold = db.transactions.filter(t => t.tx_date === today && t.type === 'OUT').reduce((s, t) => s + Number(t.quantity), 0);
+      const lowItems = db.products.filter(p => Number(p.current_stock) <= Number(p.min_stock));
 
       document.getElementById('kpi-total-products').textContent = db.products.length;
       document.getElementById('kpi-total-units').textContent = totalUnits;
@@ -1034,12 +1062,11 @@
       document.getElementById('kpi-today-sold').textContent = '-' + todaySold;
       document.getElementById('kpi-low-stock').textContent = lowItems.length;
 
-      // Low Stock Banner
       const banner = document.getElementById('home-low-stock-banner');
       if (lowItems.length > 0) {
         banner.classList.remove('hidden');
         document.getElementById('home-low-stock-text').textContent =
-          lowItems.map(i => `${i.name} (${i.stock} ${i.unit} left)`).join(' • ');
+          lowItems.map(i => `${i.name} (${i.current_stock} ${i.unit} left)`).join(' • ');
       } else {
         banner.classList.add('hidden');
       }
@@ -1050,20 +1077,25 @@
       );
 
       const tbody = document.getElementById('home-stock-tbody');
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400 text-xs">No products found. Click "Add Product" to start adding items.</td></tr>`;
+        return;
+      }
+
       tbody.innerHTML = filtered.map(p => {
-        const isLow = p.stock <= p.minStock;
+        const isLow = Number(p.current_stock) <= Number(p.min_stock);
         return `
           <tr class="${isLow ? 'bg-red-50/60' : 'hover:bg-slate-50'}">
             <td class="py-3 px-4 font-semibold text-slate-800 flex items-center gap-3">
-              ${p.image
-                ? `<img src="${p.image}" class="w-9 h-9 rounded-lg object-cover border" />`
+              ${p.image_url
+                ? `<img src="${p.image_url}" class="w-9 h-9 rounded-lg object-cover border" />`
                 : `<div class="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">${p.name.charAt(0)}</div>`}
               <span>${p.name}</span>
             </td>
             <td class="py-3 px-4 text-xs font-mono text-slate-500">${p.sku}</td>
             <td class="py-3 px-4 text-xs text-slate-600">${p.category || '-'}</td>
-            <td class="py-3 px-4 font-extrabold ${isLow ? 'text-red-600' : 'text-slate-800'}">${p.stock} ${p.unit}</td>
-            <td class="py-3 px-4 text-xs text-slate-500">${p.minStock} ${p.unit}</td>
+            <td class="py-3 px-4 font-extrabold ${isLow ? 'text-red-600' : 'text-slate-800'}">${p.current_stock} ${p.unit}</td>
+            <td class="py-3 px-4 text-xs text-slate-500">${p.min_stock} ${p.unit}</td>
             <td class="py-3 px-4">
               ${isLow
                 ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-100 text-red-700 animate-pulse"><i class="fa-solid fa-triangle-exclamation"></i> Low Stock</span>`
@@ -1085,13 +1117,19 @@
         p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q) || (p.category || '').toLowerCase().includes(q)
       );
 
-      document.getElementById('products-grid').innerHTML = list.map(p => {
-        const isLow = p.stock <= p.minStock;
+      const grid = document.getElementById('products-grid');
+      if (list.length === 0) {
+        grid.innerHTML = `<div class="col-span-full bg-white p-10 rounded-2xl text-center text-slate-400 text-sm">No products found in catalog.</div>`;
+        return;
+      }
+
+      grid.innerHTML = list.map(p => {
+        const isLow = Number(p.current_stock) <= Number(p.min_stock);
         return `
           <div class="bg-white rounded-2xl shadow-sm border ${isLow ? 'border-red-400 low-stock-pulse' : 'border-slate-200/70'} overflow-hidden flex flex-col">
             <div class="h-40 bg-slate-100 relative flex items-center justify-center overflow-hidden">
-              ${p.image
-                ? `<img src="${p.image}" class="w-full h-full object-cover" />`
+              ${p.image_url
+                ? `<img src="${p.image_url}" class="w-full h-full object-cover" />`
                 : `<i class="fa-solid fa-box-open text-4xl text-slate-300"></i>`}
               <span class="absolute top-2.5 left-2.5 bg-slate-900/75 text-white text-[10px] font-mono px-2 py-0.5 rounded">${p.sku}</span>
               ${isLow ? `<span class="absolute top-2.5 right-2.5 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">LOW STOCK</span>` : ''}
@@ -1100,14 +1138,14 @@
               <div>
                 <p class="text-[11px] text-indigo-600 font-semibold uppercase">${p.category || 'General'}</p>
                 <h3 class="font-bold text-slate-800 text-sm mt-0.5">${p.name}</h3>
-                <p class="text-[11px] text-slate-400 mt-1"><i class="fa-regular fa-calendar mr-1"></i>Added: ${p.addedDate}</p>
+                <p class="text-[11px] text-slate-400 mt-1"><i class="fa-regular fa-calendar mr-1"></i>Added: ${p.added_date}</p>
               </div>
               <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
                 <div>
                   <span class="text-[10px] text-slate-400 block">Current Stock</span>
-                  <span class="font-extrabold text-base ${isLow ? 'text-red-600' : 'text-slate-800'}">${p.stock} ${p.unit}</span>
+                  <span class="font-extrabold text-base ${isLow ? 'text-red-600' : 'text-slate-800'}">${p.current_stock} ${p.unit}</span>
                 </div>
-                <span class="text-[11px] text-slate-500">Min: ${p.minStock}</span>
+                <span class="text-[11px] text-slate-500">Min: ${p.min_stock}</span>
               </div>
             </div>
           </div>
@@ -1148,7 +1186,7 @@
       reader.readAsDataURL(file);
     }
 
-    document.getElementById('add-product-form').addEventListener('submit', function(e) {
+    document.getElementById('add-product-form').addEventListener('submit', async function(e) {
       e.preventDefault();
       const name = document.getElementById('prod-name').value.trim();
       const sku = document.getElementById('prod-sku').value.trim().toUpperCase();
@@ -1163,31 +1201,42 @@
         return;
       }
 
-      const newProd = {
-        id: 'p' + Date.now(),
-        sku, name, category, unit, stock, minStock, addedDate,
-        image: uploadedProductImage
-      };
-      db.products.push(newProd);
+      setLoading(true, 'Saving product to Supabase...');
+      const { data: insertedProd, error } = await sb.from('products').insert([{
+        sku,
+        name,
+        category,
+        unit,
+        current_stock: stock,
+        min_stock: minStock,
+        image_url: uploadedProductImage,
+        added_date: addedDate
+      }]).select().single();
 
-      if (stock > 0) {
-        db.transactions.unshift({
-          id: 't' + Date.now(),
-          date: addedDate,
-          type: 'IN',
-          productId: newProd.id,
-          productName: name,
-          qty: stock,
-          centreCode: '-',
-          note: 'Opening Stock',
-          challanNo: '-',
-          staff: currentUser.name
-        });
+      if (error) {
+        setLoading(false);
+        alert('Error: ' + error.message);
+        return;
       }
 
-      logAction('ADD_PRODUCT', `Added product "${name}" (${sku}) with ${stock} ${unit}`);
+      if (stock > 0 && insertedProd) {
+        await sb.from('stock_logs').insert([{
+          type: 'IN',
+          product_id: insertedProd.id,
+          product_name: name,
+          quantity: stock,
+          centre_code: '-',
+          challan_no: '-',
+          staff_name: currentUser.full_name,
+          remarks: 'Opening Stock',
+          tx_date: addedDate
+        }]);
+      }
+
+      await logAction('ADD_PRODUCT', `Added product "${name}" (${sku}) with ${stock} ${unit}`);
       this.reset();
-      showToast('Product added successfully!');
+      await refreshAllData();
+      showToast('Product saved to Cloud!');
       navigate('products');
     });
 
@@ -1195,11 +1244,11 @@
     function prepStockIn() {
       document.getElementById('stockin-date').value = new Date().toISOString().split('T')[0];
       document.getElementById('stockin-product').innerHTML = db.products.map(p =>
-        `<option value="${p.id}">${p.name} (${p.sku}) — Current: ${p.stock} ${p.unit}</option>`
+        `<option value="${p.id}">${p.name} (${p.sku}) — Current: ${p.current_stock} ${p.unit}</option>`
       ).join('');
     }
 
-    document.getElementById('stock-in-form').addEventListener('submit', function(e) {
+    document.getElementById('stock-in-form').addEventListener('submit', async function(e) {
       e.preventDefault();
       const prodId = document.getElementById('stockin-product').value;
       const qty = parseInt(document.getElementById('stockin-qty').value);
@@ -1209,22 +1258,31 @@
       const product = db.products.find(p => p.id === prodId);
       if (!product || qty <= 0) return;
 
-      product.stock += qty;
-      db.transactions.unshift({
-        id: 't' + Date.now(),
-        date,
-        type: 'IN',
-        productId: product.id,
-        productName: product.name,
-        qty,
-        centreCode: '-',
-        note: remarks,
-        challanNo: '-',
-        staff: currentUser.name
-      });
+      setLoading(true, 'Updating stock in Cloud...');
+      const newStock = Number(product.current_stock) + qty;
 
-      logAction('STOCK_IN', `Added +${qty} ${product.unit} to "${product.name}"`);
+      const { error } = await sb.from('products').update({ current_stock: newStock }).eq('id', prodId);
+      if (error) {
+        setLoading(false);
+        alert('Error: ' + error.message);
+        return;
+      }
+
+      await sb.from('stock_logs').insert([{
+        type: 'IN',
+        product_id: product.id,
+        product_name: product.name,
+        quantity: qty,
+        centre_code: '-',
+        challan_no: '-',
+        staff_name: currentUser.full_name,
+        remarks,
+        tx_date: date
+      }]);
+
+      await logAction('STOCK_IN', `Added +${qty} ${product.unit} to "${product.name}"`);
       this.reset();
+      await refreshAllData();
       showToast(`+${qty} ${product.unit} added to ${product.name}`);
       navigate('home');
     });
@@ -1238,17 +1296,17 @@
 
       document.getElementById('sold-centre').innerHTML =
         `<option value="">-- Select Study Centre --</option>` +
-        db.studyCentres.map(c => `<option value="${c.code}">${c.code} — ${c.name}</option>`).join('');
+        db.studyCentres.map(c => `<option value="${c.centre_code}">${c.centre_code} — ${c.centre_name}</option>`).join('');
 
       document.getElementById('sold-product-select').innerHTML =
-        db.products.map(p => `<option value="${p.id}">${p.name} (Available: ${p.stock} ${p.unit})</option>`).join('');
+        db.products.map(p => `<option value="${p.id}">${p.name} (Available: ${p.current_stock} ${p.unit})</option>`).join('');
 
       document.getElementById('sold-centre-info').classList.add('hidden');
     }
 
     function fillCentrePreview() {
       const code = document.getElementById('sold-centre').value;
-      const centre = db.studyCentres.find(c => c.code === code);
+      const centre = db.studyCentres.find(c => c.centre_code === code);
       const box = document.getElementById('sold-centre-info');
       if (!centre) {
         box.classList.add('hidden');
@@ -1256,7 +1314,7 @@
       }
       box.classList.remove('hidden');
       box.innerHTML = `
-        <span><strong>Code:</strong> ${centre.code}</span>
+        <span><strong>Code:</strong> ${centre.centre_code}</span>
         <span><strong>Mobile:</strong> ${centre.mobile}</span>
         <span><strong>Address:</strong> ${centre.address}</span>
       `;
@@ -1275,8 +1333,8 @@
       const existing = challanCart.find(i => i.productId === prodId);
       const totalRequested = (existing ? existing.qty : 0) + qty;
 
-      if (totalRequested > product.stock) {
-        alert(`Insufficient stock! Only ${product.stock} ${product.unit} available.`);
+      if (totalRequested > Number(product.current_stock)) {
+        alert(`Insufficient stock! Only ${product.current_stock} ${product.unit} available.`);
         return;
       }
 
@@ -1321,7 +1379,7 @@
       `).join('');
     }
 
-    document.getElementById('stock-sold-form').addEventListener('submit', function(e) {
+    document.getElementById('stock-sold-form').addEventListener('submit', async function(e) {
       e.preventDefault();
       const centreCode = document.getElementById('sold-centre').value;
       const date = document.getElementById('sold-date').value;
@@ -1336,43 +1394,47 @@
         return;
       }
 
-      const centre = db.studyCentres.find(c => c.code === centreCode);
+      const centre = db.studyCentres.find(c => c.centre_code === centreCode);
       const challanNo = 'CH-' + (1001 + db.challans.length);
+      const totalQty = challanCart.reduce((s, i) => s + i.qty, 0);
 
-      // Deduct stock & log transactions
-      challanCart.forEach(item => {
+      setLoading(true, 'Generating Challan & updating stock...');
+
+      for (const item of challanCart) {
         const prod = db.products.find(p => p.id === item.productId);
-        if (prod) prod.stock -= item.qty;
+        if (prod) {
+          const updatedStock = Math.max(0, Number(prod.current_stock) - item.qty);
+          await sb.from('products').update({ current_stock: updatedStock }).eq('id', prod.id);
+        }
 
-        db.transactions.unshift({
-          id: 't' + Date.now() + Math.random(),
-          date,
+        await sb.from('stock_logs').insert([{
           type: 'OUT',
-          productId: item.productId,
-          productName: item.name,
-          qty: item.qty,
-          centreCode: centre.code,
-          note: remarks,
-          challanNo,
-          staff: currentUser.name
-        });
-      });
+          product_id: item.productId,
+          product_name: item.name,
+          quantity: item.qty,
+          centre_code: centre.centre_code,
+          challan_no: challanNo,
+          staff_name: currentUser.full_name,
+          remarks,
+          tx_date: date
+        }]);
+      }
 
-      const newChallan = {
-        challanNo,
-        date,
-        centreCode: centre.code,
-        centreName: centre.name,
+      await sb.from('challans').insert([{
+        challan_no: challanNo,
+        centre_code: centre.centre_code,
+        centre_name: centre.centre_name,
         mobile: centre.mobile,
         address: centre.address,
-        items: [...challanCart],
-        remarks,
-        issuedBy: currentUser.name
-      };
+        items: challanCart,
+        total_qty: totalQty,
+        issued_by: currentUser.full_name,
+        challan_date: date
+      }]);
 
-      db.challans.unshift(newChallan);
-      logAction('STOCK_SOLD', `Generated Challan ${challanNo} for ${centre.code} (${challanCart.length} items)`);
-      showToast(`Challan ${challanNo} generated!`);
+      await logAction('STOCK_SOLD', `Generated Challan ${challanNo} for ${centre.centre_code} (${challanCart.length} items)`);
+      await refreshAllData();
+      showToast(`Challan ${challanNo} saved to Cloud!`);
       openChallanModal(challanNo);
       navigate('challans');
     });
@@ -1380,21 +1442,21 @@
     function renderChallans() {
       const q = (document.getElementById('challan-search').value || '').toLowerCase();
       const filtered = db.challans.filter(c =>
-        c.challanNo.toLowerCase().includes(q) || c.centreCode.toLowerCase().includes(q) || c.centreName.toLowerCase().includes(q)
+        c.challan_no.toLowerCase().includes(q) || c.centre_code.toLowerCase().includes(q) || c.centre_name.toLowerCase().includes(q)
       );
 
       document.getElementById('challans-tbody').innerHTML = filtered.map(c => `
         <tr class="hover:bg-slate-50">
-          <td class="py-3 px-4 font-bold text-indigo-600">${c.challanNo}</td>
-          <td class="py-3 px-4 text-xs text-slate-600">${c.date}</td>
+          <td class="py-3 px-4 font-bold text-indigo-600">${c.challan_no}</td>
+          <td class="py-3 px-4 text-xs text-slate-600">${c.challan_date}</td>
           <td class="py-3 px-4">
-            <span class="font-semibold text-slate-800 block">${c.centreName}</span>
-            <span class="text-xs text-slate-400">${c.centreCode} • ${c.mobile}</span>
+            <span class="font-semibold text-slate-800 block">${c.centre_name}</span>
+            <span class="text-xs text-slate-400">${c.centre_code} • ${c.mobile}</span>
           </td>
-          <td class="py-3 px-4 font-semibold">${c.items.reduce((s, i) => s + i.qty, 0)} Units (${c.items.length} items)</td>
-          <td class="py-3 px-4 text-xs text-slate-600">${c.issuedBy}</td>
+          <td class="py-3 px-4 font-semibold">${c.total_qty} Units (${(c.items || []).length} items)</td>
+          <td class="py-3 px-4 text-xs text-slate-600">${c.issued_by}</td>
           <td class="py-3 px-4 text-right">
-            <button onclick="openChallanModal('${c.challanNo}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs px-3 py-1.5 rounded-lg">
+            <button onclick="openChallanModal('${c.challan_no}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs px-3 py-1.5 rounded-lg">
               <i class="fa-solid fa-eye mr-1"></i> View / Print
             </button>
           </td>
@@ -1403,7 +1465,7 @@
     }
 
     function openChallanModal(challanNo) {
-      const c = db.challans.find(item => item.challanNo === challanNo);
+      const c = db.challans.find(item => item.challan_no === challanNo);
       if (!c) return;
 
       document.getElementById('print-area').innerHTML = `
@@ -1415,13 +1477,13 @@
             </div>
             <div class="text-right">
               <span class="bg-slate-900 text-white text-xs font-bold px-3 py-1 rounded">DELIVERY CHALLAN</span>
-              <p class="text-sm font-bold mt-2">Challan No: ${c.challanNo}</p>
-              <p class="text-xs text-slate-600">Date: ${c.date}</p>
+              <p class="text-sm font-bold mt-2">Challan No: ${c.challan_no}</p>
+              <p class="text-xs text-slate-600">Date: ${c.challan_date}</p>
             </div>
           </div>
 
           <div class="my-4 bg-slate-50 p-3.5 rounded border border-slate-200 text-xs space-y-1">
-            <p class="font-bold text-slate-800 text-sm">To: ${c.centreName} (${c.centreCode})</p>
+            <p class="font-bold text-slate-800 text-sm">To: ${c.centre_name} (${c.centre_code})</p>
             <p><strong>Mobile:</strong> ${c.mobile}</p>
             <p><strong>Address:</strong> ${c.address}</p>
           </div>
@@ -1436,7 +1498,7 @@
               </tr>
             </thead>
             <tbody>
-              ${c.items.map((it, idx) => `
+              ${(c.items || []).map((it, idx) => `
                 <tr class="border-b border-slate-200">
                   <td class="p-2.5 border-r border-slate-300">${idx + 1}</td>
                   <td class="p-2.5 border-r border-slate-300 font-mono">${it.sku}</td>
@@ -1447,11 +1509,9 @@
             </tbody>
           </table>
 
-          <p class="text-xs text-slate-600 mb-8"><strong>Remarks:</strong> ${c.remarks}</p>
-
-          <div class="flex justify-between items-end pt-6 border-t border-slate-300 text-xs">
+          <div class="flex justify-between items-end pt-8 border-t border-slate-300 text-xs">
             <div>
-              <p class="font-semibold">Issued By: ${c.issuedBy}</p>
+              <p class="font-semibold">Issued By: ${c.issued_by}</p>
               <p class="text-slate-400">Authorized Store Signatory</p>
             </div>
             <div class="text-right">
@@ -1476,37 +1536,50 @@
     function renderStudyCentres() {
       document.getElementById('centres-tbody').innerHTML = db.studyCentres.map(c => `
         <tr class="hover:bg-slate-50">
-          <td class="py-3 px-4 font-bold text-purple-700">${c.code}</td>
-          <td class="py-3 px-4 font-semibold text-slate-800">${c.name}</td>
+          <td class="py-3 px-4 font-bold text-purple-700">${c.centre_code}</td>
+          <td class="py-3 px-4 font-semibold text-slate-800">${c.centre_name}</td>
           <td class="py-3 px-4 text-xs font-mono">${c.mobile}</td>
           <td class="py-3 px-4 text-xs text-slate-600">${c.address}</td>
         </tr>
       `).join('');
     }
 
-    document.getElementById('add-centre-form').addEventListener('submit', function(e) {
+    document.getElementById('add-centre-form').addEventListener('submit', async function(e) {
       e.preventDefault();
       const code = document.getElementById('centre-code').value.trim().toUpperCase();
       const name = document.getElementById('centre-name').value.trim();
       const mobile = document.getElementById('centre-mobile').value.trim();
       const address = document.getElementById('centre-address').value.trim();
 
-      if (db.studyCentres.some(c => c.code === code)) {
+      if (db.studyCentres.some(c => c.centre_code === code)) {
         alert('Study Centre Code already exists!');
         return;
       }
 
-      db.studyCentres.push({ code, name, mobile, address });
-      logAction('ADD_STUDY_CENTRE', `Added Study Centre ${code} (${name})`);
+      setLoading(true, 'Saving Study Centre...');
+      const { error } = await sb.from('study_centres').insert([{
+        centre_code: code,
+        centre_name: name,
+        mobile,
+        address
+      }]);
+
+      if (error) {
+        setLoading(false);
+        alert('Error: ' + error.message);
+        return;
+      }
+
+      await logAction('ADD_STUDY_CENTRE', `Added Study Centre ${code} (${name})`);
       this.reset();
-      showToast('Study Centre saved!');
-      renderStudyCentres();
+      await refreshAllData();
+      showToast('Study Centre saved to Cloud!');
     });
 
     // ==================== 13: LOW STOCK ALERT & WHATSAPP ====================
     function renderLowStock() {
       document.getElementById('whatsapp-alert-number').value = db.whatsappNumber || '';
-      const lowItems = db.products.filter(p => p.stock <= p.minStock);
+      const lowItems = db.products.filter(p => Number(p.current_stock) <= Number(p.min_stock));
       const container = document.getElementById('low-stock-cards');
 
       if (lowItems.length === 0) {
@@ -1530,8 +1603,8 @@
           </div>
 
           <div class="bg-red-50 rounded-xl p-3 flex justify-between text-xs">
-            <span>Available: <strong class="text-red-700 text-sm">${p.stock} ${p.unit}</strong></span>
-            <span>Min Limit: <strong>${p.minStock} ${p.unit}</strong></span>
+            <span>Available: <strong class="text-red-700 text-sm">${p.current_stock} ${p.unit}</strong></span>
+            <span>Min Limit: <strong>${p.min_stock} ${p.unit}</strong></span>
           </div>
 
           <div class="flex gap-2">
@@ -1546,10 +1619,12 @@
       `).join('');
     }
 
-    function saveWhatsAppNumber() {
+    async function saveWhatsAppNumber() {
       const num = document.getElementById('whatsapp-alert-number').value.replace(/\D/g, '');
+      setLoading(true, 'Saving WhatsApp number...');
+      await sb.from('app_settings').upsert({ key: 'whatsapp_number', value: num });
       db.whatsappNumber = num;
-      saveDB();
+      setLoading(false);
       showToast('WhatsApp Alert number saved!');
     }
 
@@ -1557,18 +1632,18 @@
       const p = db.products.find(item => item.id === prodId);
       if (!p) return;
       const phone = db.whatsappNumber || '';
-      const text = `🚨 *NBCE STORE — LOW STOCK ALERT* 🚨%0A%0A*Product:* ${p.name}%0A*SKU:* ${p.sku}%0A*Current Stock:* ${p.stock} ${p.unit}%0A*Minimum Limit:* ${p.minStock} ${p.unit}%0A%0APlease arrange restock immediately.`;
+      const text = `🚨 *NBCE STORE — LOW STOCK ALERT* 🚨%0A%0A*Product:* ${p.name}%0A*SKU:* ${p.sku}%0A*Current Stock:* ${p.current_stock} ${p.unit}%0A*Minimum Limit:* ${p.min_stock} ${p.unit}%0A%0APlease arrange restock immediately.`;
       window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
     }
 
     function sendBulkLowStockWhatsApp() {
-      const lowItems = db.products.filter(p => p.stock <= p.minStock);
+      const lowItems = db.products.filter(p => Number(p.current_stock) <= Number(p.min_stock));
       if (lowItems.length === 0) {
         alert('No low stock items right now.');
         return;
       }
       const phone = db.whatsappNumber || '';
-      const lines = lowItems.map((p, idx) => `${idx + 1}. *${p.name}* (${p.sku}) — Left: *${p.stock} ${p.unit}* (Min: ${p.minStock})`).join('%0A');
+      const lines = lowItems.map((p, idx) => `${idx + 1}. *${p.name}* (${p.sku}) — Left: *${p.current_stock} ${p.unit}* (Min: ${p.min_stock})`).join('%0A');
       const text = `🚨 *NBCE STORE — LOW STOCK SUMMARY* 🚨%0A%0A${lines}%0A%0APlease restock these items soon.`;
       window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
     }
@@ -1581,7 +1656,7 @@
 
       document.getElementById('rep-centre').innerHTML =
         `<option value="ALL">All Study Centres</option>` +
-        db.studyCentres.map(c => `<option value="${c.code}">${c.code} (${c.name})</option>`).join('');
+        db.studyCentres.map(c => `<option value="${c.centre_code}">${c.centre_code} (${c.centre_name})</option>`).join('');
 
       renderReports();
     }
@@ -1594,11 +1669,11 @@
       const centre = document.getElementById('rep-centre').value;
 
       return db.transactions.filter(t => {
-        if (from && t.date < from) return false;
-        if (to && t.date > to) return false;
+        if (from && t.tx_date < from) return false;
+        if (to && t.tx_date > to) return false;
         if (type !== 'ALL' && t.type !== type) return false;
-        if (prod !== 'ALL' && t.productId !== prod) return false;
-        if (centre !== 'ALL' && t.centreCode !== centre) return false;
+        if (prod !== 'ALL' && t.product_id !== prod) return false;
+        if (centre !== 'ALL' && t.centre_code !== centre) return false;
         return true;
       });
     }
@@ -1607,17 +1682,17 @@
       const rows = getFilteredTransactions();
       document.getElementById('reports-tbody').innerHTML = rows.map(t => `
         <tr class="hover:bg-slate-50">
-          <td class="py-3 px-4 text-xs text-slate-600">${t.date}</td>
+          <td class="py-3 px-4 text-xs text-slate-600">${t.tx_date}</td>
           <td class="py-3 px-4">
             ${t.type === 'IN'
               ? `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-100 text-emerald-700">STOCK IN</span>`
               : `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-700">STOCK SOLD</span>`}
           </td>
-          <td class="py-3 px-4 font-semibold text-slate-800">${t.productName}</td>
-          <td class="py-3 px-4 font-bold ${t.type === 'IN' ? 'text-emerald-600' : 'text-amber-600'}">${t.type === 'IN' ? '+' : '-'}${t.qty}</td>
-          <td class="py-3 px-4 text-xs text-slate-600">${t.centreCode !== '-' ? `<strong>${t.centreCode}</strong> (${t.note})` : t.note}</td>
-          <td class="py-3 px-4 text-xs font-mono text-indigo-600">${t.challanNo}</td>
-          <td class="py-3 px-4 text-xs text-slate-500">${t.staff}</td>
+          <td class="py-3 px-4 font-semibold text-slate-800">${t.product_name}</td>
+          <td class="py-3 px-4 font-bold ${t.type === 'IN' ? 'text-emerald-600' : 'text-amber-600'}">${t.type === 'IN' ? '+' : '-'}${t.quantity}</td>
+          <td class="py-3 px-4 text-xs text-slate-600">${t.centre_code && t.centre_code !== '-' ? `<strong>${t.centre_code}</strong> (${t.remarks || ''})` : (t.remarks || '-')}</td>
+          <td class="py-3 px-4 text-xs font-mono text-indigo-600">${t.challan_no || '-'}</td>
+          <td class="py-3 px-4 text-xs text-slate-500">${t.staff_name || '-'}</td>
         </tr>
       `).join('');
     }
@@ -1627,7 +1702,7 @@
       const headers = ['Date', 'Type', 'Product', 'Quantity', 'Study Centre', 'Note', 'Challan', 'Staff'];
       const csv = [
         headers.join(','),
-        ...rows.map(r => [r.date, r.type, `"${r.productName}"`, r.qty, r.centreCode, `"${r.note}"`, r.challanNo, `"${r.staff}"`].join(','))
+        ...rows.map(r => [r.tx_date, r.type, `"${r.product_name}"`, r.quantity, r.centre_code, `"${r.remarks || ''}"`, r.challan_no, `"${r.staff_name || ''}"`].join(','))
       ].join('\n');
 
       const blob = new Blob([csv], { type: 'text/csv' });
@@ -1658,13 +1733,13 @@
           <tbody>
             ${rows.map(r => `
               <tr>
-                <td class="p-2 border">${r.date}</td>
+                <td class="p-2 border">${r.tx_date}</td>
                 <td class="p-2 border">${r.type}</td>
-                <td class="p-2 border">${r.productName}</td>
-                <td class="p-2 border">${r.qty}</td>
-                <td class="p-2 border">${r.centreCode} - ${r.note}</td>
-                <td class="p-2 border">${r.challanNo}</td>
-                <td class="p-2 border">${r.staff}</td>
+                <td class="p-2 border">${r.product_name}</td>
+                <td class="p-2 border">${r.quantity}</td>
+                <td class="p-2 border">${r.centre_code} - ${r.remarks || ''}</td>
+                <td class="p-2 border">${r.challan_no}</td>
+                <td class="p-2 border">${r.staff_name}</td>
               </tr>
             `).join('')}
           </tbody>
@@ -1677,10 +1752,10 @@
     function renderStaffActions() {
       document.getElementById('staff-actions-tbody').innerHTML = db.staffActions.map(a => `
         <tr class="hover:bg-slate-50">
-          <td class="py-3 px-4 text-xs text-slate-500">${a.time}</td>
-          <td class="py-3 px-4 font-semibold text-slate-800">${a.user}</td>
+          <td class="py-3 px-4 text-xs text-slate-500">${new Date(a.created_at).toLocaleString()}</td>
+          <td class="py-3 px-4 font-semibold text-slate-800">${a.staff_name}</td>
           <td class="py-3 px-4"><span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700">${a.role}</span></td>
-          <td class="py-3 px-4 text-xs font-mono font-bold text-indigo-600">${a.action}</td>
+          <td class="py-3 px-4 text-xs font-mono font-bold text-indigo-600">${a.action_type}</td>
           <td class="py-3 px-4 text-xs text-slate-600">${a.details}</td>
         </tr>
       `).join('');
@@ -1689,44 +1764,58 @@
     function renderUsers() {
       document.getElementById('users-tbody').innerHTML = db.users.map(u => `
         <tr class="hover:bg-slate-50">
-          <td class="py-3 px-4 font-semibold text-slate-800">${u.name}</td>
-          <td class="py-3 px-4 font-mono text-xs text-indigo-600">${u.userId}</td>
+          <td class="py-3 px-4 font-semibold text-slate-800">${u.full_name}</td>
+          <td class="py-3 px-4 font-mono text-xs text-indigo-600">${u.user_id}</td>
           <td class="py-3 px-4 font-mono text-xs text-slate-500">${u.password}</td>
           <td class="py-3 px-4 uppercase text-xs font-bold">${u.role}</td>
           <td class="py-3 px-4 text-right">
-            <button onclick="toggleUserActive('${u.id}')" class="text-xs px-2.5 py-1 rounded-lg font-semibold ${u.active ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">
-              ${u.active ? 'Active' : 'Disabled'}
+            <button onclick="toggleUserActive('${u.id}', '${u.user_id}', ${u.is_active})" class="text-xs px-2.5 py-1 rounded-lg font-semibold ${u.is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">
+              ${u.is_active ? 'Active' : 'Disabled'}
             </button>
           </td>
         </tr>
       `).join('');
     }
 
-    document.getElementById('create-user-form').addEventListener('submit', function(e) {
+    document.getElementById('create-user-form').addEventListener('submit', async function(e) {
       e.preventDefault();
       const name = document.getElementById('new-user-name').value.trim();
       const userId = document.getElementById('new-user-id').value.trim();
       const password = document.getElementById('new-user-pass').value.trim();
       const role = document.getElementById('new-user-role').value;
 
-      if (db.users.some(u => u.userId === userId)) {
+      if (db.users.some(u => u.user_id === userId)) {
         alert('User ID already exists!');
         return;
       }
 
-      db.users.push({ id: 'u' + Date.now(), userId, password, name, role, active: true });
-      logAction('CREATE_USER', `Created ${role} account "${name}" (@${userId})`);
+      setLoading(true, 'Creating user account...');
+      const { error } = await sb.from('app_users').insert([{
+        user_id: userId,
+        password,
+        full_name: name,
+        role,
+        is_active: true
+      }]);
+
+      if (error) {
+        setLoading(false);
+        alert('Error: ' + error.message);
+        return;
+      }
+
+      await logAction('CREATE_USER', `Created ${role} account "${name}" (@${userId})`);
       this.reset();
+      await refreshAllData();
       showToast('New user ID & password created!');
-      renderUsers();
     });
 
-    function toggleUserActive(id) {
-      const u = db.users.find(user => user.id === id);
-      if (!u || u.userId === 'admin') return;
-      u.active = !u.active;
-      logAction('USER_STATUS', `Changed status of @${u.userId} to ${u.active ? 'Active' : 'Disabled'}`);
-      renderUsers();
+    async function toggleUserActive(id, userId, currentStatus) {
+      if (userId === 'admin') return;
+      setLoading(true, 'Updating user status...');
+      await sb.from('app_users').update({ is_active: !currentStatus }).eq('id', id);
+      await logAction('USER_STATUS', `Changed status of @${userId} to ${!currentStatus ? 'Active' : 'Disabled'}`);
+      await refreshAllData();
     }
 
     // Auto-login if session exists
