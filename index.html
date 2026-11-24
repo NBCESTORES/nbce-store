@@ -74,18 +74,18 @@
     </div>
   </div>
 
-  <!-- ==================== 00: PUBLIC LANDING / HOME PAGE (DESIGN #5) ==================== -->
+  <!-- ==================== 00: PUBLIC LANDING / HOME PAGE ==================== -->
   <div id="public-home-screen" class="min-h-screen flex flex-col bg-slate-50">
     <!-- Royal Blue Top Navbar -->
     <header class="bg-[#0b2559] text-white sticky top-0 z-40 shadow-md">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-amber-500 text-[#0b2559] flex items-center justify-center font-extrabold text-xl shadow">
+          <div id="pub-header-logo-wrap" class="w-11 h-11 rounded-xl bg-amber-500 text-[#0b2559] flex items-center justify-center font-extrabold text-xl shadow overflow-hidden shrink-0">
             <i class="fa-solid fa-graduation-cap"></i>
           </div>
           <div>
-            <span class="font-extrabold text-lg sm:text-xl tracking-wide block leading-none">NBCE STORE</span>
-            <span class="text-[10px] text-amber-300 tracking-wider uppercase font-semibold">Study Material & Central Dispatch</span>
+            <span id="pub-brand-title" class="font-extrabold text-lg sm:text-xl tracking-wide block leading-none">NBCE STORE</span>
+            <span id="pub-brand-subtitle" class="text-[10px] text-amber-300 tracking-wider uppercase font-semibold">Study Material & Central Dispatch</span>
           </div>
         </div>
 
@@ -104,7 +104,7 @@
 
       <!-- Amber Gold Scrolling Notice Ticker -->
       <div class="bg-amber-500 text-[#0b2559] py-1.5 overflow-hidden border-t border-amber-400/50">
-        <div class="animate-marquee text-xs font-bold tracking-wide">
+        <div id="pub-notice-ticker" class="animate-marquee text-xs font-bold tracking-wide">
           📢 Welcome to NBCE STORE Official Portal • Study Centres can browse available Prospectus, Books, ID Cards & Exam Kits below • For Challan & Dispatch queries, contact Central Store Desk.
         </div>
       </div>
@@ -223,10 +223,10 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div class="text-center sm:text-left">
           <div class="flex items-center justify-center sm:justify-start gap-2">
-            <i class="fa-solid fa-graduation-cap text-amber-400 text-lg"></i>
-            <span class="font-extrabold text-base tracking-wide">NBCE STORE</span>
+            <span id="pub-footer-logo-wrap"><i class="fa-solid fa-graduation-cap text-amber-400 text-lg"></i></span>
+            <span id="pub-footer-title" class="font-extrabold text-base tracking-wide">NBCE STORE</span>
           </div>
-          <p class="text-xs text-blue-200 mt-1">West Bengal, India • Central Inventory & Study Material Dispatch Division</p>
+          <p id="pub-footer-address" class="text-xs text-blue-200 mt-1">West Bengal, India • Central Inventory & Study Material Dispatch Division</p>
         </div>
 
         <div class="flex items-center gap-4">
@@ -239,7 +239,7 @@
     </footer>
   </div>
 
-  <!-- ==================== LOGIN SCREEN (MODAL / VIEW) ==================== -->
+  <!-- ==================== LOGIN SCREEN ==================== -->
   <div id="login-screen" class="hidden min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0b2559] via-slate-900 to-[#091c42] p-4">
     <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden">
       <div class="bg-[#0b2559] p-6 text-white text-center relative border-b-4 border-amber-500">
@@ -247,10 +247,10 @@
           class="absolute left-4 top-4 text-xs bg-white/15 hover:bg-white/25 text-white px-3 py-1.5 rounded-lg font-semibold transition">
           <i class="fa-solid fa-arrow-left mr-1"></i> Home
         </button>
-        <div class="w-14 h-14 bg-amber-500 text-[#0b2559] rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl shadow">
+        <div id="login-logo-wrap" class="w-16 h-16 bg-amber-500 text-[#0b2559] rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl shadow overflow-hidden">
           <i class="fa-solid fa-boxes-stacked"></i>
         </div>
-        <h1 class="text-2xl font-extrabold tracking-wide">NBCE STORE</h1>
+        <h1 id="login-brand-title" class="text-2xl font-extrabold tracking-wide">NBCE STORE</h1>
         <p class="text-amber-300 text-xs mt-1">Staff & Admin Inventory Portal Login</p>
       </div>
 
@@ -306,7 +306,7 @@
         <button onclick="toggleSidebar()" class="text-white p-1.5 rounded-lg hover:bg-slate-800">
           <i class="fa-solid fa-bars text-lg"></i>
         </button>
-        <span class="font-extrabold tracking-wide text-lg">NBCE STORE</span>
+        <span id="mobile-brand-title" class="font-extrabold tracking-wide text-lg">NBCE STORE</span>
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping" title="Auto Live Sync Active"></span>
       </div>
       <div class="flex items-center gap-2.5">
@@ -328,11 +328,11 @@
     <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 w-64 bg-slate-900 text-slate-200 flex flex-col z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-200">
       <div class="p-5 border-b border-slate-800 flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow">
+          <div id="sidebar-logo-wrap" class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow overflow-hidden shrink-0">
             <i class="fa-solid fa-boxes-stacked"></i>
           </div>
           <div>
-            <h2 class="font-extrabold text-white tracking-wide leading-tight">NBCE STORE</h2>
+            <h2 id="sidebar-brand-title" class="font-extrabold text-white tracking-wide leading-tight">NBCE STORE</h2>
             <span id="sidebar-role-badge" class="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-semibold">Admin</span>
           </div>
         </div>
@@ -391,6 +391,9 @@
           </button>
           <button onclick="navigate('users')" data-nav="users" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
             <i class="fa-solid fa-user-plus w-5 text-center text-pink-400"></i> ID & Password Creation
+          </button>
+          <button onclick="navigate('branding')" data-nav="branding" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
+            <i class="fa-solid fa-image w-5 text-center text-amber-400"></i> Site Branding & Logo
           </button>
         </div>
       </nav>
@@ -1001,6 +1004,68 @@
           </div>
         </div>
       </section>
+
+      <!-- ==================== 15: SITE BRANDING & LOGO SETTINGS (ADMIN) ==================== -->
+      <section id="view-branding" class="view-section hidden">
+        <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200/70 overflow-hidden">
+          <div class="bg-[#0b2559] px-6 py-4 text-white border-b-4 border-amber-500">
+            <h2 class="font-bold text-lg">Site Branding, Logo & Home Page Settings</h2>
+            <p class="text-xs text-amber-300">Upload logo and customize your public Home Page directly from dashboard</p>
+          </div>
+
+          <form id="branding-form" class="p-6 space-y-5">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-2">Upload Store Logo (PNG / JPG)</label>
+              <div class="flex flex-col sm:flex-row items-center gap-4 border-2 border-dashed border-slate-300 rounded-xl p-4 bg-slate-50">
+                <div id="branding-logo-preview-box" class="w-20 h-20 rounded-xl bg-[#0b2559] text-amber-400 flex items-center justify-center text-3xl shadow overflow-hidden shrink-0">
+                  <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="flex-1 text-center sm:text-left space-y-2">
+                  <input type="file" id="branding-logo-input" accept="image/*" onchange="handleLogoUpload(event)" class="hidden" />
+                  <div class="flex flex-wrap justify-center sm:justify-start gap-2">
+                    <label for="branding-logo-input" class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl shadow inline-flex items-center gap-1.5">
+                      <i class="fa-solid fa-upload"></i> Choose Logo File
+                    </label>
+                    <button type="button" onclick="removeCustomLogo()" class="bg-red-50 hover:bg-red-100 text-red-600 text-xs font-semibold px-3 py-2 rounded-xl border border-red-200">
+                      Reset Default Icon
+                    </button>
+                  </div>
+                  <p class="text-[11px] text-slate-400">Recommended: Square logo (PNG with transparent or white background)</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Store / Brand Title *</label>
+                <input type="text" id="brand-title-input" required placeholder="NBCE STORE"
+                  class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Header Sub-Title</label>
+                <input type="text" id="brand-subtitle-input" placeholder="Study Material & Central Dispatch"
+                  class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Scrolling Notice Ticker Text</label>
+              <input type="text" id="brand-ticker-input" placeholder="Enter scrolling announcement text for Study Centres..."
+                class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Footer Address & Contact Line</label>
+              <input type="text" id="brand-address-input" placeholder="West Bengal, India • Helpline: +91 9876543210"
+                class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+
+            <button type="submit" class="w-full bg-[#0b2559] hover:bg-[#133884] text-white font-bold py-3 rounded-xl shadow transition">
+              <i class="fa-solid fa-floppy-disk mr-1.5"></i> Save Logo & Site Settings to Cloud
+            </button>
+          </form>
+        </div>
+      </section>
     </main>
   </div>
 
@@ -1033,11 +1098,19 @@
       transactions: [],
       challans: [],
       staffActions: [],
-      whatsappNumber: '919876543210'
+      whatsappNumber: '919876543210',
+      branding: {
+        logo: '',
+        title: 'NBCE STORE',
+        subtitle: 'Study Material & Central Dispatch',
+        ticker: '📢 Welcome to NBCE STORE Official Portal • Study Centres can browse available Prospectus, Books, ID Cards & Exam Kits below • For Challan & Dispatch queries, contact Central Store Desk.',
+        address: 'West Bengal, India • Central Inventory & Study Material Dispatch Division'
+      }
     };
 
     let currentUser = JSON.parse(sessionStorage.getItem('NBCE_CLOUD_USER')) || null;
     let uploadedProductImage = '';
+    let tempUploadedLogo = '';
     let challanCart = [];
     let realtimeSubscription = null;
     let syncDebounceTimer = null;
@@ -1062,13 +1135,57 @@
       setTimeout(() => toast.classList.add('hidden'), 3000);
     }
 
+    function applySiteBranding() {
+      const b = db.branding;
+      document.title = `${b.title} — Study Material & Central Inventory Portal`;
+
+      document.getElementById('pub-brand-title').textContent = b.title;
+      document.getElementById('pub-brand-subtitle').textContent = b.subtitle;
+      document.getElementById('pub-notice-ticker').textContent = b.ticker;
+      document.getElementById('pub-footer-title').textContent = b.title;
+      document.getElementById('pub-footer-address').textContent = b.address;
+      document.getElementById('login-brand-title').textContent = b.title;
+      document.getElementById('sidebar-brand-title').textContent = b.title;
+      document.getElementById('mobile-brand-title').textContent = b.title;
+
+      const pubHeaderWrap = document.getElementById('pub-header-logo-wrap');
+      const pubFooterWrap = document.getElementById('pub-footer-logo-wrap');
+      const loginWrap = document.getElementById('login-logo-wrap');
+      const sidebarWrap = document.getElementById('sidebar-logo-wrap');
+
+      if (b.logo) {
+        pubHeaderWrap.innerHTML = `<img src="${b.logo}" alt="Logo" class="w-full h-full object-contain bg-white p-0.5" />`;
+        pubFooterWrap.innerHTML = `<img src="${b.logo}" alt="Logo" class="w-7 h-7 rounded-md object-contain bg-white p-0.5" />`;
+        loginWrap.innerHTML = `<img src="${b.logo}" alt="Logo" class="w-full h-full object-contain bg-white p-1" />`;
+        sidebarWrap.innerHTML = `<img src="${b.logo}" alt="Logo" class="w-full h-full object-contain bg-white p-0.5" />`;
+      } else {
+        pubHeaderWrap.innerHTML = `<i class="fa-solid fa-graduation-cap"></i>`;
+        pubFooterWrap.innerHTML = `<i class="fa-solid fa-graduation-cap text-amber-400 text-lg"></i>`;
+        loginWrap.innerHTML = `<i class="fa-solid fa-boxes-stacked"></i>`;
+        sidebarWrap.innerHTML = `<i class="fa-solid fa-boxes-stacked"></i>`;
+      }
+    }
+
     // ==================== PUBLIC HOME PAGE LOGIC ====================
     async function loadPublicHomeData() {
       try {
-        const [prodsRes, centresRes] = await Promise.all([
+        const [prodsRes, centresRes, settingsRes] = await Promise.all([
           sb.from('products').select('id, sku, name, category, unit, current_stock, image_url').order('name', { ascending: true }),
-          sb.from('study_centres').select('id', { count: 'exact', head: true })
+          sb.from('study_centres').select('id', { count: 'exact', head: true }),
+          sb.from('app_settings').select('*')
         ]);
+
+        if (settingsRes.data) {
+          settingsRes.data.forEach(row => {
+            if (row.key === 'site_logo') db.branding.logo = row.value || '';
+            if (row.key === 'site_title' && row.value) db.branding.title = row.value;
+            if (row.key === 'site_subtitle' && row.value) db.branding.subtitle = row.value;
+            if (row.key === 'site_ticker' && row.value) db.branding.ticker = row.value;
+            if (row.key === 'site_address' && row.value) db.branding.address = row.value;
+          });
+        }
+        applySiteBranding();
+
         db.products = prodsRes.data || [];
         document.getElementById('pub-stat-products').textContent = db.products.length;
         document.getElementById('pub-stat-centres').textContent = centresRes.count || 0;
@@ -1171,7 +1288,7 @@
           sb.from('stock_logs').select('*').order('created_at', { ascending: false }),
           sb.from('challans').select('*').order('created_at', { ascending: false }),
           sb.from('staff_actions').select('*').order('created_at', { ascending: false }).limit(150),
-          sb.from('app_settings').select('*').eq('key', 'whatsapp_number').maybeSingle()
+          sb.from('app_settings').select('*')
         ]);
 
         db.users = usersRes.data || [];
@@ -1180,15 +1297,24 @@
         db.transactions = logsRes.data || [];
         db.challans = challansRes.data || [];
         db.staffActions = actionsRes.data || [];
-        if (settingsRes.data && settingsRes.data.value) {
-          db.whatsappNumber = settingsRes.data.value;
+
+        if (settingsRes.data) {
+          settingsRes.data.forEach(row => {
+            if (row.key === 'whatsapp_number' && row.value) db.whatsappNumber = row.value;
+            if (row.key === 'site_logo') db.branding.logo = row.value || '';
+            if (row.key === 'site_title' && row.value) db.branding.title = row.value;
+            if (row.key === 'site_subtitle' && row.value) db.branding.subtitle = row.value;
+            if (row.key === 'site_ticker' && row.value) db.branding.ticker = row.value;
+            if (row.key === 'site_address' && row.value) db.branding.address = row.value;
+          });
         }
 
+        applySiteBranding();
         updateBadges();
         const activeBtn = document.querySelector('.nav-btn.bg-indigo-600');
         const currentView = activeBtn ? activeBtn.dataset.nav : 'home';
 
-        if (!silent || !['add-product', 'stock-in', 'stock-sold', 'study-centres', 'users', 'reports'].includes(currentView)) {
+        if (!silent || !['add-product', 'stock-in', 'stock-sold', 'study-centres', 'users', 'reports', 'branding'].includes(currentView)) {
           renderCurrentView(currentView);
         }
       } catch (err) {
@@ -1248,7 +1374,7 @@
 
       currentUser = user;
       sessionStorage.setItem('NBCE_CLOUD_USER', JSON.stringify(user));
-      await logAction('LOGIN', `${user.full_name} logged into NBCE STORE`);
+      await logAction('LOGIN', `${user.full_name} logged into ${db.branding.title}`);
       initApp();
     });
 
@@ -1288,7 +1414,7 @@
 
     // ==================== NAVIGATION ====================
     const pageMeta = {
-      'home': ['Home & Real-Time Stock Overview', 'Live cloud inventory monitoring across NBCE STORE'],
+      'home': ['Home & Real-Time Stock Overview', 'Live cloud inventory monitoring across store'],
       'products': ['Product Catalog', 'All registered items with images & stock status'],
       'add-product': ['Add Product', 'Register new items with picture & automatic date'],
       'stock-in': ['Stock In', 'Record incoming stock arrivals'],
@@ -1298,7 +1424,8 @@
       'low-stock': ['Low Stock Alerts', 'Items below minimum threshold with WhatsApp alert'],
       'reports': ['Filter-Wise Reports', 'Analyze Stock In and Stock Sold transactions'],
       'staff-actions': ['Staff Action Status', 'Complete audit log of staff & admin operations'],
-      'users': ['ID & Password Creation', 'Create and manage Staff & Admin login IDs']
+      'users': ['ID & Password Creation', 'Create and manage Staff & Admin login IDs'],
+      'branding': ['Site Branding & Logo', 'Upload custom logo & edit Home Page content']
     };
 
     function renderCurrentView(view) {
@@ -1313,6 +1440,7 @@
       if (view === 'reports') prepReports();
       if (view === 'staff-actions') renderStaffActions();
       if (view === 'users') renderUsers();
+      if (view === 'branding') prepBranding();
     }
 
     function navigate(view) {
@@ -1774,9 +1902,12 @@
       document.getElementById('print-area').innerHTML = `
         <div class="border-2 border-slate-800 p-6 rounded-lg">
           <div class="flex justify-between items-start border-b-2 border-slate-800 pb-4">
-            <div>
-              <h1 class="text-2xl font-extrabold tracking-wide text-slate-900">NBCE STORE</h1>
-              <p class="text-xs text-slate-600">Central Inventory & Study Material Dispatch Division</p>
+            <div class="flex items-center gap-3">
+              ${db.branding.logo ? `<img src="${db.branding.logo}" class="w-12 h-12 object-contain" />` : ''}
+              <div>
+                <h1 class="text-2xl font-extrabold tracking-wide text-slate-900">${db.branding.title}</h1>
+                <p class="text-xs text-slate-600">${db.branding.subtitle}</p>
+              </div>
             </div>
             <div class="text-right">
               <span class="bg-slate-900 text-white text-xs font-bold px-3 py-1 rounded">DELIVERY CHALLAN</span>
@@ -1935,7 +2066,7 @@
       const p = db.products.find(item => item.id === prodId);
       if (!p) return;
       const phone = db.whatsappNumber || '';
-      const text = `🚨 *NBCE STORE — LOW STOCK ALERT* 🚨%0A%0A*Product:* ${p.name}%0A*SKU:* ${p.sku}%0A*Current Stock:* ${p.current_stock} ${p.unit}%0A*Minimum Limit:* ${p.min_stock} ${p.unit}%0A%0APlease arrange restock immediately.`;
+      const text = `🚨 *${db.branding.title} — LOW STOCK ALERT* 🚨%0A%0A*Product:* ${p.name}%0A*SKU:* ${p.sku}%0A*Current Stock:* ${p.current_stock} ${p.unit}%0A*Minimum Limit:* ${p.min_stock} ${p.unit}%0A%0APlease arrange restock immediately.`;
       window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
     }
 
@@ -1947,7 +2078,7 @@
       }
       const phone = db.whatsappNumber || '';
       const lines = lowItems.map((p, idx) => `${idx + 1}. *${p.name}* (${p.sku}) — Left: *${p.current_stock} ${p.unit}* (Min: ${p.min_stock})`).join('%0A');
-      const text = `🚨 *NBCE STORE — LOW STOCK SUMMARY* 🚨%0A%0A${lines}%0A%0APlease restock these items soon.`;
+      const text = `🚨 *${db.branding.title} — LOW STOCK SUMMARY* 🚨%0A%0A${lines}%0A%0APlease restock these items soon.`;
       window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
     }
 
@@ -2019,7 +2150,7 @@
     function printReport() {
       const rows = getFilteredTransactions();
       document.getElementById('print-area').innerHTML = `
-        <h2 class="text-xl font-bold mb-1">NBCE STORE — Stock & Dispatch Report</h2>
+        <h2 class="text-xl font-bold mb-1">${db.branding.title} — Stock & Dispatch Report</h2>
         <p class="text-xs text-slate-500 mb-4">Generated on ${new Date().toLocaleString()}</p>
         <table class="w-full text-left border-collapse text-xs border border-slate-300">
           <thead>
@@ -2120,6 +2251,88 @@
       await logAction('USER_STATUS', `Changed status of @${userId} to ${!currentStatus ? 'Active' : 'Disabled'}`);
       await refreshAllData(false);
     }
+
+    // ==================== 15: SITE BRANDING & LOGO UPLOAD ====================
+    function prepBranding() {
+      tempUploadedLogo = db.branding.logo || '';
+      document.getElementById('brand-title-input').value = db.branding.title || 'NBCE STORE';
+      document.getElementById('brand-subtitle-input').value = db.branding.subtitle || '';
+      document.getElementById('brand-ticker-input').value = db.branding.ticker || '';
+      document.getElementById('brand-address-input').value = db.branding.address || '';
+
+      const previewBox = document.getElementById('branding-logo-preview-box');
+      if (tempUploadedLogo) {
+        previewBox.innerHTML = `<img src="${tempUploadedLogo}" class="w-full h-full object-contain bg-white p-1" />`;
+      } else {
+        previewBox.innerHTML = `<i class="fa-solid fa-graduation-cap"></i>`;
+      }
+    }
+
+    function handleLogoUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxSize = 240;
+          let w = img.width;
+          let h = img.height;
+          if (w > h && w > maxSize) {
+            h = Math.round((h * maxSize) / w);
+            w = maxSize;
+          } else if (h >= w && h > maxSize) {
+            w = Math.round((w * maxSize) / h);
+            h = maxSize;
+          }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          tempUploadedLogo = canvas.toDataURL('image/png');
+
+          document.getElementById('branding-logo-preview-box').innerHTML =
+            `<img src="${tempUploadedLogo}" class="w-full h-full object-contain bg-white p-1" />`;
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removeCustomLogo() {
+      tempUploadedLogo = '';
+      document.getElementById('branding-logo-preview-box').innerHTML = `<i class="fa-solid fa-graduation-cap"></i>`;
+    }
+
+    document.getElementById('branding-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const title = document.getElementById('brand-title-input').value.trim() || 'NBCE STORE';
+      const subtitle = document.getElementById('brand-subtitle-input').value.trim();
+      const ticker = document.getElementById('brand-ticker-input').value.trim();
+      const address = document.getElementById('brand-address-input').value.trim();
+
+      setLoading(true, 'Saving logo & site branding to Cloud...');
+      const { error } = await sb.from('app_settings').upsert([
+        { key: 'site_logo', value: tempUploadedLogo },
+        { key: 'site_title', value: title },
+        { key: 'site_subtitle', value: subtitle },
+        { key: 'site_ticker', value: ticker },
+        { key: 'site_address', value: address }
+      ]);
+
+      if (error) {
+        setLoading(false);
+        alert('Error saving branding: ' + error.message);
+        return;
+      }
+
+      db.branding = { logo: tempUploadedLogo, title, subtitle, ticker, address };
+      applySiteBranding();
+      await logAction('UPDATE_BRANDING', `Updated site logo & branding settings`);
+      setLoading(false);
+      showToast('Logo & Home Page updated across all devices!');
+    });
 
     // Boot logic: Either auto-login into portal or show Public Home Page
     if (currentUser) {
