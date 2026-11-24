@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NBCE STORE — Cloud Inventory & Study Centre Management</title>
+  <title>NBCE STORE — Live Cloud Inventory & Study Centre Management</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
@@ -125,9 +125,10 @@
           <i class="fa-solid fa-bars text-lg"></i>
         </button>
         <span class="font-extrabold tracking-wide text-lg">NBCE STORE</span>
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping" title="Auto Live Sync Active"></span>
       </div>
       <div class="flex items-center gap-2.5">
-        <button onclick="refreshAllData()" title="Sync Cloud Data" class="p-1.5 text-sky-400">
+        <button onclick="refreshAllData(false)" title="Sync Cloud Data" class="p-1.5 text-sky-400">
           <i class="fa-solid fa-arrows-rotate"></i>
         </button>
         <button onclick="navigate('low-stock')" class="relative p-1.5 text-amber-400">
@@ -228,12 +229,15 @@
           <p id="page-subtitle" class="text-xs text-slate-500">Live inventory monitoring across NBCE STORE</p>
         </div>
         <div class="flex items-center gap-3">
-          <button onclick="refreshAllData()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition">
+          <button onclick="refreshAllData(false)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition">
             <i class="fa-solid fa-arrows-rotate text-indigo-600"></i> Sync
           </button>
           <div class="text-right">
             <p class="text-xs font-semibold text-slate-700" id="live-date-display"></p>
-            <p class="text-[11px] text-emerald-600 font-semibold"><i class="fa-solid fa-cloud-check mr-1"></i>Supabase Cloud Connected</p>
+            <p class="text-[11px] text-emerald-600 font-semibold flex items-center justify-end gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+              <span>Auto Live Sync Active</span>
+            </p>
           </div>
           <button onclick="navigate('low-stock')" id="top-alert-btn" class="relative bg-red-50 hover:bg-red-100 text-red-600 px-3.5 py-2 rounded-xl border border-red-200 flex items-center gap-2 text-xs font-bold transition">
             <i class="fa-solid fa-bell bell-shake"></i>
@@ -853,6 +857,8 @@
     let currentUser = JSON.parse(sessionStorage.getItem('NBCE_CLOUD_USER')) || null;
     let uploadedProductImage = '';
     let challanCart = [];
+    let realtimeSubscription = null;
+    let syncDebounceTimer = null;
 
     function setLoading(show, text = 'Syncing with Supabase Cloud...') {
       const el = document.getElementById('loading-overlay');
@@ -873,8 +879,40 @@
       setTimeout(() => toast.classList.add('hidden'), 3000);
     }
 
-    async function refreshAllData() {
-      setLoading(true, 'Loading live data from Supabase...');
+    // ==================== AUTOMATIC REAL-TIME SYNC ENGINE ====================
+    function setupAutoRealtimeSync() {
+      if (realtimeSubscription) {
+        sb.removeChannel(realtimeSubscription);
+      }
+
+      realtimeSubscription = sb
+        .channel('nbce-store-live-changes')
+        .on('postgres_changes', { event: '*', schema: 'public' }, (payload) => {
+          clearTimeout(syncDebounceTimer);
+          syncDebounceTimer = setTimeout(async () => {
+            await refreshAllData(true);
+            showToast('Live update received from Cloud!');
+          }, 500);
+        })
+        .subscribe();
+
+      // Fallback auto-sync every 20 seconds when tab is visible
+      setInterval(() => {
+        if (currentUser && document.visibilityState === 'visible') {
+          refreshAllData(true);
+        }
+      }, 20000);
+
+      // Instant sync when switching back to browser tab
+      document.addEventListener('visibilitychange', () => {
+        if (currentUser && document.visibilityState === 'visible') {
+          refreshAllData(true);
+        }
+      });
+    }
+
+    async function refreshAllData(silent = false) {
+      if (!silent) setLoading(true, 'Loading live data from Supabase...');
       try {
         const [usersRes, centresRes, prodsRes, logsRes, challansRes, actionsRes, settingsRes] = await Promise.all([
           sb.from('app_users').select('*').order('created_at', { ascending: true }),
@@ -899,12 +937,16 @@
         updateBadges();
         const activeBtn = document.querySelector('.nav-btn.bg-indigo-600');
         const currentView = activeBtn ? activeBtn.dataset.nav : 'home';
-        renderCurrentView(currentView);
+        
+        // Avoid wiping form inputs during silent background refresh
+        if (!silent || !['add-product', 'stock-in', 'stock-sold'].includes(currentView)) {
+          renderCurrentView(currentView);
+        }
       } catch (err) {
         console.error(err);
-        alert('Error connecting to Supabase: ' + err.message);
+        if (!silent) alert('Error connecting to Supabase: ' + err.message);
       } finally {
-        setLoading(false);
+        if (!silent) setLoading(false);
       }
     }
 
@@ -965,6 +1007,7 @@
       await logAction('LOGOUT', `${currentUser.full_name} logged out`);
       sessionStorage.removeItem('NBCE_CLOUD_USER');
       currentUser = null;
+      if (realtimeSubscription) sb.removeChannel(realtimeSubscription);
       document.getElementById('app-shell').classList.add('hidden');
       document.getElementById('login-screen').classList.remove('hidden');
     }
@@ -985,7 +1028,8 @@
         document.getElementById('admin-nav-section').classList.remove('hidden');
       }
 
-      await refreshAllData();
+      await refreshAllData(false);
+      setupAutoRealtimeSync();
       navigate('home');
     }
 
@@ -1241,7 +1285,7 @@
 
       await logAction('ADD_PRODUCT', `Added product "${name}" (${sku}) with ${stock} ${unit}`);
       this.reset();
-      await refreshAllData();
+      await refreshAllData(false);
       showToast('Product saved to Cloud!');
       navigate('products');
     });
@@ -1288,7 +1332,7 @@
 
       await logAction('STOCK_IN', `Added +${qty} ${product.unit} to "${product.name}"`);
       this.reset();
-      await refreshAllData();
+      await refreshAllData(false);
       showToast(`+${qty} ${product.unit} added to ${product.name}`);
       navigate('home');
     });
@@ -1439,7 +1483,7 @@
       }]);
 
       await logAction('STOCK_SOLD', `Generated Challan ${challanNo} for ${centre.centre_code} (${challanCart.length} items)`);
-      await refreshAllData();
+      await refreshAllData(false);
       showToast(`Challan ${challanNo} saved to Cloud!`);
       openChallanModal(challanNo);
       navigate('challans');
@@ -1578,7 +1622,7 @@
 
       await logAction('ADD_STUDY_CENTRE', `Added Study Centre ${code} (${name})`);
       this.reset();
-      await refreshAllData();
+      await refreshAllData(false);
       showToast('Study Centre saved to Cloud!');
     });
 
@@ -1812,7 +1856,7 @@
 
       await logAction('CREATE_USER', `Created ${role} account "${name}" (@${userId})`);
       this.reset();
-      await refreshAllData();
+      await refreshAllData(false);
       showToast('New user ID & password created!');
     });
 
@@ -1821,7 +1865,7 @@
       setLoading(true, 'Updating user status...');
       await sb.from('app_users').update({ is_active: !currentStatus }).eq('id', id);
       await logAction('USER_STATUS', `Changed status of @${userId} to ${!currentStatus ? 'Active' : 'Disabled'}`);
-      await refreshAllData();
+      await refreshAllData(false);
     }
 
     // Auto-login if session exists
