@@ -110,17 +110,21 @@
       </div>
     </header>
 
-    <!-- Royal Blue & Gold Institutional Hero Banner -->
+    <!-- Royal Blue & Gold Institutional Hero Banner (With Dynamic Background Image) -->
     <section id="public-hero" class="bg-gradient-to-br from-[#0b2559] via-[#133884] to-[#091c42] text-white py-14 sm:py-20 px-4 relative overflow-hidden">
+      <!-- Dynamic Hero Banner Image Layer -->
+      <img id="pub-hero-bg-img" src="" alt="" class="hidden absolute inset-0 w-full h-full object-cover opacity-30 z-0" />
+      <div id="pub-hero-overlay" class="hidden absolute inset-0 bg-gradient-to-r from-[#0b2559]/90 via-[#0b2559]/75 to-[#091c42]/85 z-0"></div>
+
       <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
         <div class="lg:col-span-7 space-y-5">
           <span class="inline-flex items-center gap-2 bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-bold px-3.5 py-1.5 rounded-full">
             <i class="fa-solid fa-shield-halved"></i> Official Study Material & Inventory Division
           </span>
-          <h1 class="text-3xl sm:text-5xl font-extrabold leading-tight">
+          <h1 id="pub-hero-heading" class="text-3xl sm:text-5xl font-extrabold leading-tight">
             Empowering Your <span class="text-amber-400">Education</span> & Centre Supply
           </h1>
-          <p class="text-blue-100 text-sm sm:text-base max-w-xl leading-relaxed">
+          <p id="pub-hero-desc" class="text-blue-100 text-sm sm:text-base max-w-xl leading-relaxed">
             Centralized study material distribution, live inventory tracking, and instant digital challan portal for all authorized NBCE Study Centres.
           </p>
           <div class="flex flex-wrap items-center gap-3 pt-2">
@@ -393,7 +397,7 @@
             <i class="fa-solid fa-user-plus w-5 text-center text-pink-400"></i> ID & Password Creation
           </button>
           <button onclick="navigate('branding')" data-nav="branding" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
-            <i class="fa-solid fa-image w-5 text-center text-amber-400"></i> Site Branding & Logo
+            <i class="fa-solid fa-image w-5 text-center text-amber-400"></i> Site Branding & Banner
           </button>
         </div>
       </nav>
@@ -1005,17 +1009,18 @@
         </div>
       </section>
 
-      <!-- ==================== 15: SITE BRANDING & LOGO SETTINGS (ADMIN) ==================== -->
+      <!-- ==================== 15: SITE BRANDING, LOGO & HERO BANNER (ADMIN) ==================== -->
       <section id="view-branding" class="view-section hidden">
-        <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200/70 overflow-hidden">
+        <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200/70 overflow-hidden">
           <div class="bg-[#0b2559] px-6 py-4 text-white border-b-4 border-amber-500">
-            <h2 class="font-bold text-lg">Site Branding, Logo & Home Page Settings</h2>
-            <p class="text-xs text-amber-300">Upload logo and customize your public Home Page directly from dashboard</p>
+            <h2 class="font-bold text-lg">Site Branding, Logo & Hero Banner Settings</h2>
+            <p class="text-xs text-amber-300">Upload Logo, Hero Banner photo & customize your Home Page directly from dashboard</p>
           </div>
 
-          <form id="branding-form" class="p-6 space-y-5">
+          <form id="branding-form" class="p-6 space-y-6">
+            <!-- Logo Upload Box -->
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-2">Upload Store Logo (PNG / JPG)</label>
+              <label class="block text-xs font-bold uppercase text-slate-600 mb-2">1. Store Logo (PNG / JPG)</label>
               <div class="flex flex-col sm:flex-row items-center gap-4 border-2 border-dashed border-slate-300 rounded-xl p-4 bg-slate-50">
                 <div id="branding-logo-preview-box" class="w-20 h-20 rounded-xl bg-[#0b2559] text-amber-400 flex items-center justify-center text-3xl shadow overflow-hidden shrink-0">
                   <i class="fa-solid fa-graduation-cap"></i>
@@ -1024,17 +1029,41 @@
                   <input type="file" id="branding-logo-input" accept="image/*" onchange="handleLogoUpload(event)" class="hidden" />
                   <div class="flex flex-wrap justify-center sm:justify-start gap-2">
                     <label for="branding-logo-input" class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl shadow inline-flex items-center gap-1.5">
-                      <i class="fa-solid fa-upload"></i> Choose Logo File
+                      <i class="fa-solid fa-upload"></i> Upload Logo
                     </label>
                     <button type="button" onclick="removeCustomLogo()" class="bg-red-50 hover:bg-red-100 text-red-600 text-xs font-semibold px-3 py-2 rounded-xl border border-red-200">
-                      Reset Default Icon
+                      Reset Logo
                     </button>
                   </div>
-                  <p class="text-[11px] text-slate-400">Recommended: Square logo (PNG with transparent or white background)</p>
+                  <p class="text-[11px] text-slate-400">Appears in Home Header, Login Screen, Sidebar & Printed Challans</p>
                 </div>
               </div>
             </div>
 
+            <!-- Hero Banner Upload Box -->
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-600 mb-2">2. Home Page Hero Banner Image (Wide Photo)</label>
+              <div class="border-2 border-dashed border-slate-300 rounded-xl p-4 bg-slate-50 space-y-3">
+                <div id="branding-hero-preview-box" class="w-full h-36 rounded-xl bg-gradient-to-r from-[#0b2559] to-[#133884] text-amber-300 flex flex-col items-center justify-center overflow-hidden relative">
+                  <i class="fa-solid fa-panorama text-3xl mb-1"></i>
+                  <span class="text-xs font-medium text-blue-100">Default Royal Blue Gradient Active (No Custom Banner Uploaded)</span>
+                </div>
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <div class="flex flex-wrap gap-2">
+                    <input type="file" id="branding-hero-input" accept="image/*" onchange="handleHeroUpload(event)" class="hidden" />
+                    <label for="branding-hero-input" class="cursor-pointer bg-amber-500 hover:bg-amber-400 text-[#0b2559] text-xs font-extrabold px-4 py-2 rounded-xl shadow inline-flex items-center gap-1.5">
+                      <i class="fa-solid fa-image"></i> Upload Hero Banner
+                    </label>
+                    <button type="button" onclick="removeCustomHero()" class="bg-red-50 hover:bg-red-100 text-red-600 text-xs font-semibold px-3 py-2 rounded-xl border border-red-200">
+                      Remove Banner
+                    </button>
+                  </div>
+                  <span class="text-[11px] text-slate-400">Recommended size: 1200×500 px (Landscape)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hero Text & Store Info -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Store / Brand Title *</label>
@@ -1049,6 +1078,18 @@
             </div>
 
             <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Hero Banner Main Heading</label>
+              <input type="text" id="brand-hero-heading-input" placeholder="Empowering Your Education & Centre Supply"
+                class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Hero Banner Sub-Description</label>
+              <textarea id="brand-hero-desc-input" rows="2" placeholder="Centralized study material distribution, live inventory tracking..."
+                class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+            </div>
+
+            <div>
               <label class="block text-xs font-semibold text-slate-600 mb-1">Scrolling Notice Ticker Text</label>
               <input type="text" id="brand-ticker-input" placeholder="Enter scrolling announcement text for Study Centres..."
                 class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
@@ -1060,8 +1101,8 @@
                 class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
             </div>
 
-            <button type="submit" class="w-full bg-[#0b2559] hover:bg-[#133884] text-white font-bold py-3 rounded-xl shadow transition">
-              <i class="fa-solid fa-floppy-disk mr-1.5"></i> Save Logo & Site Settings to Cloud
+            <button type="submit" class="w-full bg-[#0b2559] hover:bg-[#133884] text-white font-bold py-3.5 rounded-xl shadow transition">
+              <i class="fa-solid fa-floppy-disk mr-1.5"></i> Save Logo, Banner & Settings to Cloud
             </button>
           </form>
         </div>
@@ -1101,6 +1142,9 @@
       whatsappNumber: '919876543210',
       branding: {
         logo: '',
+        heroBanner: '',
+        heroHeading: 'Empowering Your Education & Centre Supply',
+        heroDesc: 'Centralized study material distribution, live inventory tracking, and instant digital challan portal for all authorized NBCE Study Centres.',
         title: 'NBCE STORE',
         subtitle: 'Study Material & Central Dispatch',
         ticker: '📢 Welcome to NBCE STORE Official Portal • Study Centres can browse available Prospectus, Books, ID Cards & Exam Kits below • For Challan & Dispatch queries, contact Central Store Desk.',
@@ -1111,6 +1155,7 @@
     let currentUser = JSON.parse(sessionStorage.getItem('NBCE_CLOUD_USER')) || null;
     let uploadedProductImage = '';
     let tempUploadedLogo = '';
+    let tempUploadedHero = '';
     let challanCart = [];
     let realtimeSubscription = null;
     let syncDebounceTimer = null;
@@ -1148,6 +1193,24 @@
       document.getElementById('sidebar-brand-title').textContent = b.title;
       document.getElementById('mobile-brand-title').textContent = b.title;
 
+      // Apply Hero Heading & Description
+      document.getElementById('pub-hero-heading').textContent = b.heroHeading || 'Empowering Your Education & Centre Supply';
+      document.getElementById('pub-hero-desc').textContent = b.heroDesc || '';
+
+      // Apply Hero Background Image
+      const heroImg = document.getElementById('pub-hero-bg-img');
+      const heroOverlay = document.getElementById('pub-hero-overlay');
+      if (b.heroBanner) {
+        heroImg.src = b.heroBanner;
+        heroImg.classList.remove('hidden');
+        heroOverlay.classList.remove('hidden');
+      } else {
+        heroImg.src = '';
+        heroImg.classList.add('hidden');
+        heroOverlay.classList.add('hidden');
+      }
+
+      // Apply Logo
       const pubHeaderWrap = document.getElementById('pub-header-logo-wrap');
       const pubFooterWrap = document.getElementById('pub-footer-logo-wrap');
       const loginWrap = document.getElementById('login-logo-wrap');
@@ -1178,6 +1241,9 @@
         if (settingsRes.data) {
           settingsRes.data.forEach(row => {
             if (row.key === 'site_logo') db.branding.logo = row.value || '';
+            if (row.key === 'site_hero_banner') db.branding.heroBanner = row.value || '';
+            if (row.key === 'site_hero_heading' && row.value) db.branding.heroHeading = row.value;
+            if (row.key === 'site_hero_desc' && row.value) db.branding.heroDesc = row.value;
             if (row.key === 'site_title' && row.value) db.branding.title = row.value;
             if (row.key === 'site_subtitle' && row.value) db.branding.subtitle = row.value;
             if (row.key === 'site_ticker' && row.value) db.branding.ticker = row.value;
@@ -1302,6 +1368,9 @@
           settingsRes.data.forEach(row => {
             if (row.key === 'whatsapp_number' && row.value) db.whatsappNumber = row.value;
             if (row.key === 'site_logo') db.branding.logo = row.value || '';
+            if (row.key === 'site_hero_banner') db.branding.heroBanner = row.value || '';
+            if (row.key === 'site_hero_heading' && row.value) db.branding.heroHeading = row.value;
+            if (row.key === 'site_hero_desc' && row.value) db.branding.heroDesc = row.value;
             if (row.key === 'site_title' && row.value) db.branding.title = row.value;
             if (row.key === 'site_subtitle' && row.value) db.branding.subtitle = row.value;
             if (row.key === 'site_ticker' && row.value) db.branding.ticker = row.value;
@@ -1425,7 +1494,7 @@
       'reports': ['Filter-Wise Reports', 'Analyze Stock In and Stock Sold transactions'],
       'staff-actions': ['Staff Action Status', 'Complete audit log of staff & admin operations'],
       'users': ['ID & Password Creation', 'Create and manage Staff & Admin login IDs'],
-      'branding': ['Site Branding & Logo', 'Upload custom logo & edit Home Page content']
+      'branding': ['Site Branding & Hero Banner', 'Upload logo, hero banner & edit Home Page content']
     };
 
     function renderCurrentView(view) {
@@ -2252,11 +2321,15 @@
       await refreshAllData(false);
     }
 
-    // ==================== 15: SITE BRANDING & LOGO UPLOAD ====================
+    // ==================== 15: SITE BRANDING, LOGO & HERO BANNER UPLOAD ====================
     function prepBranding() {
       tempUploadedLogo = db.branding.logo || '';
+      tempUploadedHero = db.branding.heroBanner || '';
+
       document.getElementById('brand-title-input').value = db.branding.title || 'NBCE STORE';
       document.getElementById('brand-subtitle-input').value = db.branding.subtitle || '';
+      document.getElementById('brand-hero-heading-input').value = db.branding.heroHeading || '';
+      document.getElementById('brand-hero-desc-input').value = db.branding.heroDesc || '';
       document.getElementById('brand-ticker-input').value = db.branding.ticker || '';
       document.getElementById('brand-address-input').value = db.branding.address || '';
 
@@ -2265,6 +2338,13 @@
         previewBox.innerHTML = `<img src="${tempUploadedLogo}" class="w-full h-full object-contain bg-white p-1" />`;
       } else {
         previewBox.innerHTML = `<i class="fa-solid fa-graduation-cap"></i>`;
+      }
+
+      const heroPreviewBox = document.getElementById('branding-hero-preview-box');
+      if (tempUploadedHero) {
+        heroPreviewBox.innerHTML = `<img src="${tempUploadedHero}" class="w-full h-full object-cover" />`;
+      } else {
+        heroPreviewBox.innerHTML = `<i class="fa-solid fa-panorama text-3xl mb-1"></i><span class="text-xs font-medium text-blue-100">Default Royal Blue Gradient Active</span>`;
       }
     }
 
@@ -2305,16 +2385,56 @@
       document.getElementById('branding-logo-preview-box').innerHTML = `<i class="fa-solid fa-graduation-cap"></i>`;
     }
 
+    function handleHeroUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxW = 1280;
+          let w = img.width;
+          let h = img.height;
+          if (w > maxW) {
+            h = Math.round((h * maxW) / w);
+            w = maxW;
+          }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          tempUploadedHero = canvas.toDataURL('image/jpeg', 0.8);
+
+          document.getElementById('branding-hero-preview-box').innerHTML =
+            `<img src="${tempUploadedHero}" class="w-full h-full object-cover" />`;
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removeCustomHero() {
+      tempUploadedHero = '';
+      document.getElementById('branding-hero-preview-box').innerHTML =
+        `<i class="fa-solid fa-panorama text-3xl mb-1"></i><span class="text-xs font-medium text-blue-100">Default Royal Blue Gradient Active</span>`;
+    }
+
     document.getElementById('branding-form').addEventListener('submit', async function(e) {
       e.preventDefault();
       const title = document.getElementById('brand-title-input').value.trim() || 'NBCE STORE';
       const subtitle = document.getElementById('brand-subtitle-input').value.trim();
+      const heroHeading = document.getElementById('brand-hero-heading-input').value.trim();
+      const heroDesc = document.getElementById('brand-hero-desc-input').value.trim();
       const ticker = document.getElementById('brand-ticker-input').value.trim();
       const address = document.getElementById('brand-address-input').value.trim();
 
-      setLoading(true, 'Saving logo & site branding to Cloud...');
+      setLoading(true, 'Saving logo, banner & site branding to Cloud...');
       const { error } = await sb.from('app_settings').upsert([
         { key: 'site_logo', value: tempUploadedLogo },
+        { key: 'site_hero_banner', value: tempUploadedHero },
+        { key: 'site_hero_heading', value: heroHeading },
+        { key: 'site_hero_desc', value: heroDesc },
         { key: 'site_title', value: title },
         { key: 'site_subtitle', value: subtitle },
         { key: 'site_ticker', value: ticker },
@@ -2327,11 +2447,20 @@
         return;
       }
 
-      db.branding = { logo: tempUploadedLogo, title, subtitle, ticker, address };
+      db.branding = {
+        logo: tempUploadedLogo,
+        heroBanner: tempUploadedHero,
+        heroHeading,
+        heroDesc,
+        title,
+        subtitle,
+        ticker,
+        address
+      };
       applySiteBranding();
-      await logAction('UPDATE_BRANDING', `Updated site logo & branding settings`);
+      await logAction('UPDATE_BRANDING', `Updated site logo, hero banner & branding settings`);
       setLoading(false);
-      showToast('Logo & Home Page updated across all devices!');
+      showToast('Logo, Hero Banner & Home Page updated across all devices!');
     });
 
     // Boot logic: Either auto-login into portal or show Public Home Page
