@@ -361,6 +361,9 @@
         <button onclick="navigate('stock-return')" data-nav="stock-return" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
           <i class="fa-solid fa-rotate-left w-5 text-center text-rose-400"></i> Return & Damage
         </button>
+        <button onclick="navigate('statement')" data-nav="statement" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
+          <i class="fa-solid fa-book-journal-whills w-5 text-center text-cyan-400"></i> Statement (Ledger)
+        </button>
         <button onclick="navigate('challans')" data-nav="challans" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
           <i class="fa-solid fa-file-invoice w-5 text-center text-sky-400"></i> Challan List
         </button>
@@ -521,8 +524,8 @@
           <button onclick="navigate('stock-sold')" class="bg-amber-600 hover:bg-amber-700 text-white p-3.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition">
             <i class="fa-solid fa-file-invoice"></i> Stock Sold / Challan
           </button>
-          <button onclick="navigate('stock-return')" class="bg-rose-600 hover:bg-rose-700 text-white p-3.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition">
-            <i class="fa-solid fa-rotate-left"></i> Return / Damage
+          <button onclick="navigate('statement')" class="bg-cyan-700 hover:bg-cyan-800 text-white p-3.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition">
+            <i class="fa-solid fa-book-journal-whills"></i> Full Statement
           </button>
         </div>
 
@@ -674,7 +677,7 @@
               </div>
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Supplier / Reference Note</label>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Supplier / Reference Note (Narration)</label>
               <input type="text" id="stockin-remarks" placeholder="e.g. Press Batch #42 / Invoice #908"
                 class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-500" />
             </div>
@@ -746,7 +749,7 @@
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Remarks / Transport Note</label>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Remarks / Transport Note (Narration)</label>
               <input type="text" id="sold-remarks" placeholder="e.g. Sent via Courier / Hand Delivery"
                 class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm outline-none focus:ring-2 focus:ring-amber-500" />
             </div>
@@ -771,7 +774,7 @@
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Entry Type *</label>
                 <select id="ret-type" required onchange="toggleReturnCentreField()"
                   class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-semibold outline-none focus:ring-2 focus:ring-rose-500">
-                  <option value="RETURN">Study Centre Return (+ Add to Stock)</option>
+                  <option value="RETURN">Study Centre Return / Re-stock (+ Add to Stock)</option>
                   <option value="DAMAGE">Damaged / Defective Item (- Deduct Stock)</option>
                 </select>
               </div>
@@ -800,7 +803,7 @@
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Reason / Remarks *</label>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Reason / Narration *</label>
               <input type="text" id="ret-remarks" required placeholder="e.g. Extra syllabus books returned / Water damaged packet"
                 class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm outline-none focus:ring-2 focus:ring-rose-500" />
             </div>
@@ -809,6 +812,100 @@
               <i class="fa-solid fa-check-circle mr-1"></i> Save Return / Damage Entry
             </button>
           </form>
+        </div>
+      </section>
+
+      <!-- ==================== NEW: COMPLETE STOCK STATEMENT (LEDGER WITH NARRATION) ==================== -->
+      <section id="view-statement" class="view-section hidden space-y-5">
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/70 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                <i class="fa-solid fa-book-journal-whills text-cyan-600"></i>
+                <span>Stock Movement Statement & Narration Ledger</span>
+              </h2>
+              <p class="text-xs text-slate-500">Complete chronological record of Stock Entry, Sold, Re-stock/Return & Damage with narration</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="exportStatementExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl">
+                <i class="fa-solid fa-file-excel mr-1"></i> Excel
+              </button>
+              <button onclick="downloadStatementPDF()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl">
+                <i class="fa-solid fa-file-pdf mr-1"></i> PDF
+              </button>
+              <button onclick="printStatement()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-3.5 py-2 rounded-xl">
+                <i class="fa-solid fa-print mr-1"></i> Print
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-500 mb-1">From Date</label>
+              <input type="date" id="stmt-from" onchange="renderStatement()" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-500 mb-1">To Date</label>
+              <input type="date" id="stmt-to" onchange="renderStatement()" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-500 mb-1">Movement Type</label>
+              <select id="stmt-type" onchange="renderStatement()" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs">
+                <option value="ALL">All Entries (Entry / Sold / Re-stock)</option>
+                <option value="IN">Stock Entry (IN)</option>
+                <option value="OUT">Stock Sold (OUT)</option>
+                <option value="RETURN">Re-stock / Centre Return</option>
+                <option value="DAMAGE">Damage / Loss</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-500 mb-1">Product</label>
+              <select id="stmt-product" onchange="renderStatement()" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs"></select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-500 mb-1">Search Narration / Challan</label>
+              <input type="text" id="stmt-search" onkeyup="renderStatement()" placeholder="Search narration, centre..."
+                class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs outline-none" />
+            </div>
+          </div>
+
+          <!-- Statement Summary Strip -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
+            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3">
+              <span class="text-[11px] font-semibold text-emerald-700 block">Total Stock Entry (+)</span>
+              <span id="stmt-sum-in" class="text-lg font-extrabold text-emerald-800">0 Pcs</span>
+            </div>
+            <div class="bg-amber-50 border border-amber-200 rounded-xl p-3">
+              <span class="text-[11px] font-semibold text-amber-700 block">Total Stock Sold (-)</span>
+              <span id="stmt-sum-out" class="text-lg font-extrabold text-amber-800">0 Pcs</span>
+            </div>
+            <div class="bg-sky-50 border border-sky-200 rounded-xl p-3">
+              <span class="text-[11px] font-semibold text-sky-700 block">Total Re-stock / Return (+)</span>
+              <span id="stmt-sum-ret" class="text-lg font-extrabold text-sky-800">0 Pcs</span>
+            </div>
+            <div class="bg-rose-50 border border-rose-200 rounded-xl p-3">
+              <span class="text-[11px] font-semibold text-rose-700 block">Total Damaged (-)</span>
+              <span id="stmt-sum-dmg" class="text-lg font-extrabold text-rose-800">0 Pcs</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/70 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr class="bg-slate-50 text-slate-500 text-xs uppercase border-b border-slate-200">
+                  <th class="py-3 px-4">Date</th>
+                  <th class="py-3 px-4">Particulars / Type</th>
+                  <th class="py-3 px-4">Product (SKU)</th>
+                  <th class="py-3 px-4">Quantity (Pcs)</th>
+                  <th class="py-3 px-4">Full Narration</th>
+                  <th class="py-3 px-4">Entry By</th>
+                </tr>
+              </thead>
+              <tbody id="statement-tbody" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
         </div>
       </section>
 
@@ -990,7 +1087,7 @@
         </div>
       </section>
 
-      <!-- ==================== NEW: RECYCLE BIN (ADMIN ONLY) ==================== -->
+      <!-- ==================== RECYCLE BIN (ADMIN ONLY) ==================== -->
       <section id="view-recycle-bin" class="view-section hidden space-y-5">
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
@@ -1034,13 +1131,13 @@
         </div>
       </section>
 
-      <!-- ==================== 11: ID & PASSWORD CREATION (ADMIN) ==================== -->
+      <!-- ==================== 11: ID & PASSWORD CREATION + ACCESS RIGHTS CHECKBOXES (ADMIN) ==================== -->
       <section id="view-users" class="view-section hidden">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div class="bg-white rounded-2xl shadow-sm border border-slate-200/70 overflow-hidden h-fit">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-5 bg-white rounded-2xl shadow-sm border border-slate-200/70 overflow-hidden h-fit">
             <div class="bg-pink-600 px-5 py-4 text-white">
               <h2 class="font-bold text-base">Create Staff / Admin ID</h2>
-              <p class="text-xs text-pink-100">Generate login credentials for store team</p>
+              <p class="text-xs text-pink-100">Generate credentials & select allowed Access Rights</p>
             </div>
             <form id="create-user-form" class="p-5 space-y-3.5">
               <div>
@@ -1048,32 +1145,53 @@
                 <input type="text" id="new-user-name" required placeholder="e.g. Rahul Das"
                   class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm outline-none" />
               </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Login User ID *</label>
-                <input type="text" id="new-user-id" required placeholder="e.g. staff2"
-                  class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm outline-none" />
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Password *</label>
-                <input type="text" id="new-user-pass" required placeholder="Create password"
-                  class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm outline-none" />
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Login User ID *</label>
+                  <input type="text" id="new-user-id" required placeholder="e.g. staff2"
+                    class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm outline-none" />
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Password *</label>
+                  <input type="text" id="new-user-pass" required placeholder="Create password"
+                    class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm outline-none" />
+                </div>
               </div>
               <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Role *</label>
-                <select id="new-user-role" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm outline-none">
-                  <option value="staff">Staff (Entry Only — No Delete/Edit)</option>
+                <select id="new-user-role" onchange="toggleNewUserAccessBox()" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm outline-none">
+                  <option value="staff">Staff (Custom Access Rights Below)</option>
                   <option value="admin">Admin (Full Control)</option>
                 </select>
               </div>
+
+              <!-- Access Rights Checkbox Section -->
+              <div id="new-user-access-section" class="border border-slate-200 rounded-xl p-3.5 bg-slate-50 space-y-2.5">
+                <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                  <span class="text-xs font-extrabold uppercase tracking-wide text-slate-700">
+                    <i class="fa-solid fa-user-shield text-pink-600 mr-1"></i> Access Rights
+                  </span>
+                  <div class="space-x-2 text-[11px]">
+                    <button type="button" onclick="setCreateCheckboxes(true)" class="text-indigo-600 font-semibold hover:underline">Select All</button>
+                    <span class="text-slate-300">|</span>
+                    <button type="button" onclick="setCreateCheckboxes(false)" class="text-slate-500 font-semibold hover:underline">Clear</button>
+                  </div>
+                </div>
+                <div id="create-user-checkboxes" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs"></div>
+              </div>
+
               <button type="submit" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-2.5 rounded-xl shadow text-sm">
                 <i class="fa-solid fa-user-plus mr-1"></i> Create Account
               </button>
             </form>
           </div>
 
-          <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200/70 overflow-hidden">
-            <div class="p-5 border-b border-slate-100">
-              <h2 class="font-bold text-slate-800">Active User Accounts</h2>
+          <div class="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-slate-200/70 overflow-hidden h-fit">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <h2 class="font-bold text-slate-800">Active User Accounts</h2>
+                <p class="text-xs text-slate-500">Click on any staff row or <strong>Access Rights</strong> button to update permissions</p>
+              </div>
             </div>
             <div class="overflow-x-auto">
               <table class="w-full text-left border-collapse text-sm">
@@ -1082,7 +1200,7 @@
                     <th class="py-3 px-4">Name</th>
                     <th class="py-3 px-4">User ID</th>
                     <th class="py-3 px-4">Password</th>
-                    <th class="py-3 px-4">Role</th>
+                    <th class="py-3 px-4">Role & Permissions</th>
                     <th class="py-3 px-4 text-right">Status</th>
                   </tr>
                 </thead>
@@ -1191,9 +1309,51 @@
     </main>
   </div>
 
+  <!-- ==================== STAFF ACCESS RIGHTS EDIT POPUP MODAL ==================== -->
+  <div id="staff-access-modal" class="fixed inset-0 bg-slate-900/65 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-slate-200">
+      <div class="bg-pink-600 text-white px-6 py-4 flex items-center justify-between">
+        <div>
+          <h3 class="font-bold text-base flex items-center gap-2">
+            <i class="fa-solid fa-user-shield"></i>
+            <span>Staff Access Rights</span>
+          </h3>
+          <p id="modal-staff-subtitle" class="text-xs text-pink-100 mt-0.5">Select options this staff can access</p>
+        </div>
+        <button type="button" onclick="closeStaffAccessModal()" class="text-pink-100 hover:text-white">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+          <span class="text-xs font-bold uppercase text-slate-600">Select Allowed Menu Options</span>
+          <div class="space-x-2 text-xs">
+            <button type="button" onclick="setModalCheckboxes(true)" class="text-indigo-600 font-semibold hover:underline">Select All</button>
+            <span class="text-slate-300">|</span>
+            <button type="button" onclick="setModalCheckboxes(false)" class="text-slate-500 font-semibold hover:underline">Clear All</button>
+          </div>
+        </div>
+
+        <div id="modal-staff-checkboxes" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs"></div>
+
+        <div class="flex items-center gap-3 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeStaffAccessModal()"
+            class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition">
+            Cancel
+          </button>
+          <button type="button" onclick="saveStaffAccessModal()"
+            class="flex-1 bg-pink-600 hover:bg-pink-700 text-white font-bold py-2.5 rounded-xl text-xs shadow transition">
+            <i class="fa-solid fa-check mr-1"></i> Submit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== CUSTOM DELETE WARNING POPUP (YES / NO) ==================== -->
   <div id="delete-confirm-modal" class="fixed inset-0 bg-slate-900/65 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-slate-200 animate-fade-in">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-slate-200">
       <div class="p-6 text-center space-y-4">
         <div id="del-modal-icon-wrap" class="w-16 h-16 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mx-auto text-3xl shadow-inner">
           <i class="fa-solid fa-triangle-exclamation"></i>
@@ -1298,6 +1458,22 @@
     const PERISKOPE_API_KEY = 'sk_periskope_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhkZDE1YWJhLWI1OGItNDVmOC04ZTE0LTE5ZGUyMTk4MmE3OCIsInJvbGUiOiJhcGkiLCJ0eXBlIjoiYXBpIiwibmFtZSI6Ik5CQ0UtU1RPUkUiLCJleHAiOjIxMTA4OTAzMDYsImlhdCI6MTc5NTUzMDMwNiwic3ViIjoiZGFjMjNkODctYjVhOS00ZTdlLWIzODgtMGU4ODY3YjU5ZWZiIiwiaXNzIjoicGVyaXNrb3BlLmFwcCIsIm1ldGFkYXRhIjp7InNjb3BlcyI6WyI5MTkzMzM3ODIwNDhAYy51cyJdfX0.cWBTHy6DzHSm8urBQWPHHiHnn_XCzxtamxxO61nvang';
     const PERISKOPE_SENDER_PHONE = '919333782048';
 
+    // ==================== STAFF ACCESS RIGHTS DEFINITIONS ====================
+    const STAFF_ACCESS_OPTIONS = [
+      { key: 'home', label: 'Home & Live Stock' },
+      { key: 'products', label: 'Products Catalog' },
+      { key: 'add-product', label: 'Add Product' },
+      { key: 'stock-in', label: 'Stock In' },
+      { key: 'stock-sold', label: 'Stock Sold / Dispatch' },
+      { key: 'stock-return', label: 'Return & Damage' },
+      { key: 'statement', label: 'Statement (Ledger)' },
+      { key: 'challans', label: 'Challan List' },
+      { key: 'study-centres', label: 'Study Centres' },
+      { key: 'low-stock', label: 'Low Stock Alert' },
+      { key: 'reports', label: 'Reports (Excel / PDF)' }
+    ];
+    const DEFAULT_STAFF_PERMISSIONS = STAFF_ACCESS_OPTIONS.map(o => o.key);
+
     // Prefix used to mark soft-deleted products stored safely in cloud Recycle Bin
     const TRASH_PREFIX = '__TRASH__::';
 
@@ -1354,6 +1530,7 @@
       transactions: [],
       challans: [],
       staffActions: [],
+      userPermissionsMap: {},
       whatsappNumber: '919333782048',
       branding: {
         logo: '',
@@ -1375,9 +1552,38 @@
     let challanCart = [];
     let activeChallanNoForPDF = '';
     let pendingDeleteAction = null;
+    let editingPermissionsUser = null;
     let realtimeSubscription = null;
     let syncDebounceTimer = null;
     let autoSyncInterval = null;
+
+    function getUserAllowedMenus(user) {
+      if (!user) return [];
+      if (user.role === 'admin') {
+        return [...DEFAULT_STAFF_PERMISSIONS, 'recycle-bin', 'staff-actions', 'users', 'branding'];
+      }
+      const saved = db.userPermissionsMap[user.user_id];
+      return Array.isArray(saved) ? saved : DEFAULT_STAFF_PERMISSIONS;
+    }
+
+    function applySidebarPermissions() {
+      if (!currentUser) return;
+      const allowed = getUserAllowedMenus(currentUser);
+      document.querySelectorAll('.nav-btn[data-nav]').forEach(btn => {
+        const navKey = btn.dataset.nav;
+        if (allowed.includes(navKey)) {
+          btn.classList.remove('hidden');
+        } else {
+          btn.classList.add('hidden');
+        }
+      });
+
+      if (currentUser.role !== 'admin') {
+        document.getElementById('admin-nav-section').classList.add('hidden');
+      } else {
+        document.getElementById('admin-nav-section').classList.remove('hidden');
+      }
+    }
 
     function setLoading(show, text = 'Syncing with Supabase Cloud...') {
       const el = document.getElementById('loading-overlay');
@@ -1480,1687 +1686,4 @@
     function renderPublicCatalog() {
       const q = (document.getElementById('public-search').value || '').toLowerCase();
       const grid = document.getElementById('public-products-grid');
-      const items = getActiveProducts().filter(p =>
-        p.name.toLowerCase().includes(q) || getCleanCategory(p).toLowerCase().includes(q) || p.sku.toLowerCase().includes(q)
-      );
-
-      if (items.length === 0) {
-        grid.innerHTML = `<div class="col-span-full bg-white p-10 rounded-2xl border border-slate-200 text-center text-slate-400 text-sm">No study materials matching your search.</div>`;
-        return;
-      }
-
-      grid.innerHTML = items.map(p => {
-        const available = Number(p.current_stock) > 0;
-        return `
-          <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition border border-slate-200/80 overflow-hidden flex flex-col">
-            <div class="h-44 bg-slate-100 relative flex items-center justify-center overflow-hidden">
-              ${p.image_url
-                ? `<img src="${p.image_url}" class="w-full h-full object-cover" />`
-                : `<i class="fa-solid fa-book text-4xl text-slate-300"></i>`}
-              <span class="absolute top-3 left-3 bg-[#0b2559]/85 text-amber-300 text-[10px] font-mono font-bold px-2.5 py-0.5 rounded">${p.sku}</span>
-            </div>
-            <div class="p-4 flex-1 flex flex-col justify-between">
-              <div>
-                <span class="text-[10px] font-bold uppercase tracking-wider text-amber-600">${getCleanCategory(p) || 'Study Material'}</span>
-                <h3 class="font-bold text-[#0b2559] text-sm mt-1">${p.name}</h3>
-              </div>
-              <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                <span class="text-xs text-slate-400">Unit: ${p.unit}</span>
-                ${available
-                  ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-700"><i class="fa-solid fa-circle-check"></i> In Stock</span>`
-                  : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-700">Restocking</span>`}
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function openLoginModal() {
-      document.getElementById('public-home-screen').classList.add('hidden');
-      document.getElementById('login-screen').classList.remove('hidden');
-    }
-
-    function backToPublicHome() {
-      document.getElementById('login-screen').classList.add('hidden');
-      document.getElementById('public-home-screen').classList.remove('hidden');
-      loadPublicHomeData();
-    }
-
-    // ==================== ULTRA-FAST AUTO SYNC (REALTIME + 5s POLLING) ====================
-    function setupAutoRealtimeSync() {
-      if (realtimeSubscription) {
-        sb.removeChannel(realtimeSubscription);
-      }
-      if (autoSyncInterval) {
-        clearInterval(autoSyncInterval);
-      }
-
-      realtimeSubscription = sb
-        .channel('nbce-live-sync')
-        .on('postgres_changes', { event: '*', schema: 'public' }, () => {
-          clearTimeout(syncDebounceTimer);
-          syncDebounceTimer = setTimeout(async () => {
-            await refreshAllData(true);
-            showToast('Live update synced!');
-          }, 300);
-        })
-        .subscribe();
-
-      autoSyncInterval = setInterval(() => {
-        if (currentUser && document.visibilityState === 'visible') {
-          refreshAllData(true);
-        }
-      }, 5000);
-
-      document.addEventListener('visibilitychange', () => {
-        if (currentUser && document.visibilityState === 'visible') {
-          refreshAllData(true);
-        }
-      });
-    }
-
-    async function refreshAllData(silent = false) {
-      if (!silent) setLoading(true, 'Loading live data from Supabase...');
-      try {
-        const [usersRes, centresRes, prodsRes, logsRes, challansRes, actionsRes, settingsRes] = await Promise.all([
-          sb.from('app_users').select('*').order('created_at', { ascending: true }),
-          sb.from('study_centres').select('*').order('centre_code', { ascending: true }),
-          sb.from('products').select('*').order('name', { ascending: true }),
-          sb.from('stock_logs').select('*').order('created_at', { ascending: false }),
-          sb.from('challans').select('*').order('created_at', { ascending: false }),
-          sb.from('staff_actions').select('*').order('created_at', { ascending: false }).limit(150),
-          sb.from('app_settings').select('*')
-        ]);
-
-        db.users = usersRes.data || [];
-        db.studyCentres = centresRes.data || [];
-        db.products = prodsRes.data || [];
-        db.transactions = logsRes.data || [];
-        db.challans = challansRes.data || [];
-        db.staffActions = actionsRes.data || [];
-
-        if (settingsRes.data) {
-          settingsRes.data.forEach(row => {
-            if (row.key === 'whatsapp_number' && row.value) db.whatsappNumber = row.value;
-            if (row.key === 'site_logo') db.branding.logo = row.value || '';
-            if (row.key === 'site_hero_banner') db.branding.heroBanner = row.value || '';
-            if (row.key === 'site_hero_heading' && row.value) db.branding.heroHeading = row.value;
-            if (row.key === 'site_hero_desc' && row.value) db.branding.heroDesc = row.value;
-            if (row.key === 'site_title' && row.value) db.branding.title = row.value;
-            if (row.key === 'site_subtitle' && row.value) db.branding.subtitle = row.value;
-            if (row.key === 'site_ticker' && row.value) db.branding.ticker = row.value;
-            if (row.key === 'site_address' && row.value) db.branding.address = row.value;
-          });
-        }
-
-        applySiteBranding();
-        updateBadges();
-        const activeBtn = document.querySelector('.nav-btn.bg-indigo-600');
-        const currentView = activeBtn ? activeBtn.dataset.nav : 'home';
-
-        if (!silent || !['add-product', 'stock-in', 'stock-sold', 'stock-return', 'study-centres', 'users', 'reports', 'branding'].includes(currentView)) {
-          renderCurrentView(currentView);
-        }
-      } catch (err) {
-        console.error(err);
-        if (!silent) alert('Error connecting to Supabase: ' + err.message);
-      } finally {
-        if (!silent) setLoading(false);
-      }
-    }
-
-    async function logAction(actionType, details) {
-      if (!currentUser) return;
-      await sb.from('staff_actions').insert([{
-        staff_name: currentUser.full_name,
-        role: currentUser.role,
-        action_type: actionType,
-        details
-      }]);
-    }
-
-    // ==================== AUTHENTICATION ====================
-    document.getElementById('login-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const uid = document.getElementById('login-userid').value.trim();
-      const pass = document.getElementById('login-password').value.trim();
-      const err = document.getElementById('login-error');
-      err.classList.add('hidden');
-
-      setLoading(true, 'Verifying credentials...');
-      const { data: user, error } = await sb
-        .from('app_users')
-        .select('*')
-        .eq('user_id', uid)
-        .eq('password', pass)
-        .eq('is_active', true)
-        .maybeSingle();
-
-      setLoading(false);
-
-      if (error) {
-        err.textContent = 'Supabase Error: ' + error.message;
-        err.classList.remove('hidden');
-        return;
-      }
-
-      if (!user) {
-        err.textContent = 'Invalid User ID, Password, or inactive account.';
-        err.classList.remove('hidden');
-        return;
-      }
-
-      currentUser = user;
-      sessionStorage.setItem('NBCE_CLOUD_USER', JSON.stringify(user));
-      await logAction('LOGIN', `${user.full_name} logged into ${db.branding.title}`);
-      initApp();
-    });
-
-    async function logout() {
-      await logAction('LOGOUT', `${currentUser.full_name} logged out`);
-      sessionStorage.removeItem('NBCE_CLOUD_USER');
-      currentUser = null;
-      if (realtimeSubscription) sb.removeChannel(realtimeSubscription);
-      if (autoSyncInterval) clearInterval(autoSyncInterval);
-      document.getElementById('app-shell').classList.add('hidden');
-      document.getElementById('login-screen').classList.add('hidden');
-      document.getElementById('public-home-screen').classList.remove('hidden');
-      loadPublicHomeData();
-    }
-
-    async function initApp() {
-      document.getElementById('public-home-screen').classList.add('hidden');
-      document.getElementById('login-screen').classList.add('hidden');
-      document.getElementById('app-shell').classList.remove('hidden');
-
-      document.getElementById('user-display-name').textContent = currentUser.full_name;
-      document.getElementById('user-display-id').textContent = '@' + currentUser.user_id;
-      document.getElementById('user-avatar').textContent = currentUser.full_name.charAt(0).toUpperCase();
-      document.getElementById('sidebar-role-badge').textContent = currentUser.role;
-      document.getElementById('live-date-display').textContent = new Date().toDateString();
-
-      if (currentUser.role !== 'admin') {
-        document.getElementById('admin-nav-section').classList.add('hidden');
-      } else {
-        document.getElementById('admin-nav-section').classList.remove('hidden');
-      }
-
-      await refreshAllData(false);
-      setupAutoRealtimeSync();
-      navigate('home');
-    }
-
-    // ==================== NAVIGATION ====================
-    const pageMeta = {
-      'home': ['Home & Real-Time Stock Overview', 'Live cloud inventory monitoring across store'],
-      'products': ['Product Catalog', 'All registered items with images & stock status'],
-      'add-product': ['Add Product', 'Register new items with picture & automatic date'],
-      'stock-in': ['Stock In', 'Record incoming stock arrivals'],
-      'stock-sold': ['Stock Sold / Dispatch', 'Dispatch items to Study Centres & generate Challan'],
-      'stock-return': ['Stock Return & Damage', 'Record returned items from centres or damaged stock'],
-      'challans': ['Challan Register', 'View, print & download PDF dispatch challans'],
-      'study-centres': ['Study Centres', 'Manage study centre codes, mobiles & addresses'],
-      'low-stock': ['Low Stock Alerts', 'Items below minimum threshold with Auto WhatsApp'],
-      'reports': ['Filter-Wise Reports', 'Analyze transactions & export to Excel (.xlsx) or PDF'],
-      'recycle-bin': ['Recycle Bin', 'Restore deleted products or delete them permanently'],
-      'staff-actions': ['Staff Action Status', 'Complete audit log of staff & admin operations'],
-      'users': ['ID & Password Creation', 'Create and manage Staff & Admin login IDs'],
-      'branding': ['Site Branding & Hero Banner', 'Upload logo, hero banner & edit Home Page content']
-    };
-
-    function renderCurrentView(view) {
-      if (view === 'home') renderHome();
-      if (view === 'products') renderProducts();
-      if (view === 'add-product') prepAddProduct();
-      if (view === 'stock-in') prepStockIn();
-      if (view === 'stock-sold') prepStockSold();
-      if (view === 'stock-return') prepStockReturn();
-      if (view === 'challans') renderChallans();
-      if (view === 'study-centres') renderStudyCentres();
-      if (view === 'low-stock') renderLowStock();
-      if (view === 'reports') prepReports();
-      if (view === 'recycle-bin') renderRecycleBin();
-      if (view === 'staff-actions') renderStaffActions();
-      if (view === 'users') renderUsers();
-      if (view === 'branding') prepBranding();
-    }
-
-    function navigate(view) {
-      if (['staff-actions', 'users', 'branding', 'recycle-bin'].includes(view) && currentUser.role !== 'admin') {
-        alert('Access Denied: Admin permission required.');
-        return;
-      }
-
-      document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-      document.getElementById('view-' + view).classList.remove('hidden');
-
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        if (btn.dataset.nav === view) {
-          btn.classList.add('bg-indigo-600', 'text-white');
-          btn.classList.remove('text-slate-300', 'hover:bg-slate-800');
-        } else {
-          btn.classList.remove('bg-indigo-600', 'text-white');
-          btn.classList.add('text-slate-300', 'hover:bg-slate-800');
-        }
-      });
-
-      if (pageMeta[view]) {
-        document.getElementById('page-title').textContent = pageMeta[view][0];
-        document.getElementById('page-subtitle').textContent = pageMeta[view][1];
-      }
-
-      document.getElementById('sidebar').classList.add('-translate-x-full');
-      document.getElementById('sidebar-backdrop').classList.add('hidden');
-      renderCurrentView(view);
-    }
-
-    function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('-translate-x-full');
-      document.getElementById('sidebar-backdrop').classList.toggle('hidden');
-    }
-
-    function updateBadges() {
-      const activeProds = getActiveProducts();
-      const trashedProds = getTrashedProducts();
-      const lowItems = activeProds.filter(p => Number(p.current_stock) <= Number(p.min_stock));
-
-      document.getElementById('sidebar-low-badge').textContent = lowItems.length;
-      document.getElementById('mobile-low-badge').textContent = lowItems.length;
-      document.getElementById('top-low-count').textContent = lowItems.length;
-      document.getElementById('sidebar-trash-badge').textContent = trashedProds.length;
-      document.getElementById('catalog-trash-count').textContent = trashedProds.length;
-    }
-
-    // ==================== 01 & 09: HOME & REAL-TIME STOCK ====================
-    function renderHome() {
-      const today = new Date().toISOString().split('T')[0];
-      const activeProds = getActiveProducts();
-      const totalUnits = activeProds.reduce((sum, p) => sum + Number(p.current_stock), 0);
-      const todayIn = db.transactions.filter(t => t.tx_date === today && (t.type === 'IN' || t.type === 'RETURN')).reduce((s, t) => s + Number(t.quantity), 0);
-      const todaySold = db.transactions.filter(t => t.tx_date === today && t.type === 'OUT').reduce((s, t) => s + Number(t.quantity), 0);
-      const lowItems = activeProds.filter(p => Number(p.current_stock) <= Number(p.min_stock));
-
-      document.getElementById('kpi-total-products').textContent = activeProds.length;
-      document.getElementById('kpi-total-units').textContent = totalUnits;
-      document.getElementById('kpi-today-in').textContent = '+' + todayIn;
-      document.getElementById('kpi-today-sold').textContent = '-' + todaySold;
-      document.getElementById('kpi-low-stock').textContent = lowItems.length;
-
-      const banner = document.getElementById('home-low-stock-banner');
-      if (lowItems.length > 0) {
-        banner.classList.remove('hidden');
-        document.getElementById('home-low-stock-text').textContent =
-          lowItems.map(i => `${i.name} (${i.current_stock} ${i.unit} left)`).join(' • ');
-      } else {
-        banner.classList.add('hidden');
-      }
-
-      const query = (document.getElementById('home-search').value || '').toLowerCase();
-      const filtered = activeProds.filter(p =>
-        p.name.toLowerCase().includes(query) || p.sku.toLowerCase().includes(query)
-      );
-
-      const tbody = document.getElementById('home-stock-tbody');
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400 text-xs">No products found. Click "Add Product" to start adding items.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = filtered.map(p => {
-        const isLow = Number(p.current_stock) <= Number(p.min_stock);
-        return `
-          <tr class="${isLow ? 'bg-red-50/60' : 'hover:bg-slate-50'}">
-            <td class="py-3 px-4 font-semibold text-slate-800 flex items-center gap-3">
-              ${p.image_url
-                ? `<img src="${p.image_url}" class="w-9 h-9 rounded-lg object-cover border" />`
-                : `<div class="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">${p.name.charAt(0)}</div>`}
-              <span>${p.name}</span>
-            </td>
-            <td class="py-3 px-4 text-xs font-mono text-slate-500">${p.sku}</td>
-            <td class="py-3 px-4 text-xs text-slate-600">${getCleanCategory(p) || '-'}</td>
-            <td class="py-3 px-4 font-extrabold ${isLow ? 'text-red-600' : 'text-slate-800'}">${p.current_stock} ${p.unit}</td>
-            <td class="py-3 px-4 text-xs text-slate-500">${p.min_stock} ${p.unit}</td>
-            <td class="py-3 px-4">
-              ${isLow
-                ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-100 text-red-700 animate-pulse"><i class="fa-solid fa-triangle-exclamation"></i> Low Stock</span>`
-                : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-700">In Stock</span>`}
-            </td>
-            <td class="py-3 px-4 text-right space-x-1">
-              <button onclick="navigate('stock-in')" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold px-2.5 py-1 rounded-lg">+ In</button>
-              <button onclick="navigate('stock-sold')" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-700 font-semibold px-2.5 py-1 rounded-lg">- Sell</button>
-            </td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    // ==================== 03, 04 & 05: PRODUCTS, CUSTOM DELETE WARNING & RECYCLE BIN ====================
-    function renderProducts() {
-      const q = (document.getElementById('product-search').value || '').toLowerCase();
-      const list = getActiveProducts().filter(p =>
-        p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q) || getCleanCategory(p).toLowerCase().includes(q)
-      );
-
-      const isAdmin = currentUser && currentUser.role === 'admin';
-      const trashBtn = document.getElementById('catalog-trash-btn');
-      if (isAdmin) {
-        trashBtn.classList.remove('hidden');
-      } else {
-        trashBtn.classList.add('hidden');
-      }
-
-      const grid = document.getElementById('products-grid');
-      if (list.length === 0) {
-        grid.innerHTML = `<div class="col-span-full bg-white p-10 rounded-2xl text-center text-slate-400 text-sm">No products found in catalog.</div>`;
-        return;
-      }
-
-      grid.innerHTML = list.map(p => {
-        const isLow = Number(p.current_stock) <= Number(p.min_stock);
-        return `
-          <div class="bg-white rounded-2xl shadow-sm border ${isLow ? 'border-red-400 low-stock-pulse' : 'border-slate-200/70'} overflow-hidden flex flex-col">
-            <div class="h-40 bg-slate-100 relative flex items-center justify-center overflow-hidden">
-              ${p.image_url
-                ? `<img src="${p.image_url}" class="w-full h-full object-cover" />`
-                : `<i class="fa-solid fa-box-open text-4xl text-slate-300"></i>`}
-              <span class="absolute top-2.5 left-2.5 bg-slate-900/75 text-white text-[10px] font-mono px-2 py-0.5 rounded">${p.sku}</span>
-              ${isLow ? `<span class="absolute top-2.5 right-2.5 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">LOW STOCK</span>` : ''}
-            </div>
-            <div class="p-4 flex-1 flex flex-col justify-between">
-              <div>
-                <p class="text-[11px] text-indigo-600 font-semibold uppercase">${getCleanCategory(p) || 'General'}</p>
-                <h3 class="font-bold text-slate-800 text-sm mt-0.5">${p.name}</h3>
-                <p class="text-[11px] text-slate-400 mt-1"><i class="fa-regular fa-calendar mr-1"></i>Added: ${p.added_date}</p>
-              </div>
-              <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                <div>
-                  <span class="text-[10px] text-slate-400 block">Current Stock</span>
-                  <span class="font-extrabold text-base ${isLow ? 'text-red-600' : 'text-slate-800'}">${p.current_stock} ${p.unit}</span>
-                </div>
-                <span class="text-[11px] text-slate-500">Min: ${p.min_stock}</span>
-              </div>
-              ${isAdmin ? `
-                <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center gap-2">
-                  <button onclick="openEditProductModal('${p.id}')" class="flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold py-1.5 rounded-lg transition">
-                    <i class="fa-solid fa-pen-to-square mr-1"></i> Edit
-                  </button>
-                  <button onclick="confirmMoveToRecycleBin('${p.id}')" class="flex-1 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold py-1.5 rounded-lg transition">
-                    <i class="fa-solid fa-trash mr-1"></i> Delete
-                  </button>
-                </div>
-              ` : ''}
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    // ==================== CUSTOM DELETE WARNING POPUP (YES / NO) ====================
-    function confirmMoveToRecycleBin(prodId) {
-      if (currentUser.role !== 'admin') return;
-      const p = db.products.find(item => item.id === prodId);
-      if (!p) return;
-
-      document.getElementById('del-modal-icon-wrap').className = 'w-16 h-16 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mx-auto text-3xl shadow-inner';
-      document.getElementById('del-modal-subtitle').innerHTML =
-        `Product <strong>"${p.name}"</strong> (${p.sku}) will be moved to the <strong>Recycle Bin</strong>. You can restore it anytime later.`;
-      document.getElementById('del-modal-yes-btn').className = 'flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl text-sm shadow transition';
-
-      pendingDeleteAction = { type: 'SOFT_DELETE', product: p };
-      const modal = document.getElementById('delete-confirm-modal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-
-    function confirmPermanentDelete(prodId) {
-      if (currentUser.role !== 'admin') return;
-      const p = db.products.find(item => item.id === prodId);
-      if (!p) return;
-
-      document.getElementById('del-modal-icon-wrap').className = 'w-16 h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto text-3xl shadow-inner';
-      document.getElementById('del-modal-subtitle').innerHTML =
-        `<strong>Permanent Delete Warning:</strong> "${p.name}" (${p.sku}) will be permanently removed and cannot be restored!`;
-      document.getElementById('del-modal-yes-btn').className = 'flex-1 bg-red-700 hover:bg-red-800 text-white font-bold py-2.5 rounded-xl text-sm shadow transition';
-
-      pendingDeleteAction = { type: 'PERMANENT_DELETE', product: p };
-      const modal = document.getElementById('delete-confirm-modal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-
-    function closeDeleteConfirmModal() {
-      pendingDeleteAction = null;
-      const modal = document.getElementById('delete-confirm-modal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
-
-    async function executeConfirmedDelete() {
-      if (!pendingDeleteAction || currentUser.role !== 'admin') return;
-      const { type, product } = pendingDeleteAction;
-      closeDeleteConfirmModal();
-
-      if (type === 'SOFT_DELETE') {
-        setLoading(true, 'Moving product to Recycle Bin...');
-        const cleanCat = getCleanCategory(product);
-        const { error } = await sb.from('products').update({
-          category: TRASH_PREFIX + cleanCat
-        }).eq('id', product.id);
-
-        if (error) {
-          setLoading(false);
-          alert('Error moving to Recycle Bin: ' + error.message);
-          return;
-        }
-
-        await logAction('MOVE_TO_RECYCLE_BIN', `Moved product "${product.name}" (${product.sku}) to Recycle Bin`);
-        await refreshAllData(false);
-        showToast(`"${product.name}" moved to Recycle Bin!`);
-      } else if (type === 'PERMANENT_DELETE') {
-        setLoading(true, 'Permanently deleting product...');
-        const { error } = await sb.from('products').delete().eq('id', product.id);
-        if (error) {
-          setLoading(false);
-          alert('Error deleting product: ' + error.message);
-          return;
-        }
-
-        await logAction('PERMANENT_DELETE', `Permanently deleted product "${product.name}" (${product.sku})`);
-        await refreshAllData(false);
-        showToast(`"${product.name}" permanently deleted!`);
-      }
-    }
-
-    // ==================== RECYCLE BIN RENDER & RESTORE ====================
-    function renderRecycleBin() {
-      const trashed = getTrashedProducts();
-      const grid = document.getElementById('recycle-bin-grid');
-
-      if (trashed.length === 0) {
-        grid.innerHTML = `
-          <div class="col-span-full bg-white p-12 rounded-2xl border border-slate-200 text-center text-slate-400">
-            <i class="fa-solid fa-trash-can text-4xl mb-2 text-slate-300"></i>
-            <p class="font-semibold text-sm text-slate-600">Recycle Bin is Empty</p>
-            <p class="text-xs mt-1">Deleted products will appear here so you can restore or permanently remove them.</p>
-          </div>`;
-        return;
-      }
-
-      grid.innerHTML = trashed.map(p => `
-        <div class="bg-white rounded-2xl shadow-sm border border-rose-200 overflow-hidden flex flex-col">
-          <div class="h-36 bg-slate-100 relative flex items-center justify-center overflow-hidden opacity-80">
-            ${p.image_url
-              ? `<img src="${p.image_url}" class="w-full h-full object-cover grayscale" />`
-              : `<i class="fa-solid fa-box-open text-4xl text-slate-300"></i>`}
-            <span class="absolute top-2.5 left-2.5 bg-slate-900/80 text-white text-[10px] font-mono px-2 py-0.5 rounded">${p.sku}</span>
-            <span class="absolute top-2.5 right-2.5 bg-rose-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">DELETED</span>
-          </div>
-          <div class="p-4 flex-1 flex flex-col justify-between">
-            <div>
-              <p class="text-[11px] text-slate-400 font-semibold uppercase">${getCleanCategory(p) || 'General'}</p>
-              <h3 class="font-bold text-slate-800 text-sm mt-0.5">${p.name}</h3>
-              <p class="text-xs text-slate-500 mt-1">Saved Stock: <strong>${p.current_stock} ${p.unit}</strong></p>
-            </div>
-            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center gap-2">
-              <button onclick="restoreProductFromBin('${p.id}')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 rounded-lg transition shadow-xs">
-                <i class="fa-solid fa-rotate-left mr-1"></i> Restore
-              </button>
-              <button onclick="confirmPermanentDelete('${p.id}')" class="flex-1 bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 rounded-lg transition shadow-xs">
-                <i class="fa-solid fa-ban mr-1"></i> Permanent Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    async function restoreProductFromBin(prodId) {
-      if (currentUser.role !== 'admin') return;
-      const p = db.products.find(item => item.id === prodId);
-      if (!p) return;
-
-      setLoading(true, 'Restoring product to catalog...');
-      const restoredCategory = getCleanCategory(p);
-      const { error } = await sb.from('products').update({
-        category: restoredCategory
-      }).eq('id', p.id);
-
-      if (error) {
-        setLoading(false);
-        alert('Error restoring product: ' + error.message);
-        return;
-      }
-
-      await logAction('RESTORE_PRODUCT', `Restored product "${p.name}" (${p.sku}) from Recycle Bin`);
-      await refreshAllData(false);
-      showToast(`"${p.name}" restored to active catalog!`);
-    }
-
-    // ==================== EDIT PRODUCT MODAL ====================
-    function openEditProductModal(prodId) {
-      if (currentUser.role !== 'admin') return;
-      const p = db.products.find(item => item.id === prodId);
-      if (!p) return;
-
-      document.getElementById('edit-prod-id').value = p.id;
-      document.getElementById('edit-prod-name').value = p.name;
-      document.getElementById('edit-prod-sku').value = p.sku;
-      document.getElementById('edit-prod-category').value = getCleanCategory(p);
-      document.getElementById('edit-prod-unit').value = p.unit || 'Pcs';
-      document.getElementById('edit-prod-min').value = p.min_stock;
-      editProductImage = p.image_url || '';
-
-      const prev = document.getElementById('edit-prod-image-preview');
-      if (editProductImage) {
-        prev.src = editProductImage;
-        prev.classList.remove('hidden');
-      } else {
-        prev.classList.add('hidden');
-      }
-
-      const modal = document.getElementById('edit-product-modal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-
-    function closeEditProductModal() {
-      const modal = document.getElementById('edit-product-modal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
-
-    function handleEditProductImage(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          const maxW = 360;
-          const scale = maxW / img.width;
-          canvas.width = maxW;
-          canvas.height = img.height * scale;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          editProductImage = canvas.toDataURL('image/jpeg', 0.72);
-          const prev = document.getElementById('edit-prod-image-preview');
-          prev.src = editProductImage;
-          prev.classList.remove('hidden');
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    document.getElementById('edit-product-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      if (currentUser.role !== 'admin') return;
-      const id = document.getElementById('edit-prod-id').value;
-      const name = document.getElementById('edit-prod-name').value.trim();
-      const sku = document.getElementById('edit-prod-sku').value.trim().toUpperCase();
-      const category = document.getElementById('edit-prod-category').value.trim();
-      const unit = document.getElementById('edit-prod-unit').value;
-      const minStock = parseInt(document.getElementById('edit-prod-min').value) || 10;
-
-      setLoading(true, 'Updating product details...');
-      const { error } = await sb.from('products').update({
-        name,
-        sku,
-        category,
-        unit,
-        min_stock: minStock,
-        image_url: editProductImage
-      }).eq('id', id);
-
-      if (error) {
-        setLoading(false);
-        alert('Error updating product: ' + error.message);
-        return;
-      }
-
-      await logAction('EDIT_PRODUCT', `Updated product "${name}" (${sku})`);
-      closeEditProductModal();
-      await refreshAllData(false);
-      showToast('Product updated successfully!');
-    });
-
-    function prepAddProduct() {
-      document.getElementById('prod-auto-date').value = new Date().toISOString().split('T')[0];
-      uploadedProductImage = '';
-      document.getElementById('prod-image-preview').classList.add('hidden');
-      document.getElementById('prod-image-placeholder').classList.remove('hidden');
-    }
-
-    function handleProductImage(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          const maxW = 360;
-          const scale = maxW / img.width;
-          canvas.width = maxW;
-          canvas.height = img.height * scale;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          uploadedProductImage = canvas.toDataURL('image/jpeg', 0.72);
-
-          const preview = document.getElementById('prod-image-preview');
-          preview.src = uploadedProductImage;
-          preview.classList.remove('hidden');
-          document.getElementById('prod-image-placeholder').classList.add('hidden');
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    document.getElementById('add-product-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const name = document.getElementById('prod-name').value.trim();
-      const sku = document.getElementById('prod-sku').value.trim().toUpperCase();
-      const category = document.getElementById('prod-category').value.trim();
-      const stock = parseInt(document.getElementById('prod-stock').value) || 0;
-      const minStock = parseInt(document.getElementById('prod-min').value) || 10;
-      const unit = document.getElementById('prod-unit').value;
-      const addedDate = document.getElementById('prod-auto-date').value;
-
-      if (db.products.some(p => p.sku === sku)) {
-        alert('Product SKU already exists (check active catalog or Recycle Bin)!');
-        return;
-      }
-
-      setLoading(true, 'Saving product to Supabase...');
-      const { data: insertedProd, error } = await sb.from('products').insert([{
-        sku,
-        name,
-        category,
-        unit,
-        current_stock: stock,
-        min_stock: minStock,
-        image_url: uploadedProductImage,
-        added_date: addedDate
-      }]).select().single();
-
-      if (error) {
-        setLoading(false);
-        alert('Error: ' + error.message);
-        return;
-      }
-
-      if (stock > 0 && insertedProd) {
-        await sb.from('stock_logs').insert([{
-          type: 'IN',
-          product_id: insertedProd.id,
-          product_name: name,
-          quantity: stock,
-          centre_code: '-',
-          challan_no: '-',
-          staff_name: currentUser.full_name,
-          remarks: 'Opening Stock',
-          tx_date: addedDate
-        }]);
-      }
-
-      await logAction('ADD_PRODUCT', `Added product "${name}" (${sku}) with ${stock} ${unit}`);
-      this.reset();
-      await refreshAllData(false);
-      showToast('Product saved to Cloud!');
-      navigate('products');
-    });
-
-    // ==================== 06: STOCK IN ====================
-    function prepStockIn() {
-      document.getElementById('stockin-date').value = new Date().toISOString().split('T')[0];
-      document.getElementById('stockin-product').innerHTML = getActiveProducts().map(p =>
-        `<option value="${p.id}">${p.name} (${p.sku}) — Current: ${p.current_stock} ${p.unit}</option>`
-      ).join('');
-    }
-
-    document.getElementById('stock-in-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const prodId = document.getElementById('stockin-product').value;
-      const qty = parseInt(document.getElementById('stockin-qty').value);
-      const date = document.getElementById('stockin-date').value;
-      const remarks = document.getElementById('stockin-remarks').value.trim() || 'Stock Restock';
-
-      const product = getActiveProducts().find(p => p.id === prodId);
-      if (!product || qty <= 0) return;
-
-      setLoading(true, 'Updating stock in Cloud...');
-      const newStock = Number(product.current_stock) + qty;
-
-      const { error } = await sb.from('products').update({ current_stock: newStock }).eq('id', prodId);
-      if (error) {
-        setLoading(false);
-        alert('Error: ' + error.message);
-        return;
-      }
-
-      await sb.from('stock_logs').insert([{
-        type: 'IN',
-        product_id: product.id,
-        product_name: product.name,
-        quantity: qty,
-        centre_code: '-',
-        challan_no: '-',
-        staff_name: currentUser.full_name,
-        remarks,
-        tx_date: date
-      }]);
-
-      await logAction('STOCK_IN', `Added +${qty} ${product.unit} to "${product.name}"`);
-      this.reset();
-      await refreshAllData(false);
-      showToast(`+${qty} ${product.unit} added to ${product.name}`);
-      navigate('home');
-    });
-
-    // ==================== STOCK RETURN & DAMAGE ENTRY ====================
-    function prepStockReturn() {
-      document.getElementById('ret-date').value = new Date().toISOString().split('T')[0];
-      document.getElementById('ret-product').innerHTML = getActiveProducts().map(p =>
-        `<option value="${p.id}">${p.name} (${p.sku}) — Current: ${p.current_stock} ${p.unit}</option>`
-      ).join('');
-      document.getElementById('ret-centre').innerHTML =
-        `<option value="-">-- Select Study Centre (Optional) --</option>` +
-        db.studyCentres.map(c => `<option value="${c.centre_code}">${c.centre_code} — ${c.centre_name}</option>`).join('');
-      toggleReturnCentreField();
-    }
-
-    function toggleReturnCentreField() {
-      const type = document.getElementById('ret-type').value;
-      const wrap = document.getElementById('ret-centre-wrap');
-      if (type === 'RETURN') {
-        wrap.classList.remove('hidden');
-      } else {
-        wrap.classList.add('hidden');
-      }
-    }
-
-    document.getElementById('stock-return-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const type = document.getElementById('ret-type').value;
-      const date = document.getElementById('ret-date').value;
-      const centreCode = type === 'RETURN' ? (document.getElementById('ret-centre').value || '-') : '-';
-      const prodId = document.getElementById('ret-product').value;
-      const qty = parseInt(document.getElementById('ret-qty').value);
-      const remarks = document.getElementById('ret-remarks').value.trim();
-
-      const product = getActiveProducts().find(p => p.id === prodId);
-      if (!product || qty <= 0) return;
-
-      if (type === 'DAMAGE' && qty > Number(product.current_stock)) {
-        alert(`Cannot deduct ${qty} ${product.unit}! Only ${product.current_stock} ${product.unit} available.`);
-        return;
-      }
-
-      setLoading(true, 'Recording Return / Damage entry...');
-      const newStock = type === 'RETURN'
-        ? Number(product.current_stock) + qty
-        : Math.max(0, Number(product.current_stock) - qty);
-
-      const { error } = await sb.from('products').update({ current_stock: newStock }).eq('id', prodId);
-      if (error) {
-        setLoading(false);
-        alert('Error: ' + error.message);
-        return;
-      }
-
-      await sb.from('stock_logs').insert([{
-        type,
-        product_id: product.id,
-        product_name: product.name,
-        quantity: qty,
-        centre_code: centreCode,
-        challan_no: '-',
-        staff_name: currentUser.full_name,
-        remarks,
-        tx_date: date
-      }]);
-
-      if (type === 'DAMAGE' && newStock <= Number(product.min_stock)) {
-        const lowMsg = `🚨 *${db.branding.title} — AUTO LOW STOCK ALERT* 🚨\n\n*Product:* ${product.name}\n*SKU:* ${product.sku}\n*Remaining Stock:* ${newStock} ${product.unit} (After Damage Entry)\n*Min Alert Limit:* ${product.min_stock} ${product.unit}`;
-        await sendPeriskopeMessage(db.whatsappNumber, lowMsg);
-      }
-
-      await logAction(type === 'RETURN' ? 'STOCK_RETURN' : 'STOCK_DAMAGE',
-        `${type === 'RETURN' ? 'Returned +' : 'Damaged -'}${qty} ${product.unit} of "${product.name}" (${remarks})`);
-
-      this.reset();
-      await refreshAllData(false);
-      showToast(type === 'RETURN' ? `Returned +${qty} ${product.unit} added to stock!` : `Damaged -${qty} ${product.unit} deducted!`);
-      navigate('home');
-    });
-
-    // ==================== 07 & 08: STOCK SOLD, CHALLAN & ZERO-CLICK WHATSAPP ====================
-    function prepStockSold() {
-      challanCart = [];
-      renderChallanCart();
-      document.getElementById('sold-date').value = new Date().toISOString().split('T')[0];
-      document.getElementById('next-challan-badge').textContent = 'CH-' + (1001 + db.challans.length);
-
-      document.getElementById('sold-centre').innerHTML =
-        `<option value="">-- Select Study Centre --</option>` +
-        db.studyCentres.map(c => `<option value="${c.centre_code}">${c.centre_code} — ${c.centre_name}</option>`).join('');
-
-      document.getElementById('sold-product-select').innerHTML =
-        getActiveProducts().map(p => `<option value="${p.id}">${p.name} (Available: ${p.current_stock} ${p.unit})</option>`).join('');
-
-      document.getElementById('sold-centre-info').classList.add('hidden');
-    }
-
-    function fillCentrePreview() {
-      const code = document.getElementById('sold-centre').value;
-      const centre = db.studyCentres.find(c => c.centre_code === code);
-      const box = document.getElementById('sold-centre-info');
-      if (!centre) {
-        box.classList.add('hidden');
-        return;
-      }
-      box.classList.remove('hidden');
-      box.innerHTML = `
-        <span><strong>Code:</strong> ${centre.centre_code}</span>
-        <span><strong>Mobile:</strong> ${centre.mobile}</span>
-        <span><strong>Address:</strong> ${centre.address}</span>
-      `;
-    }
-
-    function addChallanItem() {
-      const prodId = document.getElementById('sold-product-select').value;
-      const qty = parseInt(document.getElementById('sold-qty-input').value);
-      const product = getActiveProducts().find(p => p.id === prodId);
-
-      if (!product || !qty || qty <= 0) {
-        alert('Please enter a valid quantity.');
-        return;
-      }
-
-      const existing = challanCart.find(i => i.productId === prodId);
-      const totalRequested = (existing ? existing.qty : 0) + qty;
-
-      if (totalRequested > Number(product.current_stock)) {
-        alert(`Insufficient stock! Only ${product.current_stock} ${product.unit} available.`);
-        return;
-      }
-
-      if (existing) {
-        existing.qty += qty;
-      } else {
-        challanCart.push({
-          productId: product.id,
-          sku: product.sku,
-          name: product.name,
-          qty,
-          unit: product.unit
-        });
-      }
-
-      document.getElementById('sold-qty-input').value = '';
-      renderChallanCart();
-    }
-
-    function removeChallanItem(idx) {
-      challanCart.splice(idx, 1);
-      renderChallanCart();
-    }
-
-    function renderChallanCart() {
-      const tbody = document.getElementById('challan-cart-tbody');
-      if (challanCart.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="py-3 text-center text-slate-400">No items added yet</td></tr>`;
-        return;
-      }
-      tbody.innerHTML = challanCart.map((item, idx) => `
-        <tr>
-          <td class="py-2 font-semibold">${item.name}</td>
-          <td class="py-2 font-mono text-slate-500">${item.sku}</td>
-          <td class="py-2 font-bold text-amber-700">${item.qty} ${item.unit}</td>
-          <td class="py-2 text-right">
-            <button type="button" onclick="removeChallanItem(${idx})" class="text-red-500 hover:text-red-700">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    document.getElementById('stock-sold-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const centreCode = document.getElementById('sold-centre').value;
-      const date = document.getElementById('sold-date').value;
-      const remarks = document.getElementById('sold-remarks').value.trim() || 'Study Centre Dispatch';
-
-      if (!centreCode) {
-        alert('Please select a Study Centre.');
-        return;
-      }
-      if (challanCart.length === 0) {
-        alert('Please add at least one product to dispatch.');
-        return;
-      }
-
-      const centre = db.studyCentres.find(c => c.centre_code === centreCode);
-      const challanNo = 'CH-' + (1001 + db.challans.length);
-      const totalQty = challanCart.reduce((s, i) => s + i.qty, 0);
-
-      setLoading(true, 'Generating Challan & sending auto WhatsApp...');
-
-      const lowStockTriggeredItems = [];
-
-      for (const item of challanCart) {
-        const prod = getActiveProducts().find(p => p.id === item.productId);
-        if (prod) {
-          const updatedStock = Math.max(0, Number(prod.current_stock) - item.qty);
-          await sb.from('products').update({ current_stock: updatedStock }).eq('id', prod.id);
-          if (updatedStock <= Number(prod.min_stock)) {
-            lowStockTriggeredItems.push({ ...prod, remaining: updatedStock });
-          }
-        }
-
-        await sb.from('stock_logs').insert([{
-          type: 'OUT',
-          product_id: item.productId,
-          product_name: item.name,
-          quantity: item.qty,
-          centre_code: centre.centre_code,
-          challan_no: challanNo,
-          staff_name: currentUser.full_name,
-          remarks,
-          tx_date: date
-        }]);
-      }
-
-      await sb.from('challans').insert([{
-        challan_no: challanNo,
-        centre_code: centre.centre_code,
-        centre_name: centre.centre_name,
-        mobile: centre.mobile,
-        address: centre.address,
-        items: challanCart,
-        total_qty: totalQty,
-        issued_by: currentUser.full_name,
-        challan_date: date
-      }]);
-
-      const itemsSummary = challanCart.map((it, idx) => `${idx + 1}. ${it.name} (${it.qty} ${it.unit})`).join('\n');
-      const adminChallanMsg = `📦 *${db.branding.title} — NEW CHALLAN*\n\n*Challan No:* ${challanNo}\n*Date:* ${date}\n*Centre:* ${centre.centre_name} (${centre.centre_code})\n*Items:*\n${itemsSummary}\n\n*Total:* ${totalQty} Units\n*Issued By:* ${currentUser.full_name}`;
-      await sendPeriskopeMessage(db.whatsappNumber, adminChallanMsg);
-
-      if (centre.mobile && formatIndianPhone(centre.mobile) !== formatIndianPhone(db.whatsappNumber)) {
-        const centreMsg = `✅ *${db.branding.title} — DISPATCH ALERT*\n\nDear *${centre.centre_name}* (${centre.centre_code}),\nYour study materials have been dispatched.\n\n*Challan No:* ${challanNo}\n*Date:* ${date}\n*Items:*\n${itemsSummary}\n\n*Note:* ${remarks}`;
-        await sendPeriskopeMessage(centre.mobile, centreMsg);
-      }
-
-      for (const lowP of lowStockTriggeredItems) {
-        const lowMsg = `🚨 *${db.branding.title} — AUTO LOW STOCK ALERT* 🚨\n\n*Product:* ${lowP.name}\n*SKU:* ${lowP.sku}\n*Remaining Stock:* ${lowP.remaining} ${lowP.unit}\n*Min Alert Limit:* ${lowP.min_stock} ${lowP.unit}\n\nPlease arrange restock immediately.`;
-        await sendPeriskopeMessage(db.whatsappNumber, lowMsg);
-      }
-
-      await logAction('STOCK_SOLD', `Generated Challan ${challanNo} for ${centre.centre_code} & sent auto WhatsApp`);
-      await refreshAllData(false);
-      showToast(`Challan ${challanNo} saved & WhatsApp sent automatically!`);
-      openChallanModal(challanNo);
-      navigate('challans');
-    });
-
-    function renderChallans() {
-      const q = (document.getElementById('challan-search').value || '').toLowerCase();
-      const filtered = db.challans.filter(c =>
-        c.challan_no.toLowerCase().includes(q) || c.centre_code.toLowerCase().includes(q) || c.centre_name.toLowerCase().includes(q)
-      );
-
-      document.getElementById('challans-tbody').innerHTML = filtered.map(c => `
-        <tr class="hover:bg-slate-50">
-          <td class="py-3 px-4 font-bold text-indigo-600">${c.challan_no}</td>
-          <td class="py-3 px-4 text-xs text-slate-600">${c.challan_date}</td>
-          <td class="py-3 px-4">
-            <span class="font-semibold text-slate-800 block">${c.centre_name}</span>
-            <span class="text-xs text-slate-400">${c.centre_code} • ${c.mobile}</span>
-          </td>
-          <td class="py-3 px-4 font-semibold">${c.total_qty} Units (${(c.items || []).length} items)</td>
-          <td class="py-3 px-4 text-xs text-slate-600">${c.issued_by}</td>
-          <td class="py-3 px-4 text-right space-x-1">
-            <button onclick="resendChallanWhatsApp('${c.challan_no}')" title="Auto Send WhatsApp" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold text-xs px-2.5 py-1.5 rounded-lg">
-              <i class="fa-brands fa-whatsapp"></i>
-            </button>
-            <button onclick="openChallanModal('${c.challan_no}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs px-3 py-1.5 rounded-lg">
-              <i class="fa-solid fa-eye mr-1"></i> View / PDF / Print
-            </button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    async function resendChallanWhatsApp(challanNo) {
-      const c = db.challans.find(item => item.challan_no === challanNo);
-      if (!c) return;
-      setLoading(true, 'Sending Challan via Periskope WhatsApp...');
-      const itemsSummary = (c.items || []).map((it, idx) => `${idx + 1}. ${it.name} (${it.qty} ${it.unit})`).join('\n');
-      const msg = `📦 *${db.branding.title} — DELIVERY CHALLAN*\n\n*Challan No:* ${c.challan_no}\n*Date:* ${c.challan_date}\n*Centre:* ${c.centre_name} (${c.centre_code})\n*Items:*\n${itemsSummary}\n\n*Total:* ${c.total_qty} Units`;
-      const ok = await sendPeriskopeMessage(c.mobile || db.whatsappNumber, msg);
-      setLoading(false);
-      showToast(ok ? `Challan ${challanNo} sent to WhatsApp!` : 'WhatsApp sent (check Periskope logs)');
-    }
-
-    function openChallanModal(challanNo) {
-      const c = db.challans.find(item => item.challan_no === challanNo);
-      if (!c) return;
-      activeChallanNoForPDF = challanNo;
-
-      document.getElementById('print-area').innerHTML = `
-        <div class="border-2 border-slate-800 p-6 rounded-lg bg-white">
-          <div class="flex justify-between items-start border-b-2 border-slate-800 pb-4">
-            <div class="flex items-center gap-3">
-              ${db.branding.logo ? `<img src="${db.branding.logo}" class="w-12 h-12 object-contain" />` : ''}
-              <div>
-                <h1 class="text-2xl font-extrabold tracking-wide text-slate-900">${db.branding.title}</h1>
-                <p class="text-xs text-slate-600">${db.branding.subtitle}</p>
-              </div>
-            </div>
-            <div class="text-right">
-              <span class="bg-slate-900 text-white text-xs font-bold px-3 py-1 rounded">DELIVERY CHALLAN</span>
-              <p class="text-sm font-bold mt-2">Challan No: ${c.challan_no}</p>
-              <p class="text-xs text-slate-600">Date: ${c.challan_date}</p>
-            </div>
-          </div>
-
-          <div class="my-4 bg-slate-50 p-3.5 rounded border border-slate-200 text-xs space-y-1">
-            <p class="font-bold text-slate-800 text-sm">To: ${c.centre_name} (${c.centre_code})</p>
-            <p><strong>Mobile:</strong> ${c.mobile}</p>
-            <p><strong>Address:</strong> ${c.address}</p>
-          </div>
-
-          <table class="w-full text-left border-collapse text-xs my-4 border border-slate-300">
-            <thead>
-              <tr class="bg-slate-100 border-b border-slate-300">
-                <th class="p-2.5 border-r border-slate-300">#</th>
-                <th class="p-2.5 border-r border-slate-300">SKU</th>
-                <th class="p-2.5 border-r border-slate-300">Product Description</th>
-                <th class="p-2.5 text-right">Quantity</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${(c.items || []).map((it, idx) => `
-                <tr class="border-b border-slate-200">
-                  <td class="p-2.5 border-r border-slate-300">${idx + 1}</td>
-                  <td class="p-2.5 border-r border-slate-300 font-mono">${it.sku}</td>
-                  <td class="p-2.5 border-r border-slate-300 font-semibold">${it.name}</td>
-                  <td class="p-2.5 text-right font-bold">${it.qty} ${it.unit}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-
-          <div class="flex justify-between items-end pt-8 border-t border-slate-300 text-xs">
-            <div>
-              <p class="font-semibold">Issued By: ${c.issued_by}</p>
-              <p class="text-slate-400">Authorized Store Signatory</p>
-            </div>
-            <div class="text-right">
-              <p class="border-t border-slate-500 pt-1 px-4">Receiver Signature & Stamp</p>
-            </div>
-          </div>
-        </div>
-      `;
-
-      const modal = document.getElementById('challan-modal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-
-    function downloadChallanPDF() {
-      const element = document.getElementById('print-area');
-      const opt = {
-        margin: 0.4,
-        filename: `${db.branding.title.replace(/\s+/g, '_')}_Challan_${activeChallanNoForPDF || 'Document'}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-      };
-      html2pdf().set(opt).from(element).save();
-    }
-
-    function closeChallanModal() {
-      const modal = document.getElementById('challan-modal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
-
-    // ==================== 12: STUDY CENTRES ====================
-    function renderStudyCentres() {
-      document.getElementById('centres-tbody').innerHTML = db.studyCentres.map(c => `
-        <tr class="hover:bg-slate-50">
-          <td class="py-3 px-4 font-bold text-purple-700">${c.centre_code}</td>
-          <td class="py-3 px-4 font-semibold text-slate-800">${c.centre_name}</td>
-          <td class="py-3 px-4 text-xs font-mono">${c.mobile}</td>
-          <td class="py-3 px-4 text-xs text-slate-600">${c.address}</td>
-        </tr>
-      `).join('');
-    }
-
-    document.getElementById('add-centre-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const code = document.getElementById('centre-code').value.trim().toUpperCase();
-      const name = document.getElementById('centre-name').value.trim();
-      const mobile = document.getElementById('centre-mobile').value.trim();
-      const address = document.getElementById('centre-address').value.trim();
-
-      if (db.studyCentres.some(c => c.centre_code === code)) {
-        alert('Study Centre Code already exists!');
-        return;
-      }
-
-      setLoading(true, 'Saving Study Centre...');
-      const { error } = await sb.from('study_centres').insert([{
-        centre_code: code,
-        centre_name: name,
-        mobile,
-        address
-      }]);
-
-      if (error) {
-        setLoading(false);
-        alert('Error: ' + error.message);
-        return;
-      }
-
-      await logAction('ADD_STUDY_CENTRE', `Added Study Centre ${code} (${name})`);
-      this.reset();
-      await refreshAllData(false);
-      showToast('Study Centre saved to Cloud!');
-    });
-
-    // ==================== 13: LOW STOCK ALERT & ZERO-CLICK WHATSAPP ====================
-    function renderLowStock() {
-      document.getElementById('whatsapp-alert-number').value = db.whatsappNumber || '';
-      const lowItems = getActiveProducts().filter(p => Number(p.current_stock) <= Number(p.min_stock));
-      const container = document.getElementById('low-stock-cards');
-
-      if (lowItems.length === 0) {
-        container.innerHTML = `
-          <div class="col-span-full bg-emerald-50 border border-emerald-200 rounded-2xl p-8 text-center text-emerald-700">
-            <i class="fa-solid fa-circle-check text-3xl mb-2"></i>
-            <p class="font-bold">All products are sufficiently stocked!</p>
-          </div>`;
-        return;
-      }
-
-      container.innerHTML = lowItems.map(p => `
-        <div class="bg-white border-2 border-red-500 rounded-2xl p-5 low-stock-pulse flex flex-col justify-between space-y-4">
-          <div class="flex items-start justify-between gap-3">
-            <div>
-              <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-red-100 text-red-700">Low Stock Warning</span>
-              <h3 class="font-bold text-slate-800 text-base mt-1.5">${p.name}</h3>
-              <p class="text-xs font-mono text-slate-400">${p.sku}</p>
-            </div>
-            <i class="fa-solid fa-bell text-red-600 text-xl bell-shake"></i>
-          </div>
-
-          <div class="bg-red-50 rounded-xl p-3 flex justify-between text-xs">
-            <span>Available: <strong class="text-red-700 text-sm">${p.current_stock} ${p.unit}</strong></span>
-            <span>Min Limit: <strong>${p.min_stock} ${p.unit}</strong></span>
-          </div>
-
-          <div class="flex gap-2">
-            <button onclick="sendSingleWhatsApp('${p.id}')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-xl flex items-center justify-center gap-1.5">
-              <i class="fa-brands fa-whatsapp text-sm"></i> Auto Send Alert
-            </button>
-            <button onclick="navigate('stock-in')" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-3.5 py-2.5 rounded-xl">
-              Restock
-            </button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    async function saveWhatsAppNumber() {
-      const num = formatIndianPhone(document.getElementById('whatsapp-alert-number').value);
-      setLoading(true, 'Saving WhatsApp number...');
-      await sb.from('app_settings').upsert({ key: 'whatsapp_number', value: num });
-      db.whatsappNumber = num;
-      document.getElementById('whatsapp-alert-number').value = num;
-      setLoading(false);
-      showToast('WhatsApp Receiver number saved!');
-    }
-
-    async function sendSingleWhatsApp(prodId) {
-      const p = getActiveProducts().find(item => item.id === prodId);
-      if (!p) return;
-      setLoading(true, 'Sending WhatsApp alert via Periskope...');
-      const text = `🚨 *${db.branding.title} — LOW STOCK ALERT* 🚨\n\n*Product:* ${p.name}\n*SKU:* ${p.sku}\n*Current Stock:* ${p.current_stock} ${p.unit}\n*Minimum Limit:* ${p.min_stock} ${p.unit}\n\nPlease arrange restock immediately.`;
-      const ok = await sendPeriskopeMessage(db.whatsappNumber, text);
-      setLoading(false);
-      showToast(ok ? `Low stock alert sent for ${p.name}!` : 'WhatsApp alert triggered!');
-    }
-
-    async function sendBulkLowStockWhatsApp() {
-      const lowItems = getActiveProducts().filter(p => Number(p.current_stock) <= Number(p.min_stock));
-      if (lowItems.length === 0) {
-        alert('No low stock items right now.');
-        return;
-      }
-      setLoading(true, 'Sending Low Stock Summary to WhatsApp...');
-      const lines = lowItems.map((p, idx) => `${idx + 1}. *${p.name}* (${p.sku}) — Left: *${p.current_stock} ${p.unit}* (Min: ${p.min_stock})`).join('\n');
-      const text = `🚨 *${db.branding.title} — LOW STOCK SUMMARY* 🚨\n\n${lines}\n\nPlease restock these items soon.`;
-      const ok = await sendPeriskopeMessage(db.whatsappNumber, text);
-      setLoading(false);
-      showToast(ok ? 'Bulk Low Stock Alert sent to WhatsApp!' : 'WhatsApp summary triggered!');
-    }
-
-    // ==================== 14: FILTER-WISE REPORTS + EXCEL (.XLSX) & PDF ====================
-    function prepReports() {
-      document.getElementById('rep-product').innerHTML =
-        `<option value="ALL">All Products</option>` +
-        getActiveProducts().map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-
-      document.getElementById('rep-centre').innerHTML =
-        `<option value="ALL">All Study Centres</option>` +
-        db.studyCentres.map(c => `<option value="${c.centre_code}">${c.centre_code} (${c.centre_name})</option>`).join('');
-
-      renderReports();
-    }
-
-    function getFilteredTransactions() {
-      const from = document.getElementById('rep-from').value;
-      const to = document.getElementById('rep-to').value;
-      const type = document.getElementById('rep-type').value;
-      const prod = document.getElementById('rep-product').value;
-      const centre = document.getElementById('rep-centre').value;
-
-      return db.transactions.filter(t => {
-        if (from && t.tx_date < from) return false;
-        if (to && t.tx_date > to) return false;
-        if (type !== 'ALL' && t.type !== type) return false;
-        if (prod !== 'ALL' && t.product_id !== prod) return false;
-        if (centre !== 'ALL' && t.centre_code !== centre) return false;
-        return true;
-      });
-    }
-
-    function renderReports() {
-      const rows = getFilteredTransactions();
-      document.getElementById('reports-tbody').innerHTML = rows.map(t => {
-        let badge = `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-700">STOCK SOLD</span>`;
-        let sign = '-';
-        let color = 'text-amber-600';
-
-        if (t.type === 'IN') {
-          badge = `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-100 text-emerald-700">STOCK IN</span>`;
-          sign = '+';
-          color = 'text-emerald-600';
-        } else if (t.type === 'RETURN') {
-          badge = `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-sky-100 text-sky-700">RETURN</span>`;
-          sign = '+';
-          color = 'text-sky-600';
-        } else if (t.type === 'DAMAGE') {
-          badge = `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-100 text-rose-700">DAMAGE</span>`;
-          sign = '-';
-          color = 'text-rose-600';
-        }
-
-        return `
-          <tr class="hover:bg-slate-50">
-            <td class="py-3 px-4 text-xs text-slate-600">${t.tx_date}</td>
-            <td class="py-3 px-4">${badge}</td>
-            <td class="py-3 px-4 font-semibold text-slate-800">${t.product_name}</td>
-            <td class="py-3 px-4 font-bold ${color}">${sign}${t.quantity}</td>
-            <td class="py-3 px-4 text-xs text-slate-600">${t.centre_code && t.centre_code !== '-' ? `<strong>${t.centre_code}</strong> (${t.remarks || ''})` : (t.remarks || '-')}</td>
-            <td class="py-3 px-4 text-xs font-mono text-indigo-600">${t.challan_no || '-'}</td>
-            <td class="py-3 px-4 text-xs text-slate-500">${t.staff_name || '-'}</td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function exportReportExcel() {
-      const rows = getFilteredTransactions();
-      const sheetData = rows.map(r => ({
-        'Date': r.tx_date,
-        'Type': r.type,
-        'Product Name': r.product_name,
-        'Quantity': Number(r.quantity),
-        'Study Centre': r.centre_code || '-',
-        'Note / Remarks': r.remarks || '',
-        'Challan No': r.challan_no || '-',
-        'Staff': r.staff_name || '-'
-      }));
-
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.json_to_sheet(sheetData);
-      XLSX.utils.book_append_sheet(wb, ws, 'Stock Report');
-      XLSX.writeFile(wb, `${db.branding.title.replace(/\s+/g, '_')}_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
-      showToast('Excel (.xlsx) report downloaded!');
-    }
-
-    function downloadReportPDF() {
-      const rows = getFilteredTransactions();
-      const wrapper = document.createElement('div');
-      wrapper.innerHTML = `
-        <div style="padding: 16px; font-family: sans-serif;">
-          <h2 style="font-size: 18px; font-weight: bold; margin-bottom: 4px;">${db.branding.title} — Stock & Dispatch Report</h2>
-          <p style="font-size: 11px; color: #64748b; margin-bottom: 12px;">Generated on ${new Date().toLocaleString()}</p>
-          <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
-            <thead>
-              <tr style="background: #f1f5f9;">
-                <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: left;">Date</th>
-                <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: left;">Type</th>
-                <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: left;">Product</th>
-                <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: left;">Qty</th>
-                <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: left;">Centre / Note</th>
-                <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: left;">Challan</th>
-                <th style="border: 1px solid #cbd5e1; padding: 6px; text-align: left;">Staff</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rows.map(r => `
-                <tr>
-                  <td style="border: 1px solid #cbd5e1; padding: 5px;">${r.tx_date}</td>
-                  <td style="border: 1px solid #cbd5e1; padding: 5px;">${r.type}</td>
-                  <td style="border: 1px solid #cbd5e1; padding: 5px;">${r.product_name}</td>
-                  <td style="border: 1px solid #cbd5e1; padding: 5px;">${r.quantity}</td>
-                  <td style="border: 1px solid #cbd5e1; padding: 5px;">${r.centre_code} - ${r.remarks || ''}</td>
-                  <td style="border: 1px solid #cbd5e1; padding: 5px;">${r.challan_no}</td>
-                  <td style="border: 1px solid #cbd5e1; padding: 5px;">${r.staff_name}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
-      `;
-
-      const opt = {
-        margin: 0.3,
-        filename: `${db.branding.title.replace(/\s+/g, '_')}_Report_${new Date().toISOString().split('T')[0]}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
-      };
-      html2pdf().set(opt).from(wrapper).save();
-      showToast('PDF report downloaded!');
-    }
-
-    function printReport() {
-      const rows = getFilteredTransactions();
-      document.getElementById('print-area').innerHTML = `
-        <h2 class="text-xl font-bold mb-1">${db.branding.title} — Stock & Dispatch Report</h2>
-        <p class="text-xs text-slate-500 mb-4">Generated on ${new Date().toLocaleString()}</p>
-        <table class="w-full text-left border-collapse text-xs border border-slate-300">
-          <thead>
-            <tr class="bg-slate-100 border-b border-slate-300">
-              <th class="p-2 border">Date</th>
-              <th class="p-2 border">Type</th>
-              <th class="p-2 border">Product</th>
-              <th class="p-2 border">Qty</th>
-              <th class="p-2 border">Centre / Note</th>
-              <th class="p-2 border">Challan</th>
-              <th class="p-2 border">Staff</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rows.map(r => `
-              <tr>
-                <td class="p-2 border">${r.tx_date}</td>
-                <td class="p-2 border">${r.type}</td>
-                <td class="p-2 border">${r.product_name}</td>
-                <td class="p-2 border">${r.quantity}</td>
-                <td class="p-2 border">${r.centre_code} - ${r.remarks || ''}</td>
-                <td class="p-2 border">${r.challan_no}</td>
-                <td class="p-2 border">${r.staff_name}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      `;
-      window.print();
-    }
-
-    // ==================== ONE-CLICK CLOUD BACKUP (.JSON) ====================
-    function downloadCloudBackup() {
-      if (currentUser.role !== 'admin') return;
-      const backupPayload = {
-        exported_at: new Date().toISOString(),
-        store: db.branding.title,
-        products: getActiveProducts(),
-        recycle_bin_products: getTrashedProducts(),
-        study_centres: db.studyCentres,
-        challans: db.challans,
-        stock_logs: db.transactions,
-        users: db.users,
-        staff_actions: db.staffActions
-      };
-      const blob = new Blob([JSON.stringify(backupPayload, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${db.branding.title.replace(/\s+/g, '_')}_Full_Backup_${new Date().toISOString().split('T')[0]}.json`;
-      a.click();
-      logAction('CLOUD_BACKUP', 'Downloaded full database JSON backup');
-      showToast('Full Cloud Backup (.json) downloaded!');
-    }
-
-    // ==================== 10 & 11: ADMIN STAFF ACTIONS & USER CREATION ====================
-    function renderStaffActions() {
-      document.getElementById('staff-actions-tbody').innerHTML = db.staffActions.map(a => `
-        <tr class="hover:bg-slate-50">
-          <td class="py-3 px-4 text-xs text-slate-500">${new Date(a.created_at).toLocaleString()}</td>
-          <td class="py-3 px-4 font-semibold text-slate-800">${a.staff_name}</td>
-          <td class="py-3 px-4"><span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700">${a.role}</span></td>
-          <td class="py-3 px-4 text-xs font-mono font-bold text-indigo-600">${a.action_type}</td>
-          <td class="py-3 px-4 text-xs text-slate-600">${a.details}</td>
-        </tr>
-      `).join('');
-    }
-
-    function renderUsers() {
-      document.getElementById('users-tbody').innerHTML = db.users.map(u => `
-        <tr class="hover:bg-slate-50">
-          <td class="py-3 px-4 font-semibold text-slate-800">${u.full_name}</td>
-          <td class="py-3 px-4 font-mono text-xs text-indigo-600">${u.user_id}</td>
-          <td class="py-3 px-4 font-mono text-xs text-slate-500">${u.password}</td>
-          <td class="py-3 px-4 uppercase text-xs font-bold">${u.role}</td>
-          <td class="py-3 px-4 text-right">
-            <button onclick="toggleUserActive('${u.id}', '${u.user_id}', ${u.is_active})" class="text-xs px-2.5 py-1 rounded-lg font-semibold ${u.is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">
-              ${u.is_active ? 'Active' : 'Disabled'}
-            </button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    document.getElementById('create-user-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const name = document.getElementById('new-user-name').value.trim();
-      const userId = document.getElementById('new-user-id').value.trim();
-      const password = document.getElementById('new-user-pass').value.trim();
-      const role = document.getElementById('new-user-role').value;
-
-      if (db.users.some(u => u.user_id === userId)) {
-        alert('User ID already exists!');
-        return;
-      }
-
-      setLoading(true, 'Creating user account...');
-      const { error } = await sb.from('app_users').insert([{
-        user_id: userId,
-        password,
-        full_name: name,
-        role,
-        is_active: true
-      }]);
-
-      if (error) {
-        setLoading(false);
-        alert('Error: ' + error.message);
-        return;
-      }
-
-      await logAction('CREATE_USER', `Created ${role} account "${name}" (@${userId})`);
-      this.reset();
-      await refreshAllData(false);
-      showToast('New user ID & password created!');
-    });
-
-    async function toggleUserActive(id, userId, currentStatus) {
-      if (userId === 'admin') return;
-      setLoading(true, 'Updating user status...');
-      await sb.from('app_users').update({ is_active: !currentStatus }).eq('id', id);
-      await logAction('USER_STATUS', `Changed status of @${userId} to ${!currentStatus ? 'Active' : 'Disabled'}`);
-      await refreshAllData(false);
-    }
-
-    // ==================== 15: SITE BRANDING, LOGO & HERO BANNER UPLOAD ====================
-    function prepBranding() {
-      tempUploadedLogo = db.branding.logo || '';
-      tempUploadedHero = db.branding.heroBanner || '';
-
-      document.getElementById('brand-title-input').value = db.branding.title || 'NBCE STORE';
-      document.getElementById('brand-subtitle-input').value = db.branding.subtitle || '';
-      document.getElementById('brand-hero-heading-input').value = db.branding.heroHeading || '';
-      document.getElementById('brand-hero-desc-input').value = db.branding.heroDesc || '';
-      document.getElementById('brand-ticker-input').value = db.branding.ticker || '';
-      document.getElementById('brand-address-input').value = db.branding.address || '';
-
-      const previewBox = document.getElementById('branding-logo-preview-box');
-      if (tempUploadedLogo) {
-        previewBox.innerHTML = `<img src="${tempUploadedLogo}" class="w-full h-full object-contain bg-white p-1" />`;
-      } else {
-        previewBox.innerHTML = `<i class="fa-solid fa-graduation-cap"></i>`;
-      }
-
-      const heroPreviewBox = document.getElementById('branding-hero-preview-box');
-      if (tempUploadedHero) {
-        heroPreviewBox.innerHTML = `<img src="${tempUploadedHero}" class="w-full h-full object-cover" />`;
-      } else {
-        heroPreviewBox.innerHTML = `<i class="fa-solid fa-panorama text-3xl mb-1"></i><span class="text-xs font-medium text-blue-100">Default Royal Blue Gradient Active</span>`;
-      }
-    }
-
-    function handleLogoUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          const maxSize = 240;
-          let w = img.width;
-          let h = img.height;
-          if (w > h && w > maxSize) {
-            h = Math.round((h * maxSize) / w);
-            w = maxSize;
-          } else if (h >= w && h > maxSize) {
-            w = Math.round((w * maxSize) / h);
-            h = maxSize;
-          }
-          canvas.width = w;
-          canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
-          tempUploadedLogo = canvas.toDataURL('image/png');
-
-          document.getElementById('branding-logo-preview-box').innerHTML =
-            `<img src="${tempUploadedLogo}" class="w-full h-full object-contain bg-white p-1" />`;
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function removeCustomLogo() {
-      tempUploadedLogo = '';
-      document.getElementById('branding-logo-preview-box').innerHTML = `<i class="fa-solid fa-graduation-cap"></i>`;
-    }
-
-    function handleHeroUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          const maxW = 1280;
-          let w = img.width;
-          let h = img.height;
-          if (w > maxW) {
-            h = Math.round((h * maxW) / w);
-            w = maxW;
-          }
-          canvas.width = w;
-          canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
-          tempUploadedHero = canvas.toDataURL('image/jpeg', 0.8);
-
-          document.getElementById('branding-hero-preview-box').innerHTML =
-            `<img src="${tempUploadedHero}" class="w-full h-full object-cover" />`;
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function removeCustomHero() {
-      tempUploadedHero = '';
-      document.getElementById('branding-hero-preview-box').innerHTML =
-        `<i class="fa-solid fa-panorama text-3xl mb-1"></i><span class="text-xs font-medium text-blue-100">Default Royal Blue Gradient Active</span>`;
-    }
-
-    document.getElementById('branding-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const title = document.getElementById('brand-title-input').value.trim() || 'NBCE STORE';
-      const subtitle = document.getElementById('brand-subtitle-input').value.trim();
-      const heroHeading = document.getElementById('brand-hero-heading-input').value.trim();
-      const heroDesc = document.getElementById('brand-hero-desc-input').value.trim();
-      const ticker = document.getElementById('brand-ticker-input').value.trim();
-      const address = document.getElementById('brand-address-input').value.trim();
-
-      setLoading(true, 'Saving logo, banner & site branding to Cloud...');
-      const { error } = await sb.from('app_settings').upsert([
-        { key: 'site_logo', value: tempUploadedLogo },
-        { key: 'site_hero_banner', value: tempUploadedHero },
-        { key: 'site_hero_heading', value: heroHeading },
-        { key: 'site_hero_desc', value: heroDesc },
-        { key: 'site_title', value: title },
-        { key: 'site_subtitle', value: subtitle },
-        { key: 'site_ticker', value: ticker },
-        { key: 'site_address', value: address }
-      ]);
-
-      if (error) {
-        setLoading(false);
-        alert('Error saving branding: ' + error.message);
-        return;
-      }
-
-      db.branding = {
-        logo: tempUploadedLogo,
-        heroBanner: tempUploadedHero,
-        heroHeading,
-        heroDesc,
-        title,
-        subtitle,
-        ticker,
-        address
-      };
-      applySiteBranding();
-      await logAction('UPDATE_BRANDING', `Updated site logo, hero banner & branding settings`);
-      setLoading(false);
-      showToast('Logo, Hero Banner & Home Page updated across all devices!');
-    });
-
-    // Boot logic: Either auto-login into portal or show Public Home Page
-    if (currentUser) {
-      initApp();
-    } else {
-      loadPublicHomeData();
-    }
-  </script>
-</body>
-</html>
+      const items = getActiveProducts().filter(p
