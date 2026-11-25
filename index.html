@@ -22,23 +22,13 @@
       white-space: nowrap;
       animation: marqueeScroll 24s linear infinite;
     }
-    .animate-marquee:hover {
-      animation-play-state: paused;
-    }
+    .animate-marquee:hover { animation-play-state: paused; }
 
     @keyframes lowStockPulse {
-      0%, 100% {
-        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.55);
-        border-color: #ef4444;
-      }
-      50% {
-        box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
-        border-color: #b91c1c;
-      }
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.55); border-color: #ef4444; }
+      50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); border-color: #b91c1c; }
     }
-    .low-stock-pulse {
-      animation: lowStockPulse 1.6s infinite;
-    }
+    .low-stock-pulse { animation: lowStockPulse 1.6s infinite; }
 
     @keyframes bellShake {
       0%, 100% { transform: rotate(0deg); }
@@ -47,21 +37,12 @@
       60% { transform: rotate(10deg); }
       80% { transform: rotate(-10deg); }
     }
-    .bell-shake {
-      animation: bellShake 1.4s infinite;
-    }
+    .bell-shake { animation: bellShake 1.4s infinite; }
 
     @media print {
       body * { visibility: hidden; }
       #print-area, #print-area * { visibility: visible; }
-      #print-area {
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: 100%;
-        background: white;
-        padding: 20px;
-      }
+      #print-area { position: fixed; left: 0; top: 0; width: 100%; background: white; padding: 20px; }
       .no-print { display: none !important; }
     }
   </style>
@@ -78,7 +59,6 @@
 
   <!-- ==================== 00: PUBLIC LANDING / HOME PAGE ==================== -->
   <div id="public-home-screen" class="min-h-screen flex flex-col bg-slate-50">
-    <!-- Royal Blue Top Navbar -->
     <header class="bg-[#0b2559] text-white sticky top-0 z-40 shadow-md">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
         <div class="flex items-center gap-3">
@@ -98,13 +78,12 @@
           <a href="#public-footer" class="hover:text-amber-400 transition">Contact</a>
         </nav>
 
-        <button onclick="openLoginModal()"
+        <button type="button" onclick="openLoginModal()"
           class="bg-amber-500 hover:bg-amber-400 text-[#0b2559] font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-md transition flex items-center gap-2 shrink-0">
           <i class="fa-solid fa-lock"></i> Admin / Staff Login
         </button>
       </div>
 
-      <!-- Amber Gold Scrolling Notice Ticker -->
       <div class="bg-amber-500 text-[#0b2559] py-1.5 overflow-hidden border-t border-amber-400/50">
         <div id="pub-notice-ticker" class="animate-marquee text-xs font-bold tracking-wide">
           📢 Welcome to NBCE STORE Official Portal • Study Centres can browse available Prospectus, Books, ID Cards & Exam Kits below • For Challan & Dispatch queries, contact Central Store Desk.
@@ -112,7 +91,6 @@
       </div>
     </header>
 
-    <!-- Royal Blue & Gold Institutional Hero Banner -->
     <section id="public-hero" class="bg-gradient-to-br from-[#0b2559] via-[#133884] to-[#091c42] text-white py-14 sm:py-20 px-4 relative overflow-hidden">
       <img id="pub-hero-bg-img" src="" alt="" class="hidden absolute inset-0 w-full h-full object-cover opacity-30 z-0" />
       <div id="pub-hero-overlay" class="hidden absolute inset-0 bg-gradient-to-r from-[#0b2559]/90 via-[#0b2559]/75 to-[#091c42]/85 z-0"></div>
@@ -133,14 +111,13 @@
               class="bg-amber-500 hover:bg-amber-400 text-[#0b2559] font-extrabold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-lg transition">
               <i class="fa-solid fa-book-open mr-1.5"></i> Browse Study Materials
             </a>
-            <button onclick="openLoginModal()"
+            <button type="button" onclick="openLoginModal()"
               class="bg-white/10 hover:bg-white/20 border border-white/25 text-white font-semibold text-xs sm:text-sm px-6 py-3 rounded-xl transition">
               <i class="fa-solid fa-right-to-bracket mr-1.5"></i> Staff / Admin Portal
             </button>
           </div>
         </div>
 
-        <!-- Live Store Highlights Card -->
         <div class="lg:col-span-5">
           <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 space-y-5 shadow-2xl">
             <div class="flex items-center justify-between border-b border-white/15 pb-3">
@@ -171,7 +148,6 @@
       </div>
     </section>
 
-    <!-- Study Material Product Gallery (Live from Supabase) -->
     <section id="public-catalog" class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-14 flex-1">
       <div class="text-center max-w-2xl mx-auto mb-10">
         <span class="text-xs font-extrabold uppercase tracking-widest text-amber-600">Study Material & Gear</span>
@@ -190,7 +166,6 @@
       </div>
     </section>
 
-    <!-- Institutional Info Strip -->
     <section id="public-info" class="bg-white border-t border-slate-200 py-10 px-4">
       <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/70 flex items-start gap-4">
@@ -223,7 +198,6 @@
       </div>
     </section>
 
-    <!-- Royal Blue Footer with Admin / Staff Login Access -->
     <footer id="public-footer" class="bg-[#0b2559] text-white border-t-4 border-amber-500">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div class="text-center sm:text-left">
@@ -235,7 +209,7 @@
         </div>
 
         <div class="flex items-center gap-4">
-          <button onclick="openLoginModal()"
+          <button type="button" onclick="openLoginModal()"
             class="bg-amber-500 hover:bg-amber-400 text-[#0b2559] font-extrabold text-xs px-4 py-2.5 rounded-xl shadow transition flex items-center gap-2">
             <i class="fa-solid fa-user-shield"></i> Admin / Staff Login
           </button>
@@ -294,21 +268,21 @@
     <!-- Mobile Top Header -->
     <header class="lg:hidden bg-slate-900 text-white px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow">
       <div class="flex items-center gap-2.5">
-        <button onclick="toggleSidebar()" class="text-white p-1.5 rounded-lg hover:bg-slate-800">
+        <button type="button" onclick="toggleSidebar()" class="text-white p-1.5 rounded-lg hover:bg-slate-800">
           <i class="fa-solid fa-bars text-lg"></i>
         </button>
         <span id="mobile-brand-title" class="font-extrabold tracking-wide text-lg">NBCE STORE</span>
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping" title="Auto Live Sync Active"></span>
       </div>
       <div class="flex items-center gap-2.5">
-        <button onclick="refreshAllData(false)" title="Sync Cloud Data" class="p-1.5 text-sky-400">
+        <button type="button" onclick="refreshAllData(false)" title="Sync Cloud Data" class="p-1.5 text-sky-400">
           <i class="fa-solid fa-arrows-rotate"></i>
         </button>
-        <button onclick="navigate('low-stock')" class="relative p-1.5 text-amber-400">
+        <button type="button" onclick="navigate('low-stock')" class="relative p-1.5 text-amber-400">
           <i class="fa-solid fa-bell bell-shake text-lg"></i>
           <span id="mobile-low-badge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold px-1.5 rounded-full">0</span>
         </button>
-        <button onclick="logout()" class="text-xs bg-red-600/90 px-2.5 py-1.5 rounded-lg font-medium">Logout</button>
+        <button type="button" onclick="logout()" class="text-xs bg-red-600/90 px-2.5 py-1.5 rounded-lg font-medium">Logout</button>
       </div>
     </header>
 
@@ -327,7 +301,7 @@
             <span id="sidebar-role-badge" class="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-semibold">Admin</span>
           </div>
         </div>
-        <button onclick="toggleSidebar()" class="lg:hidden text-slate-400 hover:text-white">
+        <button type="button" onclick="toggleSidebar()" class="lg:hidden text-slate-400 hover:text-white">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
@@ -343,66 +317,66 @@
 
       <!-- Navigation Links -->
       <nav class="flex-1 overflow-y-auto p-3 space-y-1 text-sm">
-        <button onclick="navigate('home')" data-nav="home" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
+        <button type="button" onclick="navigate('home')" data-nav="home" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
           <i class="fa-solid fa-gauge-high w-5 text-center"></i> Home & Live Stock
         </button>
-        <button onclick="navigate('products')" data-nav="products" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
+        <button type="button" onclick="navigate('products')" data-nav="products" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
           <i class="fa-solid fa-box-open w-5 text-center"></i> Products Catalog
         </button>
-        <button onclick="navigate('add-product')" data-nav="add-product" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
+        <button type="button" onclick="navigate('add-product')" data-nav="add-product" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
           <i class="fa-solid fa-plus-circle w-5 text-center"></i> Add Product
         </button>
-        <button onclick="navigate('stock-in')" data-nav="stock-in" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
+        <button type="button" onclick="navigate('stock-in')" data-nav="stock-in" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
           <i class="fa-solid fa-arrow-down-to-bracket w-5 text-center text-emerald-400"></i> Stock In
         </button>
-        <button onclick="navigate('stock-sold')" data-nav="stock-sold" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
+        <button type="button" onclick="navigate('stock-sold')" data-nav="stock-sold" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
           <i class="fa-solid fa-truck-fast w-5 text-center text-amber-400"></i> Stock Sold / Dispatch
         </button>
-        <button onclick="navigate('stock-return')" data-nav="stock-return" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
+        <button type="button" onclick="navigate('stock-return')" data-nav="stock-return" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
           <i class="fa-solid fa-rotate-left w-5 text-center text-rose-400"></i> Return & Damage
         </button>
-        <button onclick="navigate('challans')" data-nav="challans" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
+        <button type="button" onclick="navigate('challans')" data-nav="challans" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
           <i class="fa-solid fa-file-invoice w-5 text-center text-sky-400"></i> Challan List
         </button>
-        <button onclick="navigate('study-centres')" data-nav="study-centres" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
+        <button type="button" onclick="navigate('study-centres')" data-nav="study-centres" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
           <i class="fa-solid fa-school w-5 text-center text-purple-400"></i> Study Centres
         </button>
-        <button onclick="navigate('low-stock')" data-nav="low-stock" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-left font-medium transition">
+        <button type="button" onclick="navigate('low-stock')" data-nav="low-stock" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-left font-medium transition">
           <span class="flex items-center gap-3">
             <i class="fa-solid fa-triangle-exclamation w-5 text-center text-red-400"></i> Low Stock Alert
           </span>
           <span id="sidebar-low-badge" class="bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">0</span>
         </button>
-        <button onclick="navigate('reports')" data-nav="reports" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
+        <button type="button" onclick="navigate('reports')" data-nav="reports" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
           <i class="fa-solid fa-chart-column w-5 text-center text-teal-400"></i> Reports (Excel / PDF)
         </button>
 
         <!-- Admin Only Section -->
         <div id="admin-nav-section" class="pt-3 mt-3 border-t border-slate-800 space-y-1">
           <p class="px-3.5 text-[10px] font-bold uppercase tracking-wider text-slate-500">Admin Controls</p>
-          <button onclick="navigate('recycle-bin')" data-nav="recycle-bin" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-left font-medium transition">
+          <button type="button" onclick="navigate('recycle-bin')" data-nav="recycle-bin" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-left font-medium transition">
             <span class="flex items-center gap-3">
               <i class="fa-solid fa-trash-can-arrow-up w-5 text-center text-rose-400"></i> Recycle Bin
             </span>
             <span id="sidebar-trash-badge" class="bg-slate-700 text-slate-200 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
           </button>
-          <button onclick="navigate('staff-actions')" data-nav="staff-actions" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
+          <button type="button" onclick="navigate('staff-actions')" data-nav="staff-actions" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
             <i class="fa-solid fa-clock-rotate-left w-5 text-center text-orange-400"></i> Staff Action Status
           </button>
-          <button onclick="navigate('users')" data-nav="users" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
+          <button type="button" onclick="navigate('users')" data-nav="users" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
             <i class="fa-solid fa-user-plus w-5 text-center text-pink-400"></i> ID & Password Creation
           </button>
-          <button onclick="navigate('branding')" data-nav="branding" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
+          <button type="button" onclick="navigate('branding')" data-nav="branding" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
             <i class="fa-solid fa-image w-5 text-center text-amber-400"></i> Site Branding & Banner
           </button>
-          <button onclick="downloadCloudBackup()" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium text-emerald-300 hover:bg-slate-800 transition">
+          <button type="button" onclick="downloadCloudBackup()" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium text-emerald-300 hover:bg-slate-800 transition">
             <i class="fa-solid fa-cloud-arrow-down w-5 text-center text-emerald-400"></i> Cloud Backup (.json)
           </button>
         </div>
       </nav>
 
       <div class="p-3 border-t border-slate-800">
-        <button onclick="logout()" class="w-full flex items-center justify-center gap-2 bg-red-600/15 hover:bg-red-600 text-red-400 hover:text-white py-2.5 rounded-xl text-sm font-semibold transition">
+        <button type="button" onclick="logout()" class="w-full flex items-center justify-center gap-2 bg-red-600/15 hover:bg-red-600 text-red-400 hover:text-white py-2.5 rounded-xl text-sm font-semibold transition">
           <i class="fa-solid fa-right-from-bracket"></i> Logout
         </button>
       </div>
@@ -410,14 +384,13 @@
 
     <!-- Main Content Area -->
     <main class="flex-1 p-4 lg:p-8 overflow-y-auto">
-      <!-- Top Bar (Desktop) -->
       <div class="hidden lg:flex items-center justify-between mb-6 bg-white px-6 py-4 rounded-2xl shadow-sm border border-slate-200/70">
         <div>
           <h1 id="page-title" class="text-xl font-bold text-slate-800">Home & Real-Time Stock Overview</h1>
           <p id="page-subtitle" class="text-xs text-slate-500">Live inventory monitoring across NBCE STORE</p>
         </div>
         <div class="flex items-center gap-3">
-          <button onclick="refreshAllData(false)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition">
+          <button type="button" onclick="refreshAllData(false)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition">
             <i class="fa-solid fa-arrows-rotate text-indigo-600"></i> Sync
           </button>
           <div class="text-right">
@@ -427,7 +400,7 @@
               <span>Auto Live Sync & WhatsApp Active</span>
             </p>
           </div>
-          <button onclick="navigate('low-stock')" id="top-alert-btn" class="relative bg-red-50 hover:bg-red-100 text-red-600 px-3.5 py-2 rounded-xl border border-red-200 flex items-center gap-2 text-xs font-bold transition">
+          <button type="button" onclick="navigate('low-stock')" id="top-alert-btn" class="relative bg-red-50 hover:bg-red-100 text-red-600 px-3.5 py-2 rounded-xl border border-red-200 flex items-center gap-2 text-xs font-bold transition">
             <i class="fa-solid fa-bell bell-shake"></i>
             <span>Low Stock: <span id="top-low-count">0</span></span>
           </button>
@@ -453,16 +426,15 @@
             </div>
           </div>
           <div class="flex items-center gap-2 shrink-0">
-            <button onclick="sendBulkLowStockWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl flex items-center gap-1.5 shadow">
+            <button type="button" onclick="sendBulkLowStockWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl flex items-center gap-1.5 shadow">
               <i class="fa-brands fa-whatsapp text-base"></i> Auto WhatsApp Now
             </button>
-            <button onclick="navigate('low-stock')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl">
+            <button type="button" onclick="navigate('low-stock')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl">
               View Items
             </button>
           </div>
         </div>
 
-        <!-- KPI Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
           <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/70">
             <div class="flex items-center justify-between">
@@ -510,23 +482,21 @@
           </div>
         </div>
 
-        <!-- Quick Action Shortcuts -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <button onclick="navigate('add-product')" class="bg-indigo-600 hover:bg-indigo-700 text-white p-3.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition">
+          <button type="button" onclick="navigate('add-product')" class="bg-indigo-600 hover:bg-indigo-700 text-white p-3.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition">
             <i class="fa-solid fa-plus"></i> Add Product
           </button>
-          <button onclick="navigate('stock-in')" class="bg-emerald-600 hover:bg-emerald-700 text-white p-3.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition">
+          <button type="button" onclick="navigate('stock-in')" class="bg-emerald-600 hover:bg-emerald-700 text-white p-3.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition">
             <i class="fa-solid fa-arrow-down-to-bracket"></i> Stock In
           </button>
-          <button onclick="navigate('stock-sold')" class="bg-amber-600 hover:bg-amber-700 text-white p-3.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition">
+          <button type="button" onclick="navigate('stock-sold')" class="bg-amber-600 hover:bg-amber-700 text-white p-3.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition">
             <i class="fa-solid fa-file-invoice"></i> Stock Sold / Challan
           </button>
-          <button onclick="navigate('stock-return')" class="bg-rose-600 hover:bg-rose-700 text-white p-3.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition">
+          <button type="button" onclick="navigate('stock-return')" class="bg-rose-600 hover:bg-rose-700 text-white p-3.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition">
             <i class="fa-solid fa-rotate-left"></i> Return / Damage
           </button>
         </div>
 
-        <!-- Real-Time Stock Overview Table -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200/70 overflow-hidden">
           <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
@@ -561,10 +531,10 @@
           <input type="text" id="product-search" onkeyup="renderProducts()" placeholder="Search by product name, SKU or category..."
             class="text-sm border border-slate-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-80" />
           <div class="flex items-center gap-2">
-            <button id="catalog-trash-btn" onclick="navigate('recycle-bin')" class="hidden bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold px-3.5 py-2.5 rounded-xl flex items-center gap-1.5">
+            <button type="button" id="catalog-trash-btn" onclick="navigate('recycle-bin')" class="hidden bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold px-3.5 py-2.5 rounded-xl flex items-center gap-1.5">
               <i class="fa-solid fa-trash-can-arrow-up"></i> Recycle Bin (<span id="catalog-trash-count">0</span>)
             </button>
-            <button onclick="navigate('add-product')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center justify-center gap-2">
+            <button type="button" onclick="navigate('add-product')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center justify-center gap-2">
               <i class="fa-solid fa-plus"></i> Add New Product
             </button>
           </div>
@@ -910,10 +880,10 @@
           <div class="flex flex-wrap items-center gap-2">
             <input type="tel" id="whatsapp-alert-number" placeholder="Receiver No (e.g. 919876543210)"
               class="text-xs border border-slate-300 rounded-xl px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500 w-56" />
-            <button onclick="saveWhatsAppNumber()" class="bg-slate-800 text-white text-xs font-semibold px-3.5 py-2.5 rounded-xl">
+            <button type="button" onclick="saveWhatsAppNumber()" class="bg-slate-800 text-white text-xs font-semibold px-3.5 py-2.5 rounded-xl">
               Save No.
             </button>
-            <button onclick="sendBulkLowStockWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-1.5 shadow">
+            <button type="button" onclick="sendBulkLowStockWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-1.5 shadow">
               <i class="fa-brands fa-whatsapp text-base"></i> Send Auto Summary Now
             </button>
           </div>
@@ -928,13 +898,13 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <h2 class="font-bold text-slate-800">Stock & Dispatch Report (Filter Wise)</h2>
             <div class="flex flex-wrap items-center gap-2">
-              <button onclick="exportReportExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl">
+              <button type="button" onclick="exportReportExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl">
                 <i class="fa-solid fa-file-excel mr-1"></i> Export Excel (.xlsx)
               </button>
-              <button onclick="downloadReportPDF()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl">
+              <button type="button" onclick="downloadReportPDF()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl">
                 <i class="fa-solid fa-file-pdf mr-1"></i> Download PDF
               </button>
-              <button onclick="printReport()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-3.5 py-2 rounded-xl">
+              <button type="button" onclick="printReport()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-3.5 py-2 rounded-xl">
                 <i class="fa-solid fa-print mr-1"></i> Print
               </button>
             </div>
@@ -990,7 +960,7 @@
         </div>
       </section>
 
-      <!-- ==================== NEW: RECYCLE BIN (ADMIN ONLY) ==================== -->
+      <!-- ==================== RECYCLE BIN (ADMIN ONLY) ==================== -->
       <section id="view-recycle-bin" class="view-section hidden space-y-5">
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
@@ -1000,7 +970,7 @@
             </h2>
             <p class="text-xs text-slate-500">Restore accidentally deleted items back to catalog or delete them permanently</p>
           </div>
-          <button onclick="navigate('products')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl">
+          <button type="button" onclick="navigate('products')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl">
             <i class="fa-solid fa-arrow-left mr-1"></i> Back to Catalog
           </button>
         </div>
@@ -1193,7 +1163,7 @@
 
   <!-- ==================== CUSTOM DELETE WARNING POPUP (YES / NO) ==================== -->
   <div id="delete-confirm-modal" class="fixed inset-0 bg-slate-900/65 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-slate-200 animate-fade-in">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-slate-200">
       <div class="p-6 text-center space-y-4">
         <div id="del-modal-icon-wrap" class="w-16 h-16 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mx-auto text-3xl shadow-inner">
           <i class="fa-solid fa-triangle-exclamation"></i>
@@ -1223,7 +1193,7 @@
     <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden">
       <div class="bg-indigo-600 text-white px-6 py-4 flex items-center justify-between">
         <span class="font-bold text-base">Edit Product Details</span>
-        <button onclick="closeEditProductModal()" class="text-indigo-200 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        <button type="button" onclick="closeEditProductModal()" class="text-indigo-200 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
       <form id="edit-product-form" class="p-6 space-y-4">
         <input type="hidden" id="edit-prod-id" />
@@ -1275,13 +1245,13 @@
       <div class="bg-slate-900 text-white px-6 py-3.5 flex items-center justify-between no-print">
         <span class="font-bold text-sm">Challan Preview</span>
         <div class="flex items-center gap-2">
-          <button onclick="downloadChallanPDF()" class="bg-rose-600 hover:bg-rose-700 px-3.5 py-1.5 rounded-lg text-xs font-bold">
+          <button type="button" onclick="downloadChallanPDF()" class="bg-rose-600 hover:bg-rose-700 px-3.5 py-1.5 rounded-lg text-xs font-bold">
             <i class="fa-solid fa-file-pdf mr-1"></i> Download PDF
           </button>
-          <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 px-3.5 py-1.5 rounded-lg text-xs font-bold">
+          <button type="button" onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 px-3.5 py-1.5 rounded-lg text-xs font-bold">
             <i class="fa-solid fa-print mr-1"></i> Print
           </button>
-          <button onclick="closeChallanModal()" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-lg text-xs">Close</button>
+          <button type="button" onclick="closeChallanModal()" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-lg text-xs">Close</button>
         </div>
       </div>
       <div id="print-area" class="p-6 text-slate-800"></div>
@@ -1297,9 +1267,39 @@
     // ==================== PERISKOPE ZERO-CLICK AUTO WHATSAPP API ====================
     const PERISKOPE_API_KEY = 'sk_periskope_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhkZDE1YWJhLWI1OGItNDVmOC04ZTE0LTE5ZGUyMTk4MmE3OCIsInJvbGUiOiJhcGkiLCJ0eXBlIjoiYXBpIiwibmFtZSI6Ik5CQ0UtU1RPUkUiLCJleHAiOjIxMTA4OTAzMDYsImlhdCI6MTc5NTUzMDMwNiwic3ViIjoiZGFjMjNkODctYjVhOS00ZTdlLWIzODgtMGU4ODY3YjU5ZWZiIiwiaXNzIjoicGVyaXNrb3BlLmFwcCIsIm1ldGFkYXRhIjp7InNjb3BlcyI6WyI5MTkzMzM3ODIwNDhAYy51cyJdfX0.cWBTHy6DzHSm8urBQWPHHiHnn_XCzxtamxxO61nvang';
     const PERISKOPE_SENDER_PHONE = '919333782048';
-
-    // Prefix used to mark soft-deleted products stored safely in cloud Recycle Bin
     const TRASH_PREFIX = '__TRASH__::';
+
+    let db = {
+      users: [],
+      studyCentres: [],
+      products: [],
+      transactions: [],
+      challans: [],
+      staffActions: [],
+      whatsappNumber: '919333782048',
+      branding: {
+        logo: '',
+        heroBanner: '',
+        heroHeading: 'Empowering Your Education & Centre Supply',
+        heroDesc: 'Centralized study material distribution, live inventory tracking, and instant digital challan portal for all authorized NBCE Study Centres.',
+        title: 'NBCE STORE',
+        subtitle: 'Study Material & Central Dispatch',
+        ticker: '📢 Welcome to NBCE STORE Official Portal • Study Centres can browse available Prospectus, Books, ID Cards & Exam Kits below • For Challan & Dispatch queries, contact Central Store Desk.',
+        address: 'West Bengal, India • Central Inventory & Study Material Dispatch Division'
+      }
+    };
+
+    let currentUser = JSON.parse(sessionStorage.getItem('NBCE_CLOUD_USER')) || null;
+    let uploadedProductImage = '';
+    let editProductImage = '';
+    let tempUploadedLogo = '';
+    let tempUploadedHero = '';
+    let challanCart = [];
+    let activeChallanNoForPDF = '';
+    let pendingDeleteAction = null;
+    let realtimeSubscription = null;
+    let syncDebounceTimer = null;
+    let autoSyncInterval = null;
 
     function isTrashedProduct(p) {
       return p && typeof p.category === 'string' && p.category.startsWith(TRASH_PREFIX);
@@ -1335,10 +1335,7 @@
             'x-phone': PERISKOPE_SENDER_PHONE,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
-            chat_id: `${phone}@c.us`,
-            message: messageText
-          })
+          body: JSON.stringify({ chat_id: `${phone}@c.us`, message: messageText })
         });
         return res.ok;
       } catch (e) {
@@ -1346,38 +1343,6 @@
         return false;
       }
     }
-
-    let db = {
-      users: [],
-      studyCentres: [],
-      products: [],
-      transactions: [],
-      challans: [],
-      staffActions: [],
-      whatsappNumber: '919333782048',
-      branding: {
-        logo: '',
-        heroBanner: '',
-        heroHeading: 'Empowering Your Education & Centre Supply',
-        heroDesc: 'Centralized study material distribution, live inventory tracking, and instant digital challan portal for all authorized NBCE Study Centres.',
-        title: 'NBCE STORE',
-        subtitle: 'Study Material & Central Dispatch',
-        ticker: '📢 Welcome to NBCE STORE Official Portal • Study Centres can browse available Prospectus, Books, ID Cards & Exam Kits below • For Challan & Dispatch queries, contact Central Store Desk.',
-        address: 'West Bengal, India • Central Inventory & Study Material Dispatch Division'
-      }
-    };
-
-    let currentUser = JSON.parse(sessionStorage.getItem('NBCE_CLOUD_USER')) || null;
-    let uploadedProductImage = '';
-    let editProductImage = '';
-    let tempUploadedLogo = '';
-    let tempUploadedHero = '';
-    let challanCart = [];
-    let activeChallanNoForPDF = '';
-    let pendingDeleteAction = null;
-    let realtimeSubscription = null;
-    let syncDebounceTimer = null;
-    let autoSyncInterval = null;
 
     function setLoading(show, text = 'Syncing with Supabase Cloud...') {
       const el = document.getElementById('loading-overlay');
@@ -1401,7 +1366,6 @@
     function applySiteBranding() {
       const b = db.branding;
       document.title = `${b.title} — Study Material & Central Inventory Portal`;
-
       document.getElementById('pub-brand-title').textContent = b.title;
       document.getElementById('pub-brand-subtitle').textContent = b.subtitle;
       document.getElementById('pub-notice-ticker').textContent = b.ticker;
@@ -1410,7 +1374,6 @@
       document.getElementById('login-brand-title').textContent = b.title;
       document.getElementById('sidebar-brand-title').textContent = b.title;
       document.getElementById('mobile-brand-title').textContent = b.title;
-
       document.getElementById('pub-hero-heading').textContent = b.heroHeading || 'Empowering Your Education & Centre Supply';
       document.getElementById('pub-hero-desc').textContent = b.heroDesc || '';
 
@@ -1444,7 +1407,18 @@
       }
     }
 
-    // ==================== PUBLIC HOME PAGE LOGIC ====================
+    // ==================== PUBLIC HOME PAGE & MODAL SWITCHING ====================
+    function openLoginModal() {
+      document.getElementById('public-home-screen').classList.add('hidden');
+      document.getElementById('login-screen').classList.remove('hidden');
+    }
+
+    function backToPublicHome() {
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('public-home-screen').classList.remove('hidden');
+      loadPublicHomeData();
+    }
+
     async function loadPublicHomeData() {
       try {
         const [prodsRes, centresRes, settingsRes] = await Promise.all([
@@ -1468,8 +1442,7 @@
         applySiteBranding();
 
         db.products = prodsRes.data || [];
-        const activeList = getActiveProducts();
-        document.getElementById('pub-stat-products').textContent = activeList.length;
+        document.getElementById('pub-stat-products').textContent = getActiveProducts().length;
         document.getElementById('pub-stat-centres').textContent = centresRes.count || 0;
         renderPublicCatalog();
       } catch (e) {
@@ -1494,9 +1467,7 @@
         return `
           <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition border border-slate-200/80 overflow-hidden flex flex-col">
             <div class="h-44 bg-slate-100 relative flex items-center justify-center overflow-hidden">
-              ${p.image_url
-                ? `<img src="${p.image_url}" class="w-full h-full object-cover" />`
-                : `<i class="fa-solid fa-book text-4xl text-slate-300"></i>`}
+              ${p.image_url ? `<img src="${p.image_url}" class="w-full h-full object-cover" />` : `<i class="fa-solid fa-book text-4xl text-slate-300"></i>`}
               <span class="absolute top-3 left-3 bg-[#0b2559]/85 text-amber-300 text-[10px] font-mono font-bold px-2.5 py-0.5 rounded">${p.sku}</span>
             </div>
             <div class="p-4 flex-1 flex flex-col justify-between">
@@ -1514,110 +1485,6 @@
           </div>
         `;
       }).join('');
-    }
-
-    function openLoginModal() {
-      document.getElementById('public-home-screen').classList.add('hidden');
-      document.getElementById('login-screen').classList.remove('hidden');
-    }
-
-    function backToPublicHome() {
-      document.getElementById('login-screen').classList.add('hidden');
-      document.getElementById('public-home-screen').classList.remove('hidden');
-      loadPublicHomeData();
-    }
-
-    // ==================== ULTRA-FAST AUTO SYNC (REALTIME + 5s POLLING) ====================
-    function setupAutoRealtimeSync() {
-      if (realtimeSubscription) {
-        sb.removeChannel(realtimeSubscription);
-      }
-      if (autoSyncInterval) {
-        clearInterval(autoSyncInterval);
-      }
-
-      realtimeSubscription = sb
-        .channel('nbce-live-sync')
-        .on('postgres_changes', { event: '*', schema: 'public' }, () => {
-          clearTimeout(syncDebounceTimer);
-          syncDebounceTimer = setTimeout(async () => {
-            await refreshAllData(true);
-            showToast('Live update synced!');
-          }, 300);
-        })
-        .subscribe();
-
-      autoSyncInterval = setInterval(() => {
-        if (currentUser && document.visibilityState === 'visible') {
-          refreshAllData(true);
-        }
-      }, 5000);
-
-      document.addEventListener('visibilitychange', () => {
-        if (currentUser && document.visibilityState === 'visible') {
-          refreshAllData(true);
-        }
-      });
-    }
-
-    async function refreshAllData(silent = false) {
-      if (!silent) setLoading(true, 'Loading live data from Supabase...');
-      try {
-        const [usersRes, centresRes, prodsRes, logsRes, challansRes, actionsRes, settingsRes] = await Promise.all([
-          sb.from('app_users').select('*').order('created_at', { ascending: true }),
-          sb.from('study_centres').select('*').order('centre_code', { ascending: true }),
-          sb.from('products').select('*').order('name', { ascending: true }),
-          sb.from('stock_logs').select('*').order('created_at', { ascending: false }),
-          sb.from('challans').select('*').order('created_at', { ascending: false }),
-          sb.from('staff_actions').select('*').order('created_at', { ascending: false }).limit(150),
-          sb.from('app_settings').select('*')
-        ]);
-
-        db.users = usersRes.data || [];
-        db.studyCentres = centresRes.data || [];
-        db.products = prodsRes.data || [];
-        db.transactions = logsRes.data || [];
-        db.challans = challansRes.data || [];
-        db.staffActions = actionsRes.data || [];
-
-        if (settingsRes.data) {
-          settingsRes.data.forEach(row => {
-            if (row.key === 'whatsapp_number' && row.value) db.whatsappNumber = row.value;
-            if (row.key === 'site_logo') db.branding.logo = row.value || '';
-            if (row.key === 'site_hero_banner') db.branding.heroBanner = row.value || '';
-            if (row.key === 'site_hero_heading' && row.value) db.branding.heroHeading = row.value;
-            if (row.key === 'site_hero_desc' && row.value) db.branding.heroDesc = row.value;
-            if (row.key === 'site_title' && row.value) db.branding.title = row.value;
-            if (row.key === 'site_subtitle' && row.value) db.branding.subtitle = row.value;
-            if (row.key === 'site_ticker' && row.value) db.branding.ticker = row.value;
-            if (row.key === 'site_address' && row.value) db.branding.address = row.value;
-          });
-        }
-
-        applySiteBranding();
-        updateBadges();
-        const activeBtn = document.querySelector('.nav-btn.bg-indigo-600');
-        const currentView = activeBtn ? activeBtn.dataset.nav : 'home';
-
-        if (!silent || !['add-product', 'stock-in', 'stock-sold', 'stock-return', 'study-centres', 'users', 'reports', 'branding'].includes(currentView)) {
-          renderCurrentView(currentView);
-        }
-      } catch (err) {
-        console.error(err);
-        if (!silent) alert('Error connecting to Supabase: ' + err.message);
-      } finally {
-        if (!silent) setLoading(false);
-      }
-    }
-
-    async function logAction(actionType, details) {
-      if (!currentUser) return;
-      await sb.from('staff_actions').insert([{
-        staff_name: currentUser.full_name,
-        role: currentUser.role,
-        action_type: actionType,
-        details
-      }]);
     }
 
     // ==================== AUTHENTICATION ====================
@@ -1689,6 +1556,89 @@
       await refreshAllData(false);
       setupAutoRealtimeSync();
       navigate('home');
+    }
+
+    // ==================== AUTO SYNC & DATA REFRESH ====================
+    function setupAutoRealtimeSync() {
+      if (realtimeSubscription) sb.removeChannel(realtimeSubscription);
+      if (autoSyncInterval) clearInterval(autoSyncInterval);
+
+      realtimeSubscription = sb
+        .channel('nbce-live-sync')
+        .on('postgres_changes', { event: '*', schema: 'public' }, () => {
+          clearTimeout(syncDebounceTimer);
+          syncDebounceTimer = setTimeout(async () => {
+            await refreshAllData(true);
+            showToast('Live update synced!');
+          }, 300);
+        })
+        .subscribe();
+
+      autoSyncInterval = setInterval(() => {
+        if (currentUser && document.visibilityState === 'visible') {
+          refreshAllData(true);
+        }
+      }, 5000);
+    }
+
+    async function refreshAllData(silent = false) {
+      if (!silent) setLoading(true, 'Loading live data from Supabase...');
+      try {
+        const [usersRes, centresRes, prodsRes, logsRes, challansRes, actionsRes, settingsRes] = await Promise.all([
+          sb.from('app_users').select('*').order('created_at', { ascending: true }),
+          sb.from('study_centres').select('*').order('centre_code', { ascending: true }),
+          sb.from('products').select('*').order('name', { ascending: true }),
+          sb.from('stock_logs').select('*').order('created_at', { ascending: false }),
+          sb.from('challans').select('*').order('created_at', { ascending: false }),
+          sb.from('staff_actions').select('*').order('created_at', { ascending: false }).limit(150),
+          sb.from('app_settings').select('*')
+        ]);
+
+        db.users = usersRes.data || [];
+        db.studyCentres = centresRes.data || [];
+        db.products = prodsRes.data || [];
+        db.transactions = logsRes.data || [];
+        db.challans = challansRes.data || [];
+        db.staffActions = actionsRes.data || [];
+
+        if (settingsRes.data) {
+          settingsRes.data.forEach(row => {
+            if (row.key === 'whatsapp_number' && row.value) db.whatsappNumber = row.value;
+            if (row.key === 'site_logo') db.branding.logo = row.value || '';
+            if (row.key === 'site_hero_banner') db.branding.heroBanner = row.value || '';
+            if (row.key === 'site_hero_heading' && row.value) db.branding.heroHeading = row.value;
+            if (row.key === 'site_hero_desc' && row.value) db.branding.heroDesc = row.value;
+            if (row.key === 'site_title' && row.value) db.branding.title = row.value;
+            if (row.key === 'site_subtitle' && row.value) db.branding.subtitle = row.value;
+            if (row.key === 'site_ticker' && row.value) db.branding.ticker = row.value;
+            if (row.key === 'site_address' && row.value) db.branding.address = row.value;
+          });
+        }
+
+        applySiteBranding();
+        updateBadges();
+        const activeBtn = document.querySelector('.nav-btn.bg-indigo-600');
+        const currentView = activeBtn ? activeBtn.dataset.nav : 'home';
+
+        if (!silent || !['add-product', 'stock-in', 'stock-sold', 'stock-return', 'study-centres', 'users', 'reports', 'branding'].includes(currentView)) {
+          renderCurrentView(currentView);
+        }
+      } catch (err) {
+        console.error(err);
+        if (!silent) alert('Error connecting to Supabase: ' + err.message);
+      } finally {
+        if (!silent) setLoading(false);
+      }
+    }
+
+    async function logAction(actionType, details) {
+      if (!currentUser) return;
+      await sb.from('staff_actions').insert([{
+        staff_name: currentUser.full_name,
+        role: currentUser.role,
+        action_type: actionType,
+        details
+      }]);
     }
 
     // ==================== NAVIGATION ====================
@@ -1772,7 +1722,7 @@
       document.getElementById('catalog-trash-count').textContent = trashedProds.length;
     }
 
-    // ==================== 01 & 09: HOME & REAL-TIME STOCK ====================
+    // ==================== HOME & REAL-TIME STOCK ====================
     function renderHome() {
       const today = new Date().toISOString().split('T')[0];
       const activeProds = getActiveProducts();
@@ -1827,15 +1777,15 @@
                 : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-700">In Stock</span>`}
             </td>
             <td class="py-3 px-4 text-right space-x-1">
-              <button onclick="navigate('stock-in')" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold px-2.5 py-1 rounded-lg">+ In</button>
-              <button onclick="navigate('stock-sold')" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-700 font-semibold px-2.5 py-1 rounded-lg">- Sell</button>
+              <button type="button" onclick="navigate('stock-in')" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold px-2.5 py-1 rounded-lg">+ In</button>
+              <button type="button" onclick="navigate('stock-sold')" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-700 font-semibold px-2.5 py-1 rounded-lg">- Sell</button>
             </td>
           </tr>
         `;
       }).join('');
     }
 
-    // ==================== 03, 04 & 05: PRODUCTS, CUSTOM DELETE WARNING & RECYCLE BIN ====================
+    // ==================== PRODUCTS, CUSTOM DELETE POPUP & RECYCLE BIN ====================
     function renderProducts() {
       const q = (document.getElementById('product-search').value || '').toLowerCase();
       const list = getActiveProducts().filter(p =>
@@ -1882,10 +1832,10 @@
               </div>
               ${isAdmin ? `
                 <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center gap-2">
-                  <button onclick="openEditProductModal('${p.id}')" class="flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold py-1.5 rounded-lg transition">
+                  <button type="button" onclick="openEditProductModal('${p.id}')" class="flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold py-1.5 rounded-lg transition">
                     <i class="fa-solid fa-pen-to-square mr-1"></i> Edit
                   </button>
-                  <button onclick="confirmMoveToRecycleBin('${p.id}')" class="flex-1 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold py-1.5 rounded-lg transition">
+                  <button type="button" onclick="confirmMoveToRecycleBin('${p.id}')" class="flex-1 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold py-1.5 rounded-lg transition">
                     <i class="fa-solid fa-trash mr-1"></i> Delete
                   </button>
                 </div>
@@ -1896,7 +1846,6 @@
       }).join('');
     }
 
-    // ==================== CUSTOM DELETE WARNING POPUP (YES / NO) ====================
     function confirmMoveToRecycleBin(prodId) {
       if (currentUser.role !== 'admin') return;
       const p = db.products.find(item => item.id === prodId);
@@ -1944,16 +1893,12 @@
       if (type === 'SOFT_DELETE') {
         setLoading(true, 'Moving product to Recycle Bin...');
         const cleanCat = getCleanCategory(product);
-        const { error } = await sb.from('products').update({
-          category: TRASH_PREFIX + cleanCat
-        }).eq('id', product.id);
-
+        const { error } = await sb.from('products').update({ category: TRASH_PREFIX + cleanCat }).eq('id', product.id);
         if (error) {
           setLoading(false);
           alert('Error moving to Recycle Bin: ' + error.message);
           return;
         }
-
         await logAction('MOVE_TO_RECYCLE_BIN', `Moved product "${product.name}" (${product.sku}) to Recycle Bin`);
         await refreshAllData(false);
         showToast(`"${product.name}" moved to Recycle Bin!`);
@@ -1965,14 +1910,12 @@
           alert('Error deleting product: ' + error.message);
           return;
         }
-
         await logAction('PERMANENT_DELETE', `Permanently deleted product "${product.name}" (${product.sku})`);
         await refreshAllData(false);
         showToast(`"${product.name}" permanently deleted!`);
       }
     }
 
-    // ==================== RECYCLE BIN RENDER & RESTORE ====================
     function renderRecycleBin() {
       const trashed = getTrashedProducts();
       const grid = document.getElementById('recycle-bin-grid');
@@ -1990,9 +1933,7 @@
       grid.innerHTML = trashed.map(p => `
         <div class="bg-white rounded-2xl shadow-sm border border-rose-200 overflow-hidden flex flex-col">
           <div class="h-36 bg-slate-100 relative flex items-center justify-center overflow-hidden opacity-80">
-            ${p.image_url
-              ? `<img src="${p.image_url}" class="w-full h-full object-cover grayscale" />`
-              : `<i class="fa-solid fa-box-open text-4xl text-slate-300"></i>`}
+            ${p.image_url ? `<img src="${p.image_url}" class="w-full h-full object-cover grayscale" />` : `<i class="fa-solid fa-box-open text-4xl text-slate-300"></i>`}
             <span class="absolute top-2.5 left-2.5 bg-slate-900/80 text-white text-[10px] font-mono px-2 py-0.5 rounded">${p.sku}</span>
             <span class="absolute top-2.5 right-2.5 bg-rose-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">DELETED</span>
           </div>
@@ -2003,10 +1944,10 @@
               <p class="text-xs text-slate-500 mt-1">Saved Stock: <strong>${p.current_stock} ${p.unit}</strong></p>
             </div>
             <div class="mt-4 pt-3 border-t border-slate-100 flex items-center gap-2">
-              <button onclick="restoreProductFromBin('${p.id}')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 rounded-lg transition shadow-xs">
+              <button type="button" onclick="restoreProductFromBin('${p.id}')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 rounded-lg transition shadow-xs">
                 <i class="fa-solid fa-rotate-left mr-1"></i> Restore
               </button>
-              <button onclick="confirmPermanentDelete('${p.id}')" class="flex-1 bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 rounded-lg transition shadow-xs">
+              <button type="button" onclick="confirmPermanentDelete('${p.id}')" class="flex-1 bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 rounded-lg transition shadow-xs">
                 <i class="fa-solid fa-ban mr-1"></i> Permanent Delete
               </button>
             </div>
@@ -2022,10 +1963,7 @@
 
       setLoading(true, 'Restoring product to catalog...');
       const restoredCategory = getCleanCategory(p);
-      const { error } = await sb.from('products').update({
-        category: restoredCategory
-      }).eq('id', p.id);
-
+      const { error } = await sb.from('products').update({ category: restoredCategory }).eq('id', p.id);
       if (error) {
         setLoading(false);
         alert('Error restoring product: ' + error.message);
@@ -2037,7 +1975,7 @@
       showToast(`"${p.name}" restored to active catalog!`);
     }
 
-    // ==================== EDIT PRODUCT MODAL ====================
+    // ==================== EDIT & ADD PRODUCT ====================
     function openEditProductModal(prodId) {
       if (currentUser.role !== 'admin') return;
       const p = db.products.find(item => item.id === prodId);
@@ -2082,8 +2020,7 @@
           const scale = maxW / img.width;
           canvas.width = maxW;
           canvas.height = img.height * scale;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
           editProductImage = canvas.toDataURL('image/jpeg', 0.72);
           const prev = document.getElementById('edit-prod-image-preview');
           prev.src = editProductImage;
@@ -2106,12 +2043,7 @@
 
       setLoading(true, 'Updating product details...');
       const { error } = await sb.from('products').update({
-        name,
-        sku,
-        category,
-        unit,
-        min_stock: minStock,
-        image_url: editProductImage
+        name, sku, category, unit, min_stock: minStock, image_url: editProductImage
       }).eq('id', id);
 
       if (error) {
@@ -2145,10 +2077,8 @@
           const scale = maxW / img.width;
           canvas.width = maxW;
           canvas.height = img.height * scale;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
           uploadedProductImage = canvas.toDataURL('image/jpeg', 0.72);
-
           const preview = document.getElementById('prod-image-preview');
           preview.src = uploadedProductImage;
           preview.classList.remove('hidden');
@@ -2176,14 +2106,7 @@
 
       setLoading(true, 'Saving product to Supabase...');
       const { data: insertedProd, error } = await sb.from('products').insert([{
-        sku,
-        name,
-        category,
-        unit,
-        current_stock: stock,
-        min_stock: minStock,
-        image_url: uploadedProductImage,
-        added_date: addedDate
+        sku, name, category, unit, current_stock: stock, min_stock: minStock, image_url: uploadedProductImage, added_date: addedDate
       }]).select().single();
 
       if (error) {
@@ -2194,15 +2117,8 @@
 
       if (stock > 0 && insertedProd) {
         await sb.from('stock_logs').insert([{
-          type: 'IN',
-          product_id: insertedProd.id,
-          product_name: name,
-          quantity: stock,
-          centre_code: '-',
-          challan_no: '-',
-          staff_name: currentUser.full_name,
-          remarks: 'Opening Stock',
-          tx_date: addedDate
+          type: 'IN', product_id: insertedProd.id, product_name: name, quantity: stock,
+          centre_code: '-', challan_no: '-', staff_name: currentUser.full_name, remarks: 'Opening Stock', tx_date: addedDate
         }]);
       }
 
@@ -2213,7 +2129,7 @@
       navigate('products');
     });
 
-    // ==================== 06: STOCK IN ====================
+    // ==================== STOCK IN ====================
     function prepStockIn() {
       document.getElementById('stockin-date').value = new Date().toISOString().split('T')[0];
       document.getElementById('stockin-product').innerHTML = getActiveProducts().map(p =>
@@ -2233,7 +2149,6 @@
 
       setLoading(true, 'Updating stock in Cloud...');
       const newStock = Number(product.current_stock) + qty;
-
       const { error } = await sb.from('products').update({ current_stock: newStock }).eq('id', prodId);
       if (error) {
         setLoading(false);
@@ -2242,15 +2157,8 @@
       }
 
       await sb.from('stock_logs').insert([{
-        type: 'IN',
-        product_id: product.id,
-        product_name: product.name,
-        quantity: qty,
-        centre_code: '-',
-        challan_no: '-',
-        staff_name: currentUser.full_name,
-        remarks,
-        tx_date: date
+        type: 'IN', product_id: product.id, product_name: product.name, quantity: qty,
+        centre_code: '-', challan_no: '-', staff_name: currentUser.full_name, remarks, tx_date: date
       }]);
 
       await logAction('STOCK_IN', `Added +${qty} ${product.unit} to "${product.name}"`);
@@ -2275,11 +2183,8 @@
     function toggleReturnCentreField() {
       const type = document.getElementById('ret-type').value;
       const wrap = document.getElementById('ret-centre-wrap');
-      if (type === 'RETURN') {
-        wrap.classList.remove('hidden');
-      } else {
-        wrap.classList.add('hidden');
-      }
+      if (type === 'RETURN') wrap.classList.remove('hidden');
+      else wrap.classList.add('hidden');
     }
 
     document.getElementById('stock-return-form').addEventListener('submit', async function(e) {
@@ -2300,10 +2205,7 @@
       }
 
       setLoading(true, 'Recording Return / Damage entry...');
-      const newStock = type === 'RETURN'
-        ? Number(product.current_stock) + qty
-        : Math.max(0, Number(product.current_stock) - qty);
-
+      const newStock = type === 'RETURN' ? Number(product.current_stock) + qty : Math.max(0, Number(product.current_stock) - qty);
       const { error } = await sb.from('products').update({ current_stock: newStock }).eq('id', prodId);
       if (error) {
         setLoading(false);
@@ -2312,15 +2214,8 @@
       }
 
       await sb.from('stock_logs').insert([{
-        type,
-        product_id: product.id,
-        product_name: product.name,
-        quantity: qty,
-        centre_code: centreCode,
-        challan_no: '-',
-        staff_name: currentUser.full_name,
-        remarks,
-        tx_date: date
+        type, product_id: product.id, product_name: product.name, quantity: qty,
+        centre_code: centreCode, challan_no: '-', staff_name: currentUser.full_name, remarks, tx_date: date
       }]);
 
       if (type === 'DAMAGE' && newStock <= Number(product.min_stock)) {
@@ -2337,7 +2232,7 @@
       navigate('home');
     });
 
-    // ==================== 07 & 08: STOCK SOLD, CHALLAN & ZERO-CLICK WHATSAPP ====================
+    // ==================== STOCK SOLD, CHALLAN & WHATSAPP ====================
     function prepStockSold() {
       challanCart = [];
       renderChallanCart();
@@ -2358,16 +2253,9 @@
       const code = document.getElementById('sold-centre').value;
       const centre = db.studyCentres.find(c => c.centre_code === code);
       const box = document.getElementById('sold-centre-info');
-      if (!centre) {
-        box.classList.add('hidden');
-        return;
-      }
+      if (!centre) { box.classList.add('hidden'); return; }
       box.classList.remove('hidden');
-      box.innerHTML = `
-        <span><strong>Code:</strong> ${centre.centre_code}</span>
-        <span><strong>Mobile:</strong> ${centre.mobile}</span>
-        <span><strong>Address:</strong> ${centre.address}</span>
-      `;
+      box.innerHTML = `<span><strong>Code:</strong> ${centre.centre_code}</span><span><strong>Mobile:</strong> ${centre.mobile}</span><span><strong>Address:</strong> ${centre.address}</span>`;
     }
 
     function addChallanItem() {
@@ -2375,30 +2263,15 @@
       const qty = parseInt(document.getElementById('sold-qty-input').value);
       const product = getActiveProducts().find(p => p.id === prodId);
 
-      if (!product || !qty || qty <= 0) {
-        alert('Please enter a valid quantity.');
-        return;
-      }
-
+      if (!product || !qty || qty <= 0) { alert('Please enter a valid quantity.'); return; }
       const existing = challanCart.find(i => i.productId === prodId);
-      const totalRequested = (existing ? existing.qty : 0) + qty;
-
-      if (totalRequested > Number(product.current_stock)) {
+      if ((existing ? existing.qty : 0) + qty > Number(product.current_stock)) {
         alert(`Insufficient stock! Only ${product.current_stock} ${product.unit} available.`);
         return;
       }
 
-      if (existing) {
-        existing.qty += qty;
-      } else {
-        challanCart.push({
-          productId: product.id,
-          sku: product.sku,
-          name: product.name,
-          qty,
-          unit: product.unit
-        });
-      }
+      if (existing) existing.qty += qty;
+      else challanCart.push({ productId: product.id, sku: product.sku, name: product.name, qty, unit: product.unit });
 
       document.getElementById('sold-qty-input').value = '';
       renderChallanCart();
@@ -2421,9 +2294,7 @@
           <td class="py-2 font-mono text-slate-500">${item.sku}</td>
           <td class="py-2 font-bold text-amber-700">${item.qty} ${item.unit}</td>
           <td class="py-2 text-right">
-            <button type="button" onclick="removeChallanItem(${idx})" class="text-red-500 hover:text-red-700">
-              <i class="fa-solid fa-trash"></i>
-            </button>
+            <button type="button" onclick="removeChallanItem(${idx})" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button>
           </td>
         </tr>
       `).join('');
@@ -2435,21 +2306,14 @@
       const date = document.getElementById('sold-date').value;
       const remarks = document.getElementById('sold-remarks').value.trim() || 'Study Centre Dispatch';
 
-      if (!centreCode) {
-        alert('Please select a Study Centre.');
-        return;
-      }
-      if (challanCart.length === 0) {
-        alert('Please add at least one product to dispatch.');
-        return;
-      }
+      if (!centreCode) { alert('Please select a Study Centre.'); return; }
+      if (challanCart.length === 0) { alert('Please add at least one product to dispatch.'); return; }
 
       const centre = db.studyCentres.find(c => c.centre_code === centreCode);
       const challanNo = 'CH-' + (1001 + db.challans.length);
       const totalQty = challanCart.reduce((s, i) => s + i.qty, 0);
 
       setLoading(true, 'Generating Challan & sending auto WhatsApp...');
-
       const lowStockTriggeredItems = [];
 
       for (const item of challanCart) {
@@ -2457,34 +2321,19 @@
         if (prod) {
           const updatedStock = Math.max(0, Number(prod.current_stock) - item.qty);
           await sb.from('products').update({ current_stock: updatedStock }).eq('id', prod.id);
-          if (updatedStock <= Number(prod.min_stock)) {
-            lowStockTriggeredItems.push({ ...prod, remaining: updatedStock });
-          }
+          if (updatedStock <= Number(prod.min_stock)) lowStockTriggeredItems.push({ ...prod, remaining: updatedStock });
         }
 
         await sb.from('stock_logs').insert([{
-          type: 'OUT',
-          product_id: item.productId,
-          product_name: item.name,
-          quantity: item.qty,
-          centre_code: centre.centre_code,
-          challan_no: challanNo,
-          staff_name: currentUser.full_name,
-          remarks,
-          tx_date: date
+          type: 'OUT', product_id: item.productId, product_name: item.name, quantity: item.qty,
+          centre_code: centre.centre_code, challan_no: challanNo, staff_name: currentUser.full_name, remarks, tx_date: date
         }]);
       }
 
       await sb.from('challans').insert([{
-        challan_no: challanNo,
-        centre_code: centre.centre_code,
-        centre_name: centre.centre_name,
-        mobile: centre.mobile,
-        address: centre.address,
-        items: challanCart,
-        total_qty: totalQty,
-        issued_by: currentUser.full_name,
-        challan_date: date
+        challan_no: challanNo, centre_code: centre.centre_code, centre_name: centre.centre_name,
+        mobile: centre.mobile, address: centre.address, items: challanCart, total_qty: totalQty,
+        issued_by: currentUser.full_name, challan_date: date
       }]);
 
       const itemsSummary = challanCart.map((it, idx) => `${idx + 1}. ${it.name} (${it.qty} ${it.unit})`).join('\n');
@@ -2525,10 +2374,10 @@
           <td class="py-3 px-4 font-semibold">${c.total_qty} Units (${(c.items || []).length} items)</td>
           <td class="py-3 px-4 text-xs text-slate-600">${c.issued_by}</td>
           <td class="py-3 px-4 text-right space-x-1">
-            <button onclick="resendChallanWhatsApp('${c.challan_no}')" title="Auto Send WhatsApp" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold text-xs px-2.5 py-1.5 rounded-lg">
+            <button type="button" onclick="resendChallanWhatsApp('${c.challan_no}')" title="Auto Send WhatsApp" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold text-xs px-2.5 py-1.5 rounded-lg">
               <i class="fa-brands fa-whatsapp"></i>
             </button>
-            <button onclick="openChallanModal('${c.challan_no}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs px-3 py-1.5 rounded-lg">
+            <button type="button" onclick="openChallanModal('${c.challan_no}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs px-3 py-1.5 rounded-lg">
               <i class="fa-solid fa-eye mr-1"></i> View / PDF / Print
             </button>
           </td>
@@ -2631,7 +2480,7 @@
       modal.classList.remove('flex');
     }
 
-    // ==================== 12: STUDY CENTRES ====================
+    // ==================== STUDY CENTRES ====================
     function renderStudyCentres() {
       document.getElementById('centres-tbody').innerHTML = db.studyCentres.map(c => `
         <tr class="hover:bg-slate-50">
@@ -2656,13 +2505,7 @@
       }
 
       setLoading(true, 'Saving Study Centre...');
-      const { error } = await sb.from('study_centres').insert([{
-        centre_code: code,
-        centre_name: name,
-        mobile,
-        address
-      }]);
-
+      const { error } = await sb.from('study_centres').insert([{ centre_code: code, centre_name: name, mobile, address }]);
       if (error) {
         setLoading(false);
         alert('Error: ' + error.message);
@@ -2675,7 +2518,7 @@
       showToast('Study Centre saved to Cloud!');
     });
 
-    // ==================== 13: LOW STOCK ALERT & ZERO-CLICK WHATSAPP ====================
+    // ==================== LOW STOCK ALERT & WHATSAPP ====================
     function renderLowStock() {
       document.getElementById('whatsapp-alert-number').value = db.whatsappNumber || '';
       const lowItems = getActiveProducts().filter(p => Number(p.current_stock) <= Number(p.min_stock));
@@ -2707,10 +2550,10 @@
           </div>
 
           <div class="flex gap-2">
-            <button onclick="sendSingleWhatsApp('${p.id}')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-xl flex items-center justify-center gap-1.5">
+            <button type="button" onclick="sendSingleWhatsApp('${p.id}')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-xl flex items-center justify-center gap-1.5">
               <i class="fa-brands fa-whatsapp text-sm"></i> Auto Send Alert
             </button>
-            <button onclick="navigate('stock-in')" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-3.5 py-2.5 rounded-xl">
+            <button type="button" onclick="navigate('stock-in')" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-3.5 py-2.5 rounded-xl">
               Restock
             </button>
           </div>
@@ -2740,10 +2583,7 @@
 
     async function sendBulkLowStockWhatsApp() {
       const lowItems = getActiveProducts().filter(p => Number(p.current_stock) <= Number(p.min_stock));
-      if (lowItems.length === 0) {
-        alert('No low stock items right now.');
-        return;
-      }
+      if (lowItems.length === 0) { alert('No low stock items right now.'); return; }
       setLoading(true, 'Sending Low Stock Summary to WhatsApp...');
       const lines = lowItems.map((p, idx) => `${idx + 1}. *${p.name}* (${p.sku}) — Left: *${p.current_stock} ${p.unit}* (Min: ${p.min_stock})`).join('\n');
       const text = `🚨 *${db.branding.title} — LOW STOCK SUMMARY* 🚨\n\n${lines}\n\nPlease restock these items soon.`;
@@ -2752,7 +2592,7 @@
       showToast(ok ? 'Bulk Low Stock Alert sent to WhatsApp!' : 'WhatsApp summary triggered!');
     }
 
-    // ==================== 14: FILTER-WISE REPORTS + EXCEL (.XLSX) & PDF ====================
+    // ==================== FILTER-WISE REPORTS + EXCEL (.XLSX) & PDF ====================
     function prepReports() {
       document.getElementById('rep-product').innerHTML =
         `<option value="ALL">All Products</option>` +
@@ -2789,19 +2629,9 @@
         let sign = '-';
         let color = 'text-amber-600';
 
-        if (t.type === 'IN') {
-          badge = `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-100 text-emerald-700">STOCK IN</span>`;
-          sign = '+';
-          color = 'text-emerald-600';
-        } else if (t.type === 'RETURN') {
-          badge = `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-sky-100 text-sky-700">RETURN</span>`;
-          sign = '+';
-          color = 'text-sky-600';
-        } else if (t.type === 'DAMAGE') {
-          badge = `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-100 text-rose-700">DAMAGE</span>`;
-          sign = '-';
-          color = 'text-rose-600';
-        }
+        if (t.type === 'IN') { badge = `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-100 text-emerald-700">STOCK IN</span>`; sign = '+'; color = 'text-emerald-600'; }
+        else if (t.type === 'RETURN') { badge = `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-sky-100 text-sky-700">RETURN</span>`; sign = '+'; color = 'text-sky-600'; }
+        else if (t.type === 'DAMAGE') { badge = `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-100 text-rose-700">DAMAGE</span>`; sign = '-'; color = 'text-rose-600'; }
 
         return `
           <tr class="hover:bg-slate-50">
@@ -2820,16 +2650,9 @@
     function exportReportExcel() {
       const rows = getFilteredTransactions();
       const sheetData = rows.map(r => ({
-        'Date': r.tx_date,
-        'Type': r.type,
-        'Product Name': r.product_name,
-        'Quantity': Number(r.quantity),
-        'Study Centre': r.centre_code || '-',
-        'Note / Remarks': r.remarks || '',
-        'Challan No': r.challan_no || '-',
-        'Staff': r.staff_name || '-'
+        'Date': r.tx_date, 'Type': r.type, 'Product Name': r.product_name, 'Quantity': Number(r.quantity),
+        'Study Centre': r.centre_code || '-', 'Note / Remarks': r.remarks || '', 'Challan No': r.challan_no || '-', 'Staff': r.staff_name || '-'
       }));
-
       const wb = XLSX.utils.book_new();
       const ws = XLSX.utils.json_to_sheet(sheetData);
       XLSX.utils.book_append_sheet(wb, ws, 'Stock Report');
@@ -2872,7 +2695,6 @@
           </table>
         </div>
       `;
-
       const opt = {
         margin: 0.3,
         filename: `${db.branding.title.replace(/\s+/g, '_')}_Report_${new Date().toISOString().split('T')[0]}.pdf`,
@@ -2892,25 +2714,16 @@
         <table class="w-full text-left border-collapse text-xs border border-slate-300">
           <thead>
             <tr class="bg-slate-100 border-b border-slate-300">
-              <th class="p-2 border">Date</th>
-              <th class="p-2 border">Type</th>
-              <th class="p-2 border">Product</th>
-              <th class="p-2 border">Qty</th>
-              <th class="p-2 border">Centre / Note</th>
-              <th class="p-2 border">Challan</th>
-              <th class="p-2 border">Staff</th>
+              <th class="p-2 border">Date</th><th class="p-2 border">Type</th><th class="p-2 border">Product</th>
+              <th class="p-2 border">Qty</th><th class="p-2 border">Centre / Note</th><th class="p-2 border">Challan</th><th class="p-2 border">Staff</th>
             </tr>
           </thead>
           <tbody>
             ${rows.map(r => `
               <tr>
-                <td class="p-2 border">${r.tx_date}</td>
-                <td class="p-2 border">${r.type}</td>
-                <td class="p-2 border">${r.product_name}</td>
-                <td class="p-2 border">${r.quantity}</td>
-                <td class="p-2 border">${r.centre_code} - ${r.remarks || ''}</td>
-                <td class="p-2 border">${r.challan_no}</td>
-                <td class="p-2 border">${r.staff_name}</td>
+                <td class="p-2 border">${r.tx_date}</td><td class="p-2 border">${r.type}</td><td class="p-2 border">${r.product_name}</td>
+                <td class="p-2 border">${r.quantity}</td><td class="p-2 border">${r.centre_code} - ${r.remarks || ''}</td>
+                <td class="p-2 border">${r.challan_no}</td><td class="p-2 border">${r.staff_name}</td>
               </tr>
             `).join('')}
           </tbody>
@@ -2919,7 +2732,7 @@
       window.print();
     }
 
-    // ==================== ONE-CLICK CLOUD BACKUP (.JSON) ====================
+    // ==================== CLOUD BACKUP (.JSON) ====================
     function downloadCloudBackup() {
       if (currentUser.role !== 'admin') return;
       const backupPayload = {
@@ -2943,7 +2756,7 @@
       showToast('Full Cloud Backup (.json) downloaded!');
     }
 
-    // ==================== 10 & 11: ADMIN STAFF ACTIONS & USER CREATION ====================
+    // ==================== STAFF ACTIONS & USERS ====================
     function renderStaffActions() {
       document.getElementById('staff-actions-tbody').innerHTML = db.staffActions.map(a => `
         <tr class="hover:bg-slate-50">
@@ -2964,7 +2777,7 @@
           <td class="py-3 px-4 font-mono text-xs text-slate-500">${u.password}</td>
           <td class="py-3 px-4 uppercase text-xs font-bold">${u.role}</td>
           <td class="py-3 px-4 text-right">
-            <button onclick="toggleUserActive('${u.id}', '${u.user_id}', ${u.is_active})" class="text-xs px-2.5 py-1 rounded-lg font-semibold ${u.is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">
+            <button type="button" onclick="toggleUserActive('${u.id}', '${u.user_id}', ${u.is_active})" class="text-xs px-2.5 py-1 rounded-lg font-semibold ${u.is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">
               ${u.is_active ? 'Active' : 'Disabled'}
             </button>
           </td>
@@ -2979,25 +2792,11 @@
       const password = document.getElementById('new-user-pass').value.trim();
       const role = document.getElementById('new-user-role').value;
 
-      if (db.users.some(u => u.user_id === userId)) {
-        alert('User ID already exists!');
-        return;
-      }
+      if (db.users.some(u => u.user_id === userId)) { alert('User ID already exists!'); return; }
 
       setLoading(true, 'Creating user account...');
-      const { error } = await sb.from('app_users').insert([{
-        user_id: userId,
-        password,
-        full_name: name,
-        role,
-        is_active: true
-      }]);
-
-      if (error) {
-        setLoading(false);
-        alert('Error: ' + error.message);
-        return;
-      }
+      const { error } = await sb.from('app_users').insert([{ user_id: userId, password, full_name: name, role, is_active: true }]);
+      if (error) { setLoading(false); alert('Error: ' + error.message); return; }
 
       await logAction('CREATE_USER', `Created ${role} account "${name}" (@${userId})`);
       this.reset();
@@ -3013,7 +2812,7 @@
       await refreshAllData(false);
     }
 
-    // ==================== 15: SITE BRANDING, LOGO & HERO BANNER UPLOAD ====================
+    // ==================== SITE BRANDING ====================
     function prepBranding() {
       tempUploadedLogo = db.branding.logo || '';
       tempUploadedHero = db.branding.heroBanner || '';
@@ -3026,18 +2825,14 @@
       document.getElementById('brand-address-input').value = db.branding.address || '';
 
       const previewBox = document.getElementById('branding-logo-preview-box');
-      if (tempUploadedLogo) {
-        previewBox.innerHTML = `<img src="${tempUploadedLogo}" class="w-full h-full object-contain bg-white p-1" />`;
-      } else {
-        previewBox.innerHTML = `<i class="fa-solid fa-graduation-cap"></i>`;
-      }
+      previewBox.innerHTML = tempUploadedLogo
+        ? `<img src="${tempUploadedLogo}" class="w-full h-full object-contain bg-white p-1" />`
+        : `<i class="fa-solid fa-graduation-cap"></i>`;
 
       const heroPreviewBox = document.getElementById('branding-hero-preview-box');
-      if (tempUploadedHero) {
-        heroPreviewBox.innerHTML = `<img src="${tempUploadedHero}" class="w-full h-full object-cover" />`;
-      } else {
-        heroPreviewBox.innerHTML = `<i class="fa-solid fa-panorama text-3xl mb-1"></i><span class="text-xs font-medium text-blue-100">Default Royal Blue Gradient Active</span>`;
-      }
+      heroPreviewBox.innerHTML = tempUploadedHero
+        ? `<img src="${tempUploadedHero}" class="w-full h-full object-cover" />`
+        : `<i class="fa-solid fa-panorama text-3xl mb-1"></i><span class="text-xs font-medium text-blue-100">Default Royal Blue Gradient Active</span>`;
     }
 
     function handleLogoUpload(event) {
@@ -3049,23 +2844,13 @@
         img.onload = function() {
           const canvas = document.createElement('canvas');
           const maxSize = 240;
-          let w = img.width;
-          let h = img.height;
-          if (w > h && w > maxSize) {
-            h = Math.round((h * maxSize) / w);
-            w = maxSize;
-          } else if (h >= w && h > maxSize) {
-            w = Math.round((w * maxSize) / h);
-            h = maxSize;
-          }
-          canvas.width = w;
-          canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
+          let w = img.width, h = img.height;
+          if (w > h && w > maxSize) { h = Math.round((h * maxSize) / w); w = maxSize; }
+          else if (h >= w && h > maxSize) { w = Math.round((w * maxSize) / h); h = maxSize; }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
           tempUploadedLogo = canvas.toDataURL('image/png');
-
-          document.getElementById('branding-logo-preview-box').innerHTML =
-            `<img src="${tempUploadedLogo}" class="w-full h-full object-contain bg-white p-1" />`;
+          document.getElementById('branding-logo-preview-box').innerHTML = `<img src="${tempUploadedLogo}" class="w-full h-full object-contain bg-white p-1" />`;
         };
         img.src = e.target.result;
       };
@@ -3086,20 +2871,12 @@
         img.onload = function() {
           const canvas = document.createElement('canvas');
           const maxW = 1280;
-          let w = img.width;
-          let h = img.height;
-          if (w > maxW) {
-            h = Math.round((h * maxW) / w);
-            w = maxW;
-          }
-          canvas.width = w;
-          canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
+          let w = img.width, h = img.height;
+          if (w > maxW) { h = Math.round((h * maxW) / w); w = maxW; }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
           tempUploadedHero = canvas.toDataURL('image/jpeg', 0.8);
-
-          document.getElementById('branding-hero-preview-box').innerHTML =
-            `<img src="${tempUploadedHero}" class="w-full h-full object-cover" />`;
+          document.getElementById('branding-hero-preview-box').innerHTML = `<img src="${tempUploadedHero}" class="w-full h-full object-cover" />`;
         };
         img.src = e.target.result;
       };
@@ -3108,8 +2885,7 @@
 
     function removeCustomHero() {
       tempUploadedHero = '';
-      document.getElementById('branding-hero-preview-box').innerHTML =
-        `<i class="fa-solid fa-panorama text-3xl mb-1"></i><span class="text-xs font-medium text-blue-100">Default Royal Blue Gradient Active</span>`;
+      document.getElementById('branding-hero-preview-box').innerHTML = `<i class="fa-solid fa-panorama text-3xl mb-1"></i><span class="text-xs font-medium text-blue-100">Default Royal Blue Gradient Active</span>`;
     }
 
     document.getElementById('branding-form').addEventListener('submit', async function(e) {
@@ -3133,29 +2909,16 @@
         { key: 'site_address', value: address }
       ]);
 
-      if (error) {
-        setLoading(false);
-        alert('Error saving branding: ' + error.message);
-        return;
-      }
+      if (error) { setLoading(false); alert('Error saving branding: ' + error.message); return; }
 
-      db.branding = {
-        logo: tempUploadedLogo,
-        heroBanner: tempUploadedHero,
-        heroHeading,
-        heroDesc,
-        title,
-        subtitle,
-        ticker,
-        address
-      };
+      db.branding = { logo: tempUploadedLogo, heroBanner: tempUploadedHero, heroHeading, heroDesc, title, subtitle, ticker, address };
       applySiteBranding();
       await logAction('UPDATE_BRANDING', `Updated site logo, hero banner & branding settings`);
       setLoading(false);
       showToast('Logo, Hero Banner & Home Page updated across all devices!');
     });
 
-    // Boot logic: Either auto-login into portal or show Public Home Page
+    // Boot logic
     if (currentUser) {
       initApp();
     } else {
