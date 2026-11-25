@@ -380,6 +380,12 @@
         <!-- Admin Only Section -->
         <div id="admin-nav-section" class="pt-3 mt-3 border-t border-slate-800 space-y-1">
           <p class="px-3.5 text-[10px] font-bold uppercase tracking-wider text-slate-500">Admin Controls</p>
+          <button onclick="navigate('recycle-bin')" data-nav="recycle-bin" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-left font-medium transition">
+            <span class="flex items-center gap-3">
+              <i class="fa-solid fa-trash-can-arrow-up w-5 text-center text-rose-400"></i> Recycle Bin
+            </span>
+            <span id="sidebar-trash-badge" class="bg-slate-700 text-slate-200 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+          </button>
           <button onclick="navigate('staff-actions')" data-nav="staff-actions" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left font-medium transition">
             <i class="fa-solid fa-clock-rotate-left w-5 text-center text-orange-400"></i> Staff Action Status
           </button>
@@ -554,9 +560,14 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl shadow-sm border border-slate-200/70">
           <input type="text" id="product-search" onkeyup="renderProducts()" placeholder="Search by product name, SKU or category..."
             class="text-sm border border-slate-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-80" />
-          <button onclick="navigate('add-product')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center justify-center gap-2">
-            <i class="fa-solid fa-plus"></i> Add New Product
-          </button>
+          <div class="flex items-center gap-2">
+            <button id="catalog-trash-btn" onclick="navigate('recycle-bin')" class="hidden bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold px-3.5 py-2.5 rounded-xl flex items-center gap-1.5">
+              <i class="fa-solid fa-trash-can-arrow-up"></i> Recycle Bin (<span id="catalog-trash-count">0</span>)
+            </button>
+            <button onclick="navigate('add-product')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center justify-center gap-2">
+              <i class="fa-solid fa-plus"></i> Add New Product
+            </button>
+          </div>
         </div>
         <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
       </section>
@@ -747,7 +758,7 @@
         </div>
       </section>
 
-      <!-- ==================== NEW: STOCK RETURN & DAMAGE ENTRY ==================== -->
+      <!-- ==================== STOCK RETURN & DAMAGE ENTRY ==================== -->
       <section id="view-stock-return" class="view-section hidden">
         <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200/70 overflow-hidden">
           <div class="bg-rose-600 px-6 py-4 text-white">
@@ -979,6 +990,24 @@
         </div>
       </section>
 
+      <!-- ==================== NEW: RECYCLE BIN (ADMIN ONLY) ==================== -->
+      <section id="view-recycle-bin" class="view-section hidden space-y-5">
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="font-bold text-slate-800 text-base flex items-center gap-2">
+              <i class="fa-solid fa-trash-can-arrow-up text-rose-600"></i>
+              <span>Product Recycle Bin</span>
+            </h2>
+            <p class="text-xs text-slate-500">Restore accidentally deleted items back to catalog or delete them permanently</p>
+          </div>
+          <button onclick="navigate('products')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl">
+            <i class="fa-solid fa-arrow-left mr-1"></i> Back to Catalog
+          </button>
+        </div>
+
+        <div id="recycle-bin-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+      </section>
+
       <!-- ==================== 10: STAFF ACTION STATUS (ADMIN) ==================== -->
       <section id="view-staff-actions" class="view-section hidden">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200/70 overflow-hidden">
@@ -1162,6 +1191,33 @@
     </main>
   </div>
 
+  <!-- ==================== CUSTOM DELETE WARNING POPUP (YES / NO) ==================== -->
+  <div id="delete-confirm-modal" class="fixed inset-0 bg-slate-900/65 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-slate-200 animate-fade-in">
+      <div class="p-6 text-center space-y-4">
+        <div id="del-modal-icon-wrap" class="w-16 h-16 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mx-auto text-3xl shadow-inner">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <div>
+          <h3 class="text-lg font-extrabold text-slate-900">Are you sure want to delete data?</h3>
+          <p id="del-modal-subtitle" class="text-xs text-slate-500 mt-1.5 leading-relaxed">
+            This item will be moved to the Recycle Bin. You can restore it anytime later.
+          </p>
+        </div>
+        <div class="flex items-center gap-3 pt-2">
+          <button type="button" onclick="closeDeleteConfirmModal()"
+            class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-sm transition">
+            No
+          </button>
+          <button type="button" id="del-modal-yes-btn" onclick="executeConfirmedDelete()"
+            class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl text-sm shadow transition">
+            Yes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== EDIT PRODUCT MODAL (ADMIN ONLY) ==================== -->
   <div id="edit-product-modal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden">
@@ -1242,6 +1298,26 @@
     const PERISKOPE_API_KEY = 'sk_periskope_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhkZDE1YWJhLWI1OGItNDVmOC04ZTE0LTE5ZGUyMTk4MmE3OCIsInJvbGUiOiJhcGkiLCJ0eXBlIjoiYXBpIiwibmFtZSI6Ik5CQ0UtU1RPUkUiLCJleHAiOjIxMTA4OTAzMDYsImlhdCI6MTc5NTUzMDMwNiwic3ViIjoiZGFjMjNkODctYjVhOS00ZTdlLWIzODgtMGU4ODY3YjU5ZWZiIiwiaXNzIjoicGVyaXNrb3BlLmFwcCIsIm1ldGFkYXRhIjp7InNjb3BlcyI6WyI5MTkzMzM3ODIwNDhAYy51cyJdfX0.cWBTHy6DzHSm8urBQWPHHiHnn_XCzxtamxxO61nvang';
     const PERISKOPE_SENDER_PHONE = '919333782048';
 
+    // Prefix used to mark soft-deleted products stored safely in cloud Recycle Bin
+    const TRASH_PREFIX = '__TRASH__::';
+
+    function isTrashedProduct(p) {
+      return p && typeof p.category === 'string' && p.category.startsWith(TRASH_PREFIX);
+    }
+
+    function getCleanCategory(p) {
+      if (!p || !p.category) return '';
+      return p.category.startsWith(TRASH_PREFIX) ? p.category.slice(TRASH_PREFIX.length) : p.category;
+    }
+
+    function getActiveProducts() {
+      return db.products.filter(p => !isTrashedProduct(p));
+    }
+
+    function getTrashedProducts() {
+      return db.products.filter(p => isTrashedProduct(p));
+    }
+
     function formatIndianPhone(raw) {
       const digits = (raw || '').replace(/\D/g, '');
       if (!digits) return '';
@@ -1298,6 +1374,7 @@
     let tempUploadedHero = '';
     let challanCart = [];
     let activeChallanNoForPDF = '';
+    let pendingDeleteAction = null;
     let realtimeSubscription = null;
     let syncDebounceTimer = null;
     let autoSyncInterval = null;
@@ -1391,7 +1468,8 @@
         applySiteBranding();
 
         db.products = prodsRes.data || [];
-        document.getElementById('pub-stat-products').textContent = db.products.length;
+        const activeList = getActiveProducts();
+        document.getElementById('pub-stat-products').textContent = activeList.length;
         document.getElementById('pub-stat-centres').textContent = centresRes.count || 0;
         renderPublicCatalog();
       } catch (e) {
@@ -1402,8 +1480,8 @@
     function renderPublicCatalog() {
       const q = (document.getElementById('public-search').value || '').toLowerCase();
       const grid = document.getElementById('public-products-grid');
-      const items = db.products.filter(p =>
-        p.name.toLowerCase().includes(q) || (p.category || '').toLowerCase().includes(q) || p.sku.toLowerCase().includes(q)
+      const items = getActiveProducts().filter(p =>
+        p.name.toLowerCase().includes(q) || getCleanCategory(p).toLowerCase().includes(q) || p.sku.toLowerCase().includes(q)
       );
 
       if (items.length === 0) {
@@ -1423,7 +1501,7 @@
             </div>
             <div class="p-4 flex-1 flex flex-col justify-between">
               <div>
-                <span class="text-[10px] font-bold uppercase tracking-wider text-amber-600">${p.category || 'Study Material'}</span>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-amber-600">${getCleanCategory(p) || 'Study Material'}</span>
                 <h3 class="font-bold text-[#0b2559] text-sm mt-1">${p.name}</h3>
               </div>
               <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
@@ -1625,6 +1703,7 @@
       'study-centres': ['Study Centres', 'Manage study centre codes, mobiles & addresses'],
       'low-stock': ['Low Stock Alerts', 'Items below minimum threshold with Auto WhatsApp'],
       'reports': ['Filter-Wise Reports', 'Analyze transactions & export to Excel (.xlsx) or PDF'],
+      'recycle-bin': ['Recycle Bin', 'Restore deleted products or delete them permanently'],
       'staff-actions': ['Staff Action Status', 'Complete audit log of staff & admin operations'],
       'users': ['ID & Password Creation', 'Create and manage Staff & Admin login IDs'],
       'branding': ['Site Branding & Hero Banner', 'Upload logo, hero banner & edit Home Page content']
@@ -1641,13 +1720,14 @@
       if (view === 'study-centres') renderStudyCentres();
       if (view === 'low-stock') renderLowStock();
       if (view === 'reports') prepReports();
+      if (view === 'recycle-bin') renderRecycleBin();
       if (view === 'staff-actions') renderStaffActions();
       if (view === 'users') renderUsers();
       if (view === 'branding') prepBranding();
     }
 
     function navigate(view) {
-      if (['staff-actions', 'users', 'branding'].includes(view) && currentUser.role !== 'admin') {
+      if (['staff-actions', 'users', 'branding', 'recycle-bin'].includes(view) && currentUser.role !== 'admin') {
         alert('Access Denied: Admin permission required.');
         return;
       }
@@ -1681,21 +1761,27 @@
     }
 
     function updateBadges() {
-      const lowItems = db.products.filter(p => Number(p.current_stock) <= Number(p.min_stock));
+      const activeProds = getActiveProducts();
+      const trashedProds = getTrashedProducts();
+      const lowItems = activeProds.filter(p => Number(p.current_stock) <= Number(p.min_stock));
+
       document.getElementById('sidebar-low-badge').textContent = lowItems.length;
       document.getElementById('mobile-low-badge').textContent = lowItems.length;
       document.getElementById('top-low-count').textContent = lowItems.length;
+      document.getElementById('sidebar-trash-badge').textContent = trashedProds.length;
+      document.getElementById('catalog-trash-count').textContent = trashedProds.length;
     }
 
     // ==================== 01 & 09: HOME & REAL-TIME STOCK ====================
     function renderHome() {
       const today = new Date().toISOString().split('T')[0];
-      const totalUnits = db.products.reduce((sum, p) => sum + Number(p.current_stock), 0);
+      const activeProds = getActiveProducts();
+      const totalUnits = activeProds.reduce((sum, p) => sum + Number(p.current_stock), 0);
       const todayIn = db.transactions.filter(t => t.tx_date === today && (t.type === 'IN' || t.type === 'RETURN')).reduce((s, t) => s + Number(t.quantity), 0);
       const todaySold = db.transactions.filter(t => t.tx_date === today && t.type === 'OUT').reduce((s, t) => s + Number(t.quantity), 0);
-      const lowItems = db.products.filter(p => Number(p.current_stock) <= Number(p.min_stock));
+      const lowItems = activeProds.filter(p => Number(p.current_stock) <= Number(p.min_stock));
 
-      document.getElementById('kpi-total-products').textContent = db.products.length;
+      document.getElementById('kpi-total-products').textContent = activeProds.length;
       document.getElementById('kpi-total-units').textContent = totalUnits;
       document.getElementById('kpi-today-in').textContent = '+' + todayIn;
       document.getElementById('kpi-today-sold').textContent = '-' + todaySold;
@@ -1711,7 +1797,7 @@
       }
 
       const query = (document.getElementById('home-search').value || '').toLowerCase();
-      const filtered = db.products.filter(p =>
+      const filtered = activeProds.filter(p =>
         p.name.toLowerCase().includes(query) || p.sku.toLowerCase().includes(query)
       );
 
@@ -1732,7 +1818,7 @@
               <span>${p.name}</span>
             </td>
             <td class="py-3 px-4 text-xs font-mono text-slate-500">${p.sku}</td>
-            <td class="py-3 px-4 text-xs text-slate-600">${p.category || '-'}</td>
+            <td class="py-3 px-4 text-xs text-slate-600">${getCleanCategory(p) || '-'}</td>
             <td class="py-3 px-4 font-extrabold ${isLow ? 'text-red-600' : 'text-slate-800'}">${p.current_stock} ${p.unit}</td>
             <td class="py-3 px-4 text-xs text-slate-500">${p.min_stock} ${p.unit}</td>
             <td class="py-3 px-4">
@@ -1749,20 +1835,26 @@
       }).join('');
     }
 
-    // ==================== 03, 04 & 05: PRODUCTS, EDIT & DELETE ====================
+    // ==================== 03, 04 & 05: PRODUCTS, CUSTOM DELETE WARNING & RECYCLE BIN ====================
     function renderProducts() {
       const q = (document.getElementById('product-search').value || '').toLowerCase();
-      const list = db.products.filter(p =>
-        p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q) || (p.category || '').toLowerCase().includes(q)
+      const list = getActiveProducts().filter(p =>
+        p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q) || getCleanCategory(p).toLowerCase().includes(q)
       );
+
+      const isAdmin = currentUser && currentUser.role === 'admin';
+      const trashBtn = document.getElementById('catalog-trash-btn');
+      if (isAdmin) {
+        trashBtn.classList.remove('hidden');
+      } else {
+        trashBtn.classList.add('hidden');
+      }
 
       const grid = document.getElementById('products-grid');
       if (list.length === 0) {
         grid.innerHTML = `<div class="col-span-full bg-white p-10 rounded-2xl text-center text-slate-400 text-sm">No products found in catalog.</div>`;
         return;
       }
-
-      const isAdmin = currentUser && currentUser.role === 'admin';
 
       grid.innerHTML = list.map(p => {
         const isLow = Number(p.current_stock) <= Number(p.min_stock);
@@ -1777,7 +1869,7 @@
             </div>
             <div class="p-4 flex-1 flex flex-col justify-between">
               <div>
-                <p class="text-[11px] text-indigo-600 font-semibold uppercase">${p.category || 'General'}</p>
+                <p class="text-[11px] text-indigo-600 font-semibold uppercase">${getCleanCategory(p) || 'General'}</p>
                 <h3 class="font-bold text-slate-800 text-sm mt-0.5">${p.name}</h3>
                 <p class="text-[11px] text-slate-400 mt-1"><i class="fa-regular fa-calendar mr-1"></i>Added: ${p.added_date}</p>
               </div>
@@ -1793,7 +1885,7 @@
                   <button onclick="openEditProductModal('${p.id}')" class="flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold py-1.5 rounded-lg transition">
                     <i class="fa-solid fa-pen-to-square mr-1"></i> Edit
                   </button>
-                  <button onclick="deleteProduct('${p.id}', '${p.name.replace(/'/g, "\\'")}')" class="flex-1 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold py-1.5 rounded-lg transition">
+                  <button onclick="confirmMoveToRecycleBin('${p.id}')" class="flex-1 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold py-1.5 rounded-lg transition">
                     <i class="fa-solid fa-trash mr-1"></i> Delete
                   </button>
                 </div>
@@ -1804,6 +1896,148 @@
       }).join('');
     }
 
+    // ==================== CUSTOM DELETE WARNING POPUP (YES / NO) ====================
+    function confirmMoveToRecycleBin(prodId) {
+      if (currentUser.role !== 'admin') return;
+      const p = db.products.find(item => item.id === prodId);
+      if (!p) return;
+
+      document.getElementById('del-modal-icon-wrap').className = 'w-16 h-16 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mx-auto text-3xl shadow-inner';
+      document.getElementById('del-modal-subtitle').innerHTML =
+        `Product <strong>"${p.name}"</strong> (${p.sku}) will be moved to the <strong>Recycle Bin</strong>. You can restore it anytime later.`;
+      document.getElementById('del-modal-yes-btn').className = 'flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl text-sm shadow transition';
+
+      pendingDeleteAction = { type: 'SOFT_DELETE', product: p };
+      const modal = document.getElementById('delete-confirm-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function confirmPermanentDelete(prodId) {
+      if (currentUser.role !== 'admin') return;
+      const p = db.products.find(item => item.id === prodId);
+      if (!p) return;
+
+      document.getElementById('del-modal-icon-wrap').className = 'w-16 h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto text-3xl shadow-inner';
+      document.getElementById('del-modal-subtitle').innerHTML =
+        `<strong>Permanent Delete Warning:</strong> "${p.name}" (${p.sku}) will be permanently removed and cannot be restored!`;
+      document.getElementById('del-modal-yes-btn').className = 'flex-1 bg-red-700 hover:bg-red-800 text-white font-bold py-2.5 rounded-xl text-sm shadow transition';
+
+      pendingDeleteAction = { type: 'PERMANENT_DELETE', product: p };
+      const modal = document.getElementById('delete-confirm-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeDeleteConfirmModal() {
+      pendingDeleteAction = null;
+      const modal = document.getElementById('delete-confirm-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    async function executeConfirmedDelete() {
+      if (!pendingDeleteAction || currentUser.role !== 'admin') return;
+      const { type, product } = pendingDeleteAction;
+      closeDeleteConfirmModal();
+
+      if (type === 'SOFT_DELETE') {
+        setLoading(true, 'Moving product to Recycle Bin...');
+        const cleanCat = getCleanCategory(product);
+        const { error } = await sb.from('products').update({
+          category: TRASH_PREFIX + cleanCat
+        }).eq('id', product.id);
+
+        if (error) {
+          setLoading(false);
+          alert('Error moving to Recycle Bin: ' + error.message);
+          return;
+        }
+
+        await logAction('MOVE_TO_RECYCLE_BIN', `Moved product "${product.name}" (${product.sku}) to Recycle Bin`);
+        await refreshAllData(false);
+        showToast(`"${product.name}" moved to Recycle Bin!`);
+      } else if (type === 'PERMANENT_DELETE') {
+        setLoading(true, 'Permanently deleting product...');
+        const { error } = await sb.from('products').delete().eq('id', product.id);
+        if (error) {
+          setLoading(false);
+          alert('Error deleting product: ' + error.message);
+          return;
+        }
+
+        await logAction('PERMANENT_DELETE', `Permanently deleted product "${product.name}" (${product.sku})`);
+        await refreshAllData(false);
+        showToast(`"${product.name}" permanently deleted!`);
+      }
+    }
+
+    // ==================== RECYCLE BIN RENDER & RESTORE ====================
+    function renderRecycleBin() {
+      const trashed = getTrashedProducts();
+      const grid = document.getElementById('recycle-bin-grid');
+
+      if (trashed.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full bg-white p-12 rounded-2xl border border-slate-200 text-center text-slate-400">
+            <i class="fa-solid fa-trash-can text-4xl mb-2 text-slate-300"></i>
+            <p class="font-semibold text-sm text-slate-600">Recycle Bin is Empty</p>
+            <p class="text-xs mt-1">Deleted products will appear here so you can restore or permanently remove them.</p>
+          </div>`;
+        return;
+      }
+
+      grid.innerHTML = trashed.map(p => `
+        <div class="bg-white rounded-2xl shadow-sm border border-rose-200 overflow-hidden flex flex-col">
+          <div class="h-36 bg-slate-100 relative flex items-center justify-center overflow-hidden opacity-80">
+            ${p.image_url
+              ? `<img src="${p.image_url}" class="w-full h-full object-cover grayscale" />`
+              : `<i class="fa-solid fa-box-open text-4xl text-slate-300"></i>`}
+            <span class="absolute top-2.5 left-2.5 bg-slate-900/80 text-white text-[10px] font-mono px-2 py-0.5 rounded">${p.sku}</span>
+            <span class="absolute top-2.5 right-2.5 bg-rose-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">DELETED</span>
+          </div>
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <div>
+              <p class="text-[11px] text-slate-400 font-semibold uppercase">${getCleanCategory(p) || 'General'}</p>
+              <h3 class="font-bold text-slate-800 text-sm mt-0.5">${p.name}</h3>
+              <p class="text-xs text-slate-500 mt-1">Saved Stock: <strong>${p.current_stock} ${p.unit}</strong></p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center gap-2">
+              <button onclick="restoreProductFromBin('${p.id}')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 rounded-lg transition shadow-xs">
+                <i class="fa-solid fa-rotate-left mr-1"></i> Restore
+              </button>
+              <button onclick="confirmPermanentDelete('${p.id}')" class="flex-1 bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 rounded-lg transition shadow-xs">
+                <i class="fa-solid fa-ban mr-1"></i> Permanent Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function restoreProductFromBin(prodId) {
+      if (currentUser.role !== 'admin') return;
+      const p = db.products.find(item => item.id === prodId);
+      if (!p) return;
+
+      setLoading(true, 'Restoring product to catalog...');
+      const restoredCategory = getCleanCategory(p);
+      const { error } = await sb.from('products').update({
+        category: restoredCategory
+      }).eq('id', p.id);
+
+      if (error) {
+        setLoading(false);
+        alert('Error restoring product: ' + error.message);
+        return;
+      }
+
+      await logAction('RESTORE_PRODUCT', `Restored product "${p.name}" (${p.sku}) from Recycle Bin`);
+      await refreshAllData(false);
+      showToast(`"${p.name}" restored to active catalog!`);
+    }
+
+    // ==================== EDIT PRODUCT MODAL ====================
     function openEditProductModal(prodId) {
       if (currentUser.role !== 'admin') return;
       const p = db.products.find(item => item.id === prodId);
@@ -1812,7 +2046,7 @@
       document.getElementById('edit-prod-id').value = p.id;
       document.getElementById('edit-prod-name').value = p.name;
       document.getElementById('edit-prod-sku').value = p.sku;
-      document.getElementById('edit-prod-category').value = p.category || '';
+      document.getElementById('edit-prod-category').value = getCleanCategory(p);
       document.getElementById('edit-prod-unit').value = p.unit || 'Pcs';
       document.getElementById('edit-prod-min').value = p.min_stock;
       editProductImage = p.image_url || '';
@@ -1892,23 +2126,6 @@
       showToast('Product updated successfully!');
     });
 
-    async function deleteProduct(prodId, prodName) {
-      if (currentUser.role !== 'admin') return;
-      if (!confirm(`Are you sure you want to permanently delete "${prodName}"?`)) return;
-
-      setLoading(true, 'Deleting product...');
-      const { error } = await sb.from('products').delete().eq('id', prodId);
-      if (error) {
-        setLoading(false);
-        alert('Error deleting product: ' + error.message);
-        return;
-      }
-
-      await logAction('DELETE_PRODUCT', `Deleted product "${prodName}"`);
-      await refreshAllData(false);
-      showToast(`"${prodName}" deleted!`);
-    }
-
     function prepAddProduct() {
       document.getElementById('prod-auto-date').value = new Date().toISOString().split('T')[0];
       uploadedProductImage = '';
@@ -1953,7 +2170,7 @@
       const addedDate = document.getElementById('prod-auto-date').value;
 
       if (db.products.some(p => p.sku === sku)) {
-        alert('Product SKU already exists!');
+        alert('Product SKU already exists (check active catalog or Recycle Bin)!');
         return;
       }
 
@@ -1999,7 +2216,7 @@
     // ==================== 06: STOCK IN ====================
     function prepStockIn() {
       document.getElementById('stockin-date').value = new Date().toISOString().split('T')[0];
-      document.getElementById('stockin-product').innerHTML = db.products.map(p =>
+      document.getElementById('stockin-product').innerHTML = getActiveProducts().map(p =>
         `<option value="${p.id}">${p.name} (${p.sku}) — Current: ${p.current_stock} ${p.unit}</option>`
       ).join('');
     }
@@ -2011,7 +2228,7 @@
       const date = document.getElementById('stockin-date').value;
       const remarks = document.getElementById('stockin-remarks').value.trim() || 'Stock Restock';
 
-      const product = db.products.find(p => p.id === prodId);
+      const product = getActiveProducts().find(p => p.id === prodId);
       if (!product || qty <= 0) return;
 
       setLoading(true, 'Updating stock in Cloud...');
@@ -2046,7 +2263,7 @@
     // ==================== STOCK RETURN & DAMAGE ENTRY ====================
     function prepStockReturn() {
       document.getElementById('ret-date').value = new Date().toISOString().split('T')[0];
-      document.getElementById('ret-product').innerHTML = db.products.map(p =>
+      document.getElementById('ret-product').innerHTML = getActiveProducts().map(p =>
         `<option value="${p.id}">${p.name} (${p.sku}) — Current: ${p.current_stock} ${p.unit}</option>`
       ).join('');
       document.getElementById('ret-centre').innerHTML =
@@ -2074,7 +2291,7 @@
       const qty = parseInt(document.getElementById('ret-qty').value);
       const remarks = document.getElementById('ret-remarks').value.trim();
 
-      const product = db.products.find(p => p.id === prodId);
+      const product = getActiveProducts().find(p => p.id === prodId);
       if (!product || qty <= 0) return;
 
       if (type === 'DAMAGE' && qty > Number(product.current_stock)) {
@@ -2132,7 +2349,7 @@
         db.studyCentres.map(c => `<option value="${c.centre_code}">${c.centre_code} — ${c.centre_name}</option>`).join('');
 
       document.getElementById('sold-product-select').innerHTML =
-        db.products.map(p => `<option value="${p.id}">${p.name} (Available: ${p.current_stock} ${p.unit})</option>`).join('');
+        getActiveProducts().map(p => `<option value="${p.id}">${p.name} (Available: ${p.current_stock} ${p.unit})</option>`).join('');
 
       document.getElementById('sold-centre-info').classList.add('hidden');
     }
@@ -2156,7 +2373,7 @@
     function addChallanItem() {
       const prodId = document.getElementById('sold-product-select').value;
       const qty = parseInt(document.getElementById('sold-qty-input').value);
-      const product = db.products.find(p => p.id === prodId);
+      const product = getActiveProducts().find(p => p.id === prodId);
 
       if (!product || !qty || qty <= 0) {
         alert('Please enter a valid quantity.');
@@ -2236,7 +2453,7 @@
       const lowStockTriggeredItems = [];
 
       for (const item of challanCart) {
-        const prod = db.products.find(p => p.id === item.productId);
+        const prod = getActiveProducts().find(p => p.id === item.productId);
         if (prod) {
           const updatedStock = Math.max(0, Number(prod.current_stock) - item.qty);
           await sb.from('products').update({ current_stock: updatedStock }).eq('id', prod.id);
@@ -2461,7 +2678,7 @@
     // ==================== 13: LOW STOCK ALERT & ZERO-CLICK WHATSAPP ====================
     function renderLowStock() {
       document.getElementById('whatsapp-alert-number').value = db.whatsappNumber || '';
-      const lowItems = db.products.filter(p => Number(p.current_stock) <= Number(p.min_stock));
+      const lowItems = getActiveProducts().filter(p => Number(p.current_stock) <= Number(p.min_stock));
       const container = document.getElementById('low-stock-cards');
 
       if (lowItems.length === 0) {
@@ -2512,7 +2729,7 @@
     }
 
     async function sendSingleWhatsApp(prodId) {
-      const p = db.products.find(item => item.id === prodId);
+      const p = getActiveProducts().find(item => item.id === prodId);
       if (!p) return;
       setLoading(true, 'Sending WhatsApp alert via Periskope...');
       const text = `🚨 *${db.branding.title} — LOW STOCK ALERT* 🚨\n\n*Product:* ${p.name}\n*SKU:* ${p.sku}\n*Current Stock:* ${p.current_stock} ${p.unit}\n*Minimum Limit:* ${p.min_stock} ${p.unit}\n\nPlease arrange restock immediately.`;
@@ -2522,7 +2739,7 @@
     }
 
     async function sendBulkLowStockWhatsApp() {
-      const lowItems = db.products.filter(p => Number(p.current_stock) <= Number(p.min_stock));
+      const lowItems = getActiveProducts().filter(p => Number(p.current_stock) <= Number(p.min_stock));
       if (lowItems.length === 0) {
         alert('No low stock items right now.');
         return;
@@ -2539,7 +2756,7 @@
     function prepReports() {
       document.getElementById('rep-product').innerHTML =
         `<option value="ALL">All Products</option>` +
-        db.products.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+        getActiveProducts().map(p => `<option value="${p.id}">${p.name}</option>`).join('');
 
       document.getElementById('rep-centre').innerHTML =
         `<option value="ALL">All Study Centres</option>` +
@@ -2708,7 +2925,8 @@
       const backupPayload = {
         exported_at: new Date().toISOString(),
         store: db.branding.title,
-        products: db.products,
+        products: getActiveProducts(),
+        recycle_bin_products: getTrashedProducts(),
         study_centres: db.studyCentres,
         challans: db.challans,
         stock_logs: db.transactions,
